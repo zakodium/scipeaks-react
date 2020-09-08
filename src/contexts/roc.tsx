@@ -10,7 +10,7 @@ import { ICouchUser, RocDocument, Roc } from 'rest-on-couch-client';
 interface RocState {
   roc: Roc;
   user: ICouchUser;
-  sample: RocDocument | null;
+  sample: RocDocument;
 }
 
 const rocContext = createContext<RocState | null>(null);
@@ -50,7 +50,7 @@ export function RocProvider(props: { children: ReactNode }) {
       });
   }, []);
 
-  const value = user ? { roc, user, sample: sample || null } : null;
+  const value = user && sample ? { roc, user, sample } : null;
 
   if (!value) return null;
 
