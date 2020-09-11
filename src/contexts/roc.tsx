@@ -5,12 +5,11 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { ICouchUser, RocDocument, Roc } from 'rest-on-couch-client';
+import { ICouchUser, Roc } from 'rest-on-couch-client';
 
 interface RocState {
   roc: Roc;
   user: ICouchUser;
-  sample: RocDocument;
 }
 
 const rocContext = createContext<RocState | null>(null);
@@ -39,18 +38,7 @@ export function RocProvider(props: { children: ReactNode }) {
       });
   }, []);
 
-  const [sample, setSample] = useState<RocDocument>();
-  useEffect(() => {
-    const doc = roc.getDocument('6a6bb043cc1fb7ab0f7a9db4d0995728');
-    doc
-      .fetch()
-      .then(() => setSample(doc))
-      .catch(() => {
-        // TODO: handle error
-      });
-  }, []);
-
-  const value = user && sample ? { roc, user, sample } : null;
+  const value = user ? { roc, user } : null;
 
   if (!value) return null;
 
