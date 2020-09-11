@@ -19,4 +19,5 @@ export enum Variant {
   primary = 'primary',
   secondary = 'secondary',
   white = 'white',
+  hover = 'hover',
 }

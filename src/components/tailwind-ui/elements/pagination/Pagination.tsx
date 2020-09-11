@@ -66,17 +66,7 @@ export function Pagination(props: IPaginationProps) {
           'justify-center': withText === false,
         })}
       >
-        {withText && (
-          <div>
-            <p className="text-sm leading-5 text-gray-700">
-              Showing page
-              <span className="font-medium"> {page} </span>
-              of
-              <span className="font-medium"> {totalPages} </span>
-              pages.
-            </p>
-          </div>
-        )}
+        {withText && <Text page={page} total={totalPages} />}
         <div>
           <nav className="relative z-0 inline-flex shadow-sm">
             <ButtonGroup variant={Variant.white} size={pages.length + 2}>
@@ -109,6 +99,20 @@ export function Pagination(props: IPaginationProps) {
           </nav>
         </div>
       </div>
+    </div>
+  );
+}
+
+function Text(props: { page: number; total: number }): JSX.Element {
+  return (
+    <div>
+      <p className="text-sm leading-5 text-gray-700">
+        Showing page
+        <span className="font-medium"> {props.page} </span>
+        of
+        <span className="font-medium"> {props.total} </span>
+        pages.
+      </p>
     </div>
   );
 }

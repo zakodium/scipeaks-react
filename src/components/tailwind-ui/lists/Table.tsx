@@ -25,7 +25,9 @@ export interface ITableProps<T = any> {
   itemsPerPage?: number;
 }
 
-export function Table(props: ITableProps) {
+export function Table<T extends { id: number | string }>(
+  props: ITableProps<T>,
+) {
   const { data, Tr, Empty, Header, pagination } = props;
 
   if (data.length === 0) {

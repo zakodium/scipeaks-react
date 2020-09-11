@@ -15,6 +15,23 @@ export interface IButtonProps extends ButtonProps {
   children: ReactNode;
 }
 
+function HoverButton(props: IButtonProps): JSX.Element {
+  const { color = Color.primary } = props;
+
+  return (
+    <button
+      type="button"
+      {...props}
+      className={classNames(
+        'inline-flex rounded-md p-1.5 focus:outline-none transition ease-in-out duration-150',
+        getVariantColor(Variant.hover, color),
+      )}
+    >
+      {props.children}
+    </button>
+  );
+}
+
 export function Button(props: IButtonProps): JSX.Element {
   const {
     color = Color.primary,
@@ -25,6 +42,10 @@ export function Button(props: IButtonProps): JSX.Element {
     className,
     ...other
   } = props;
+
+  if (props.variant === Variant.hover) {
+    return <HoverButton {...props} />;
+  }
 
   return (
     <span

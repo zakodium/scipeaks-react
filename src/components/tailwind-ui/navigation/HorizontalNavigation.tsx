@@ -8,11 +8,11 @@ export interface IHorizontalNavigationOptions<T = string> {
 }
 
 export interface IHorizontalNavigationProps<T> {
-  options: IHorizontalNavigationOptions<T>[];
+  options: Array<IHorizontalNavigationOptions<T>>;
   selected: IHorizontalNavigationOptions<T> | undefined;
   onSelect: (
     clicked: IHorizontalNavigationOptions<T>,
-    options: IHorizontalNavigationOptions<T>[],
+    options: Array<IHorizontalNavigationOptions<T>>,
   ) => void;
 }
 
@@ -50,26 +50,44 @@ export function HorizontalNavigation<T>({
         <div className="border-b border-gray-200">
           <nav className="flex -mb-px">
             {opts.map((element, index) => (
-              <span
-                onClick={() => onSelect(element, opts)}
+              <Navigation
                 key={index}
-                className={classNames(
-                  'px-1 py-4 text-sm font-medium leading-5 whitespace-no-wrap border-b-2 border-transparent focus:outline-none cursor-pointer',
-                  notActivated,
-                  {
-                    'ml-8': index !== 0,
-                    [activated]:
-                      selected !== undefined &&
-                      element.value === selected.value,
-                  },
-                )}
-              >
-                {element.label}
-              </span>
+                callback={() => onSelect(element, opts)}
+                index={index}
+                element={element}
+                selected={selected}
+              />
             ))}
           </nav>
         </div>
       </div>
     </div>
+  );
+}
+
+interface INavigationProps<T> {
+  element: IHorizontalNavigationOptions<T>;
+  selected: IHorizontalNavigationOptions<T> | undefined;
+  index: number;
+  callback: () => void;
+}
+
+function Navigation<T>(props: INavigationProps<T>): JSX.Element {
+  return (
+    <span
+      onClick={props.callback}
+      className={classNames(
+        'px-1 py-4 text-sm font-medium leading-5 whitespace-no-wrap border-b-2 border-transparent focus:outline-none cursor-pointer',
+        notActivated,
+        {
+          'ml-8': props.index !== 0,
+          [activated]:
+            props.selected !== undefined &&
+            props.element.value === props.selected.value,
+        },
+      )}
+    >
+      {props.element.label}
+    </span>
   );
 }

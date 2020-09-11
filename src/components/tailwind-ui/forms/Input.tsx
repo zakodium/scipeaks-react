@@ -40,7 +40,7 @@ export function Input(props: IInputProps): JSX.Element {
       <div className="relative mt-1 rounded-md shadow-sm">
         {props.leading && <LeadingComponent {...props} />}
         <input
-          id={props.id}
+          {...props}
           className={classNames(
             'block w-full form-input sm:text-sm sm:leading-5',
             {

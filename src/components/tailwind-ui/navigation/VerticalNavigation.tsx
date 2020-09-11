@@ -35,23 +35,39 @@ export function VerticalNavigation<T>(
     <nav>
       {opts.map((element, index) => {
         return (
-          <span
-            onClick={() => props.onSelect(element, opts)}
+          <Navigation
             key={index}
-            className={classNames(
-              'flex items-center px-3 py-2 text-sm font-medium leading-5 truncate transition duration-150 ease-in-out rounded-md group focus:outline-none cursor-pointer',
-              notActivated,
-              {
-                [activated]:
-                  props.selected !== undefined &&
-                  element.value === props.selected.value,
-              },
-            )}
-          >
-            {element.label}
-          </span>
+            callback={() => props.onSelect(element, opts)}
+            element={element}
+            selected={props.selected}
+          />
         );
       })}
     </nav>
+  );
+}
+
+interface INavigationProps<T> {
+  element: IVerticalNavigationOptions<T>;
+  selected: IVerticalNavigationOptions<T> | undefined;
+  callback: () => void;
+}
+
+function Navigation<T>(props: INavigationProps<T>): JSX.Element {
+  return (
+    <span
+      onClick={props.callback}
+      className={classNames(
+        'flex items-center px-3 py-2 text-sm font-medium leading-5 truncate transition duration-150 ease-in-out rounded-md group focus:outline-none cursor-pointer',
+        notActivated,
+        {
+          [activated]:
+            props.selected !== undefined &&
+            props.element.value === props.selected.value,
+        },
+      )}
+    >
+      {props.element.label}
+    </span>
   );
 }

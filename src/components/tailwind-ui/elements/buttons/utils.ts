@@ -53,6 +53,16 @@ const colorsWhite: Record<Color, string> = {
     'text-gray-700 bg-white hover:text-gray-500 focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 border-gray-300',
 };
 
+const colorsHovered: Record<Color, string> = {
+  [Color.primary]: 'text-primary-500 hover:bg-primary-100 focus:bg-primary-100',
+  [Color.neutral]: 'text-neutral-500 hover:bg-neutral-100 focus:bg-neutral-100',
+  [Color.success]: 'text-success-500 hover:bg-success-100 focus:bg-success-100',
+  [Color.warning]: 'text-warning-500 hover:bg-warning-100 focus:bg-warning-100',
+  [Color.alternative]:
+    'text-alternative-500 hover:bg-alternative-100 focus:bg-alternative-100',
+  [Color.danger]: 'text-danger-500 hover:bg-danger-100 focus:bg-danger-100',
+};
+
 function getVariantColor(variant: Variant, color: Color): string {
   switch (variant) {
     case Variant.primary:
@@ -61,6 +71,8 @@ function getVariantColor(variant: Variant, color: Color): string {
       return colorsSecondary[color];
     case Variant.white:
       return colorsWhite[color];
+    case Variant.hover:
+      return colorsHovered[color];
     default:
       throw new Error('Varriant cannot be null');
   }
