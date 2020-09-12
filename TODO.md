@@ -44,3 +44,12 @@ Options examples:
 - detect server-side change of sample (polling revision id with HEAD ?)
 
 Reference: https://github.com/cheminfo-js/visualizer-helper/blob/master/eln/Sample.js
+
+## Handle error state
+
+- All requests
+- No connection
+- Not found
+- No access (unauthenticated for example)
+
+## Handle loading state
