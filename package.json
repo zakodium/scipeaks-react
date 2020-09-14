@@ -31,9 +31,9 @@
     "@zakodium/eslint-config": "^1.0.5",
     "autoprefixer": "^9.8.6",
     "cross-env": "^7.0.2",
-    "eslint": "^7.8.1",
+    "eslint": "^7.9.0",
     "prettier": "^2.1.1",
-    "tailwindcss": "^1.8.8",
+    "tailwindcss": "^1.8.9",
     "typescript": "^4.0.2"
   },
   "prettier": {
