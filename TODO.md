@@ -1,9 +1,9 @@
 # Hooks to develop
 
-## <RocProvider> and `useRoc()`
+## `<RocProvider>` and `useRoc()`
 
-Returns an instance of `Roc`, initialized with the, API URL and database configured
-at build time.
+Returns an instance of `Roc`, initialized with the API URL and database
+configured at build time.
 
 ## `<RocUserProvider>` and `useRocUser()`
 
