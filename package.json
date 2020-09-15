@@ -19,7 +19,7 @@
     "react": "^17.0.0-rc.1",
     "react-dom": "^17.0.0-rc.1",
     "react-dropzone": "^11.1.0",
-    "rest-on-couch-client": "^2.2.3"
+    "rest-on-couch-client": "^2.2.4"
   },
   "devDependencies": {
     "@tailwindcss/ui": "^0.6.0",
