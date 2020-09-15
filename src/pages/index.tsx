@@ -1,12 +1,16 @@
 import React from 'react';
 
-import { useSample } from '../hooks/useSample';
+import { MainSampleProvider, useMainSample } from '../contexts/mainSample';
 
 export default function Index() {
-  const sample = useSample('6a6bb043cc1fb7ab0f7a9db4d0995728');
-  if (sample.loading) {
-    return <div>Loading...</div>;
-  }
+  return (
+    <MainSampleProvider uuid="6a6bb043cc1fb7ab0f7a9db4d0995728">
+      <Sample />
+    </MainSampleProvider>
+  );
+}
 
-  return <div>{sample.sample.getValue().$id}</div>;
+function Sample() {
+  const sample = useMainSample();
+  return <div>{sample.getValue().$id}</div>;
 }
