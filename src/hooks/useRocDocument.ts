@@ -19,13 +19,20 @@ const initialState: RocDocumentState = {
 
 type RocDocumentAction =
   | { type: 'SET_DOCUMENT'; value: RocDocument }
-  | { type: 'ERROR'; value: Error };
+  | { type: 'ERROR'; value: Error }
+  | { type: 'LOAD' };
 
 function rocDocumentReducer(
   state: RocDocumentState,
   action: RocDocumentAction,
 ): RocDocumentState {
   switch (action.type) {
+    case 'LOAD':
+      return {
+        ...state,
+        error: null,
+        loading: true,
+      };
     case 'SET_DOCUMENT':
       return {
         loading: false,
@@ -40,7 +47,7 @@ function rocDocumentReducer(
 }
 
 export function useRocDocument(uuid: string): RocDocumentHookResult {
-  const { roc } = useRoc();
+  const roc = useRoc();
   const [state, dispatch] = useReducer(rocDocumentReducer, initialState);
   useEffect(() => {
     const doc = roc.getDocument(uuid);

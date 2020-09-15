@@ -1,18 +1,7 @@
-import React, {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { ICouchUser, Roc } from 'rest-on-couch-client';
+import React, { createContext, ReactNode, useContext } from 'react';
+import { Roc } from 'rest-on-couch-client';
 
-interface RocState {
-  roc: Roc;
-  user: ICouchUser;
-}
-
-const rocContext = createContext<RocState | null>(null);
+const rocContext = createContext<Roc | null>(null);
 
 export function useRoc() {
   const roc = useContext(rocContext);
@@ -28,21 +17,7 @@ const roc = new Roc({
 });
 
 export function RocProvider(props: { children: ReactNode }) {
-  const [user, setUser] = useState<ICouchUser>();
-  useEffect(() => {
-    roc
-      .getUser()
-      .then(setUser)
-      .catch(() => {
-        // TODO: handle error
-      });
-  }, []);
-
-  const value = user ? { roc, user } : null;
-
-  if (!value) return null;
-
   return (
-    <rocContext.Provider value={value}>{props.children}</rocContext.Provider>
+    <rocContext.Provider value={roc}>{props.children}</rocContext.Provider>
   );
 }
