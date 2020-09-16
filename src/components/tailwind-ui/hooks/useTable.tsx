@@ -17,7 +17,7 @@ export interface IUseTableResult<T> {
 
 export function useTable<T>(
   data: Array<T>,
-  options: IUSeTableOptions,
+  options: IUSeTableOptions = { itemsPerPage: 10, initialPage: 1 },
 ): IUseTableResult<T> {
   const { itemsPerPage = 10, initialPage = 1 } = options;
 

@@ -20,6 +20,10 @@ export * from './forms/Radio';
 export * from './forms/TextArea';
 
 export * from './forms/formik/InputField';
+export * from './forms/formik/TextAreaField';
+export * from './forms/formik/CheckboxField';
+export * from './forms/formik/RadioField';
+export * from './forms/formik/ToggleField';
 export * from './forms/formik/Form';
 export * from './forms/formik/SubmitButton';
 

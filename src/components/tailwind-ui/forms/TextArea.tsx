@@ -1,11 +1,16 @@
+import classNames from 'classnames';
 import React from 'react';
 
-type TextAreaProps = React.ButtonHTMLAttributes<HTMLTextAreaElement>;
+type TextAreaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 export interface ITextAreaProps extends TextAreaProps {
   label?: string;
   description?: string;
+  error?: string;
 }
+
+const error =
+  'pr-10 border-red-300 text-red-900 placeholder-red-300 focus:border-red-300 focus:shadow-outline-red';
 
 export function TextArea(props: ITextAreaProps): JSX.Element {
   return (
@@ -21,11 +26,23 @@ export function TextArea(props: ITextAreaProps): JSX.Element {
       <div className="flex max-w-lg mt-1 rounded-md shadow-sm">
         <textarea
           {...props}
-          className="block w-full transition duration-150 ease-in-out form-textarea sm:text-sm sm:leading-5"
+          className={classNames(
+            'block w-full transition duration-150 ease-in-out form-textarea sm:text-sm sm:leading-5',
+            {
+              [error]: props.error,
+            },
+          )}
         />
       </div>
-      {props.description && (
-        <p className="mt-2 text-sm text-gray-500">{props.description}</p>
+
+      {(props.error || props.description) && (
+        <p
+          className={classNames('mt-2 text-sm text-gray-500', {
+            'text-red-600': props.error,
+          })}
+        >
+          {props.error || props.description}
+        </p>
       )}
     </div>
   );
