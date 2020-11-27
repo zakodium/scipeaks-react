@@ -1,31 +1,30 @@
 /* eslint-disable react/no-array-index-key */
-import classNames from 'classnames';
+import clsx from 'clsx';
 import React, { ReactNode } from 'react';
 
-export interface IHorizontalNavigationOptions<T = string> {
+export interface HorizontalNavigationOptions<T = string> {
   value: T;
   label?: ReactNode;
 }
 
-export interface IHorizontalNavigationProps<T> {
-  options: Array<IHorizontalNavigationOptions<T>>;
-  selected: IHorizontalNavigationOptions<T> | undefined;
+export interface HorizontalNavigationProps<T> {
+  options: Array<HorizontalNavigationOptions<T>>;
+  selected: HorizontalNavigationOptions<T> | undefined;
   onSelect: (
-    clicked: IHorizontalNavigationOptions<T>,
-    options: Array<IHorizontalNavigationOptions<T>>,
+    clicked: HorizontalNavigationOptions<T>,
+    options: Array<HorizontalNavigationOptions<T>>,
   ) => void;
 }
 
-const activated =
-  'text-indigo-600 border-indigo-500 hover:border-indigo-500 focus:text-indigo-800 focus:border-indigo-700';
+const activated = 'border-primary-500 text-primary-600';
 const notActivated =
-  'text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300';
+  'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300';
 
 export function HorizontalNavigation<T>({
   options,
   selected,
   onSelect,
-}: IHorizontalNavigationProps<T>): JSX.Element {
+}: HorizontalNavigationProps<T>): JSX.Element {
   const opts = options.map((element) => {
     return {
       ...element,
@@ -39,21 +38,22 @@ export function HorizontalNavigation<T>({
         <select
           aria-label="Selected tab"
           onChange={(event) => onSelect(opts[event.target.selectedIndex], opts)}
-          className="block w-full py-2 pl-3 pr-10 mt-1 text-base leading-6 transition duration-150 ease-in-out form-select focus:outline-none focus:shadow-outline-blue sm:text-sm sm:leading-5"
+          className="block w-full py-2 pl-3 pr-10 text-base rounded-md border-neutral-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
         >
           {opts.map((element, index) => (
-            <option key={index}>{element.label}</option>
+            <option key={index} selected={element.value === selected?.value}>
+              {element.label}
+            </option>
           ))}
         </select>
       </div>
       <div className="hidden sm:block">
-        <div className="border-b border-gray-200">
-          <nav className="flex -mb-px">
+        <div className="border-b border-neutral-200">
+          <nav className="flex -mb-px space-x-8">
             {opts.map((element, index) => (
               <Navigation
                 key={index}
                 callback={() => onSelect(element, opts)}
-                index={index}
                 element={element}
                 selected={selected}
               />
@@ -65,26 +65,20 @@ export function HorizontalNavigation<T>({
   );
 }
 
-interface INavigationProps<T> {
-  element: IHorizontalNavigationOptions<T>;
-  selected: IHorizontalNavigationOptions<T> | undefined;
-  index: number;
+interface NavigationProps<T> {
+  element: HorizontalNavigationOptions<T>;
+  selected: HorizontalNavigationOptions<T> | undefined;
   callback: () => void;
 }
 
-function Navigation<T>(props: INavigationProps<T>): JSX.Element {
+function Navigation<T>(props: NavigationProps<T>): JSX.Element {
+  const isSelected = props.element.value === props.selected?.value;
   return (
     <span
       onClick={props.callback}
-      className={classNames(
-        'px-1 py-4 text-sm font-medium leading-5 whitespace-no-wrap border-b-2 border-transparent focus:outline-none cursor-pointer',
-        notActivated,
-        {
-          'ml-8': props.index !== 0,
-          [activated]:
-            props.selected !== undefined &&
-            props.element.value === props.selected.value,
-        },
+      className={clsx(
+        'cursor-pointer whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
+        isSelected ? activated : notActivated,
       )}
     >
       {props.element.label}

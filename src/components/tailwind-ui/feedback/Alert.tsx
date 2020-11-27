@@ -1,93 +1,117 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import React, { ReactNode } from 'react';
 
-import { Button } from '../elements/buttons/Button';
-import { Variant, Color } from '../types';
+import {
+  SvgSolidCheckCircle,
+  SvgSolidExclamation,
+  SvgSolidInformationCircle,
+  SvgSolidX,
+  SvgSolidXCircle,
+} from '../svg/heroicon/solid';
+import { Color } from '../types';
 
-export enum IAlertType {
-  SUCESS = 'sucess',
+const closeButtonColors: Record<Color, string> = {
+  [Color.primary]:
+    'text-primary-500 bg-primary-50 hover:bg-primary-100 active:bg-primary-200 focus:ring-offset-primary-50 focus:ring-primary-600',
+  [Color.neutral]:
+    'text-neutral-500 bg-neutral-50 hover:bg-neutral-100 active:bg-neutral-200 focus:ring-offset-neutral-50 focus:ring-neutral-600',
+  [Color.success]:
+    'text-success-500 bg-success-50 hover:bg-success-100 active:bg-success-200 focus:ring-offset-success-50 focus:ring-success-600',
+  [Color.warning]:
+    'text-warning-500 bg-warning-50 hover:bg-warning-100 active:bg-warning-200 focus:ring-offset-warning-50 focus:ring-warning-600',
+  [Color.alternative]:
+    'text-alternative-500 bg-alternative-50 hover:bg-alternative-100 active:bg-alternative-200 focus:ring-offset-alternative-50 focus:ring-alternative-600',
+  [Color.danger]:
+    'text-danger-500 bg-danger-50 hover:bg-danger-100 active:bg-danger-200 focus:ring-offset-danger-50 focus:ring-danger-600',
+};
+
+export enum AlertType {
+  SUCCESS = 'success',
   INFO = 'info',
   WARNING = 'warning',
   ERROR = 'error',
 }
 
-export interface IAlertProps {
-  title: string;
-  className?: string;
-  type: IAlertType;
+export interface AlertProps {
+  type: AlertType;
+  title?: ReactNode;
   children?: ReactNode;
   onDismiss?: () => void;
+  className?: string;
 }
 
 const theme = {
-  [IAlertType.INFO]: {
+  [AlertType.INFO]: {
     theme: {
-      background: 'bg-blue-50',
-      title: 'text-blue-800',
-      text: 'text-blue-700',
+      background: 'bg-primary-50',
+      title: 'text-primary-800',
+      text: 'text-primary-700',
     },
-    icon: <InfoIcon />,
+    icon: <SvgSolidInformationCircle className="w-5 h-5 text-primary-400" />,
   },
-  [IAlertType.WARNING]: {
+  [AlertType.WARNING]: {
     theme: {
-      background: 'bg-yellow-50',
-      title: 'text-yellow-800',
-      text: 'text-yellow-700',
+      background: 'bg-warning-50',
+      title: 'text-warning-800',
+      text: 'text-warning-700',
     },
-    icon: <WarningIcon />,
+    icon: <SvgSolidExclamation className="w-5 h-5 text-warning-400" />,
   },
-  [IAlertType.ERROR]: {
+  [AlertType.ERROR]: {
     theme: {
-      background: 'bg-red-50',
-      title: 'text-red-800',
-      text: 'text-red-700',
+      background: 'bg-danger-50',
+      title: 'text-danger-800',
+      text: 'text-danger-700',
     },
-    icon: <ErrorIcon />,
+    icon: <SvgSolidXCircle className="w-5 h-5 text-danger-400" />,
   },
-  [IAlertType.SUCESS]: {
+  [AlertType.SUCCESS]: {
     theme: {
-      background: 'bg-green-50',
-      title: 'text-green-800',
-      text: 'text-green-700',
+      background: 'bg-success-50',
+      title: 'text-success-800',
+      text: 'text-success-700',
     },
-    icon: <SucesssIcon />,
+    icon: <SvgSolidCheckCircle className="w-5 h-5 text-success-400" />,
   },
 };
 
-function getColorByType(type: IAlertType): Color {
+function getColorByType(type: AlertType): Color {
   switch (type) {
-    case IAlertType.INFO:
+    case AlertType.INFO:
       return Color.primary;
-    case IAlertType.ERROR:
+    case AlertType.ERROR:
       return Color.danger;
-    case IAlertType.SUCESS:
+    case AlertType.SUCCESS:
       return Color.success;
-    case IAlertType.WARNING:
+    case AlertType.WARNING:
       return Color.warning;
     default:
       throw new Error('type cannot be null');
   }
 }
 
-export function Alert(props: IAlertProps): JSX.Element {
+export function Alert(props: AlertProps): JSX.Element {
   const type = theme[props.type];
 
   return (
-    <div className={classNames('p-4 rounded-md', type.theme.background)}>
+    <div
+      className={clsx('p-4 rounded-md', type.theme.background, props.className)}
+    >
       <div className="flex">
         <div className="flex-shrink-0">{type.icon}</div>
         <div className="ml-3">
-          <h3
-            className={classNames(
-              'text-sm font-medium leading-5',
-              type.theme.title,
-            )}
-          >
-            {props.title}
-          </h3>
+          {props.title && (
+            <div className={clsx('text-sm font-medium', type.theme.title)}>
+              {props.title}
+            </div>
+          )}
           {props.children && (
             <div
-              className={classNames('mt-2 text-sm leading-5', type.theme.text)}
+              className={clsx(
+                'text-sm',
+                props.title && 'mt-2',
+                type.theme.text,
+              )}
             >
               {props.children}
             </div>
@@ -97,91 +121,20 @@ export function Alert(props: IAlertProps): JSX.Element {
         {props.onDismiss && (
           <div className="pl-3 ml-auto">
             <div className="-mx-1.5 -my-1.5">
-              <Button
+              <button
+                type="button"
                 onClick={props.onDismiss}
-                variant={Variant.hover}
-                color={getColorByType(props.type)}
+                className={clsx(
+                  closeButtonColors[getColorByType(props.type)],
+                  'rounded-full p-1.5 focus:outline-none focus:ring-2 focus:ring-offset-2',
+                )}
               >
-                <svg
-                  className="w-5 h-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Button>
+                <SvgSolidX className="w-5 h-5" />
+              </button>
             </div>
           </div>
         )}
       </div>
     </div>
-  );
-}
-
-export function WarningIcon(): JSX.Element {
-  return (
-    <svg
-      className="w-5 h-5 text-yellow-400"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-    >
-      <path
-        fillRule="evenodd"
-        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}
-
-export function ErrorIcon(): JSX.Element {
-  return (
-    <svg
-      className="w-5 h-5 text-red-400"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-    >
-      <path
-        fillRule="evenodd"
-        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}
-
-export function SucesssIcon(): JSX.Element {
-  return (
-    <svg
-      className="w-5 h-5 text-green-400"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-    >
-      <path
-        fillRule="evenodd"
-        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}
-
-export function InfoIcon(): JSX.Element {
-  return (
-    <svg
-      className="w-5 h-5 text-blue-400"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-    >
-      <path
-        fillRule="evenodd"
-        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-        clipRule="evenodd"
-      />
-    </svg>
   );
 }

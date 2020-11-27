@@ -1,14 +1,11 @@
 import { useField } from 'formik';
 import React from 'react';
 
-import { IRadioProps, Radio } from '../Radio';
+import { RadioProps, Radio } from '../basic/Radio';
 
-export interface IRadioFieldProps extends IRadioProps {
-  name: string;
-  value: string;
-}
+export type RadioFieldProps = RadioProps;
 
-export function RadioField(props: IRadioFieldProps): JSX.Element {
-  const [field] = useField(props);
-  return <Radio {...field} {...props} />;
+export function RadioField(props: RadioFieldProps): JSX.Element {
+  const [field] = useField({ ...props, type: 'radio' });
+  return <Radio {...props} {...field} />;
 }

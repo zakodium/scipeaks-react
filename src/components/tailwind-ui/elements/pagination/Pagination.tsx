@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import React, { useMemo } from 'react';
 
 import { Variant } from '../../types';
@@ -7,7 +7,7 @@ import { ButtonGroup } from '../buttons/ButtonGroup';
 
 import { paginate, ELLIPSIS } from './paginate';
 
-export interface IPaginationProps {
+export interface PaginationProps {
   totalCount: number;
   page: number;
   itemsPerPage: number;
@@ -17,7 +17,7 @@ export interface IPaginationProps {
   withText?: boolean;
 }
 
-export function Pagination(props: IPaginationProps) {
+export function Pagination(props: PaginationProps) {
   const {
     totalCount,
     page,
@@ -59,9 +59,9 @@ export function Pagination(props: IPaginationProps) {
   }
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+    <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-neutral-200 sm:px-6">
       <div
-        className={classNames('flex items-center flex-1', {
+        className={clsx('flex items-center flex-1', {
           'justify-between': withText === true,
           'justify-center': withText === false,
         })}
@@ -77,6 +77,9 @@ export function Pagination(props: IPaginationProps) {
               {pages.map((element, index) => {
                 return (
                   <Button
+                    className={clsx({
+                      'border border-neutral-300': page === element,
+                    })}
                     style={{ minWidth: '3rem' }}
                     variant={
                       element === page ? Variant.secondary : Variant.white
@@ -106,7 +109,7 @@ export function Pagination(props: IPaginationProps) {
 function Text(props: { page: number; total: number }): JSX.Element {
   return (
     <div>
-      <p className="text-sm leading-5 text-gray-700">
+      <p className="text-sm text-neutral-700">
         Showing page
         <span className="font-medium"> {props.page} </span>
         of

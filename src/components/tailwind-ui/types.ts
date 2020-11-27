@@ -19,5 +19,12 @@ export enum Variant {
   primary = 'primary',
   secondary = 'secondary',
   white = 'white',
-  hover = 'hover',
 }
+
+export type ActionType<Action, Payload = void> = Payload extends void
+  ? { type: Action }
+  : { type: Action; payload: Payload };
+
+export type PropsOf<T = unknown> = T extends React.ElementType
+  ? React.ComponentProps<T>
+  : never;

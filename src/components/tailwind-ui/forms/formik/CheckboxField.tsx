@@ -1,13 +1,11 @@
 import { useField } from 'formik';
 import React from 'react';
 
-import { ICheckboxProps, Checkbox } from '../Checkbox';
+import { CheckboxProps, Checkbox } from '../basic/Checkbox';
 
-export interface ICheckboxFieldProps extends ICheckboxProps {
-  name: string;
-}
+export type CheckboxFieldProps = CheckboxProps;
 
-export function CheckboxField(props: ICheckboxFieldProps): JSX.Element {
-  const [field] = useField(props);
-  return <Checkbox {...field} {...props} />;
+export function CheckboxField(props: CheckboxFieldProps): JSX.Element {
+  const [field] = useField({ ...props, type: 'checkbox' });
+  return <Checkbox {...props} {...field} />;
 }

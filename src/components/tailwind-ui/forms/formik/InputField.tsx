@@ -1,13 +1,17 @@
 import { useField } from 'formik';
 import React from 'react';
 
-import { IInputProps, Input } from '../Input';
+import { InputProps, Input } from '../basic/Input';
 
-export interface IInputFieldProps extends IInputProps {
-  name: string;
-}
+export type InputFieldProps = InputProps;
 
-export function InputField(props: IInputFieldProps): JSX.Element {
-  const [field] = useField(props);
-  return <Input {...field} {...props} />;
+export function InputField(props: InputFieldProps): JSX.Element {
+  const [field, meta] = useField(props);
+  return (
+    <Input
+      {...props}
+      {...field}
+      error={meta.touched ? meta.error : undefined}
+    />
+  );
 }

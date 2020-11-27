@@ -4,30 +4,25 @@ import React, {
   ThHTMLAttributes,
 } from 'react';
 
-import {
-  Pagination,
-  IPaginationProps,
-} from '../elements/pagination/Pagination';
+import { Pagination, PaginationProps } from '../elements/pagination/Pagination';
 
-export interface ITrProps<T> {
+export interface TrProps<T> {
   index: number;
   value: T;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface ITableProps<T = any> {
+export interface TableProps<T = any> {
   data: Array<T>;
-  Tr: ComponentType<ITrProps<T>>;
+  Tr: ComponentType<TrProps<T>>;
   Empty?: ComponentType;
   Header?: ComponentType;
 
-  pagination?: IPaginationProps;
+  pagination?: PaginationProps;
   itemsPerPage?: number;
 }
 
-export function Table<T extends { id: number | string }>(
-  props: ITableProps<T>,
-) {
+export function Table<T extends { id: number | string }>(props: TableProps<T>) {
   const { data, Tr, Empty, Header, pagination } = props;
 
   if (data.length === 0) {
@@ -37,14 +32,14 @@ export function Table<T extends { id: number | string }>(
   return (
     <div className="flex flex-col">
       <div>
-        <div className="inline-block min-w-full overflow-hidden align-middle border-b border-gray-200 shadow sm:rounded-lg">
-          <table className="min-w-full divide-y divide-gray-200">
+        <div className="inline-block min-w-full overflow-hidden align-middle border-b shadow border-neutral-200 sm:rounded-lg">
+          <table className="min-w-full divide-y divide-neutral-200">
             {Header && (
               <thead>
                 <Header />
               </thead>
             )}
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-neutral-200">
               {data.map((value, index) => (
                 <Tr key={value.id} index={index} value={value} />
               ))}
@@ -61,22 +56,22 @@ export function Table<T extends { id: number | string }>(
   );
 }
 
-export type ITdProps = TdHTMLAttributes<HTMLTableDataCellElement>;
-export type IThProps = ThHTMLAttributes<HTMLTableHeaderCellElement>;
+export type TdProps = TdHTMLAttributes<HTMLTableDataCellElement>;
+export type ThProps = ThHTMLAttributes<HTMLTableHeaderCellElement>;
 
-export function Td(props: ITdProps) {
+export function Td(props: TdProps) {
   return (
     <td
-      className="px-6 py-4 text-sm font-medium leading-5 text-gray-900 whitespace-no-wrap"
+      className="px-6 py-4 text-sm font-medium whitespace-nowrap text-neutral-900"
       {...props}
     />
   );
 }
 
-export function Th(props: IThProps) {
+export function Th(props: ThProps) {
   return (
     <th
-      className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase bg-gray-50"
+      className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase text-neutral-500 bg-neutral-50"
       {...props}
     />
   );

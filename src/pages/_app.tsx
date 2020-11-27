@@ -8,6 +8,8 @@ import { RocProvider } from '../contexts/roc';
 import 'cheminfo-font/dist/style.css';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import 'react-animated-slider-2/build/horizontal.css';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'prismjs/themes/prism.css';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function MyApp({ Component, pageProps }: any) {

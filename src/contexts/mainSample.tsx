@@ -1,7 +1,7 @@
 import React, { createContext, ReactNode, useContext } from 'react';
 import { RocDocument } from 'rest-on-couch-client';
 
-import { Alert, IAlertType } from '../components/tailwind-ui';
+import { Alert, AlertType } from '../components/tailwind-ui';
 import { useRocDocument } from '../hooks/useRocDocument';
 
 const mainSampleContext = createContext<RocDocument | null>(null);
@@ -21,7 +21,7 @@ export function MainSampleProvider(props: {
   const sample = useRocDocument(props.uuid);
 
   if (sample.error) {
-    return <Alert title="TODO: display error" type={IAlertType.ERROR} />;
+    return <Alert title="TODO: display error" type={AlertType.ERROR} />;
   }
 
   if (!sample.document) {

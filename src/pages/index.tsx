@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Alert, IAlertType, Table, useTable } from '../components/tailwind-ui';
+import { Alert, AlertType, Table, useTable } from '../components/tailwind-ui';
 import { MainSampleProvider, useMainSample } from '../contexts/mainSample';
 import { useRocQuery } from '../hooks/useRocQuery';
 
@@ -11,7 +11,7 @@ export default function Index() {
     return <div>loading toc...</div>;
   }
   if (toc.error) {
-    return <Alert title="Error loading toc" type={IAlertType.ERROR} />;
+    return <Alert title="Error loading toc" type={AlertType.ERROR} />;
   }
   if (!toc.result) return null;
 

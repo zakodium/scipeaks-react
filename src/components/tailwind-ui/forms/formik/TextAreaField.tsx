@@ -1,13 +1,17 @@
 import { useField } from 'formik';
 import React from 'react';
 
-import { TextArea, ITextAreaProps } from '../TextArea';
+import { TextArea, TextAreaProps } from '../basic/TextArea';
 
-export interface ITextAreaFieldProps extends ITextAreaProps {
-  name: string;
-}
+export type TextAreaFieldProps = TextAreaProps;
 
-export function TextAreaField(props: ITextAreaFieldProps): JSX.Element {
-  const [field] = useField(props);
-  return <TextArea {...field} {...props} />;
+export function TextAreaField(props: TextAreaFieldProps): JSX.Element {
+  const [field, meta] = useField(props);
+  return (
+    <TextArea
+      {...props}
+      {...field}
+      error={meta.touched ? meta.error : undefined}
+    />
+  );
 }

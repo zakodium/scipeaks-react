@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Variant, Color } from '../../types';
 
-export interface IButtonGroupProps {
+export interface ButtonGroupProps {
   variant?: Variant;
   color?: Color;
   size?: number;
@@ -10,7 +10,7 @@ export interface IButtonGroupProps {
   children: any[];
 }
 
-export function ButtonGroup(props: IButtonGroupProps): JSX.Element {
+export function ButtonGroup(props: ButtonGroupProps): JSX.Element {
   const { children, variant = Variant.primary, color = Color.primary } = props;
 
   const elements = React.Children.map(children, (child, index) => {

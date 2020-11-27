@@ -1,15 +1,6 @@
 'use strict';
 
 module.exports = {
+  presets: [require('@zakodium/tailwind-config')],
   purge: ['./src/**/*.{ts,tsx}'],
-  plugins: [require('@tailwindcss/ui')],
-  theme: {
-    extend: {
-      colors: {},
-    },
-  },
-  future: {
-    purgeLayersByDefault: true,
-    removeDeprecatedGapUtilities: true,
-  },
 };

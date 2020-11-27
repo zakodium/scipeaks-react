@@ -5,11 +5,10 @@ import React from 'react';
 import Container from '../../components/Container';
 import { useRoc } from '../../contexts/roc';
 
-export default function Home() {
+export default function NmrDisplayer() {
   const { sample } = useRoc();
-  // @ts-ignore
+  if (!sample) return null;
   const nmr = sample.getValue().$content.spectra.nmr;
-  console.log(nmr);
 
   const spectra = nmr
     .map((value) =>

@@ -1,66 +1,56 @@
 import { Size, Color, Variant } from '../../types';
 
 const sizes: Record<Size, string> = {
-  [Size.xSmall]: 'px-2.5 py-1.5 text-xs leading-4',
-  [Size.small]: 'px-3 py-2 text-sm leading-4',
-  [Size.medium]: 'px-4 py-2 text-sm leading-5',
-  [Size.large]: 'px-4 py-2 text-base leading-6',
-  [Size.xLarge]: 'px-6 py-3 text-base leading-6',
+  [Size.xSmall]: 'px-2.5 py-1.5 text-xs',
+  [Size.small]: 'px-3 py-2 text-sm',
+  [Size.medium]: 'px-4 py-2 text-sm',
+  [Size.large]: 'px-4 py-2 text-base',
+  [Size.xLarge]: 'px-6 py-3 text-base',
 };
 
 const colorsPrimary: Record<Color, string> = {
   [Color.primary]:
-    'bg-primary-600 hover:bg-primary-500 focus:border-primary-700 focus:shadow-outline-primary active:bg-primary-700',
+    'border border-transparent bg-primary-600 disabled:bg-primary-400 hover:bg-primary-700 focus:ring-primary-500 active:bg-primary-800',
   [Color.neutral]:
-    'bg-neutral-600 hover:bg-neutral-500 focus:border-neutral-700 focus:shadow-outline-neutral active:bg-neutral-700',
+    'border border-transparent bg-neutral-600 disabled:bg-neutral-400 hover:bg-neutral-700 focus:ring-neutral-500 active:bg-neutral-800',
   [Color.success]:
-    'bg-success-600 hover:bg-success-500 focus:border-success-700 focus:shadow-outline-success active:bg-success-700',
+    'border border-transparent bg-success-600 disabled:bg-success-400 hover:bg-success-700 focus:ring-success-500 active:bg-success-800',
   [Color.warning]:
-    'bg-warning-600 hover:bg-warning-500 focus:border-warning-700 focus:shadow-outline-warning active:bg-warning-700',
+    'border border-transparent bg-warning-600 disabled:bg-warning-400 hover:bg-warning-700 focus:ring-warning-500 active:bg-warning-800',
   [Color.danger]:
-    'bg-danger-600 hover:bg-danger-500 focus:border-danger-700 focus:shadow-outline-danger active:bg-danger-700',
+    'border border-transparent bg-danger-600 disabled:bg-danger-400 hover:bg-danger-700 focus:ring-danger-500 active:bg-danger-800',
   [Color.alternative]:
-    'bg-alternative-600 hover:bg-alternative-500 focus:border-alternative-700 focus:shadow-outline-alternative active:bg-alternative-700',
+    'border border-transparent bg-alternative-600 disabled:bg-alternative-400 hover:bg-alternative-700 focus:ring-alternative-500 active:bg-alternative-800',
 };
 
 const colorsSecondary: Record<Color, string> = {
   [Color.primary]:
-    'text-primary-700 bg-primary-100 hover:bg-primary-50 focus:border-primary-300 focus:shadow-outline-primary active:bg-primary-200',
+    'border border-transparent text-primary-700 disabled:text-primary-400 bg-primary-100 disabled:bg-primary-50 hover:bg-primary-200 focus:ring-primary-500 active:bg-primary-300',
   [Color.neutral]:
-    'text-neutral-700 bg-neutral-100 hover:bg-neutral-50 focus:border-neutral-300 focus:shadow-outline-neutral active:bg-neutral-200',
+    'border border-transparent text-neutral-700 disabled:text-neutral-400 bg-neutral-100 disabled:bg-neutral-50 hover:bg-neutral-200 focus:ring-neutral-500 active:bg-neutral-300',
   [Color.success]:
-    'text-success-700 bg-success-100 hover:bg-success-50 focus:border-success-300 focus:shadow-outline-success active:bg-success-200',
+    'border border-transparent text-success-700 disabled:text-success-400 bg-success-100 disabled:bg-success-50 hover:bg-success-200 focus:ring-success-500 active:bg-success-300',
   [Color.warning]:
-    'text-warning-700 bg-warning-100 hover:bg-warning-50 focus:border-warning-300 focus:shadow-outline-warning active:bg-warning-200',
+    'border border-transparent text-warning-700 disabled:text-warning-400 bg-warning-100 disabled:bg-warning-50 hover:bg-warning-200 focus:ring-warning-500 active:bg-warning-300',
   [Color.danger]:
-    'text-danger-700 bg-danger-100 hover:bg-danger-50 focus:border-danger-300 focus:shadow-outline-danger active:bg-danger-200',
+    'border border-transparent text-danger-700 disabled:text-danger-400 bg-danger-100 disabled:bg-danger-50 hover:bg-danger-200 focus:ring-danger-500 active:bg-danger-300',
   [Color.alternative]:
-    'text-alternative-700 bg-alternative-100 hover:bg-alternative-50 focus:border-alternative-300 focus:shadow-outline-alternative active:bg-alternative-200',
+    'border border-transparent text-alternative-700 disabled:text-alternative-400 bg-alternative-100 disabled:bg-alternative-50 hover:bg-alternative-200 focus:ring-alternative-500 active:bg-alternative-300',
 };
 
 const colorsWhite: Record<Color, string> = {
   [Color.primary]:
-    'text-gray-700 bg-white hover:text-gray-500 focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 border-gray-300',
+    'border border-neutral-300 text-neutral-700 disabled:text-neutral-400 bg-white disabled:bg-white hover:bg-neutral-50 focus:ring-primary-500 active:bg-neutral-100',
   [Color.neutral]:
-    'text-gray-700 bg-white hover:text-gray-500 focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 border-gray-300',
+    'border border-neutral-300 text-neutral-700 disabled:text-neutral-400 bg-white disabled:bg-white hover:bg-neutral-50 focus:ring-primary-500 active:bg-neutral-100',
   [Color.success]:
-    'text-gray-700 bg-white hover:text-gray-500 focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 border-gray-300',
+    'border border-neutral-300 text-neutral-700 disabled:text-neutral-400 bg-white disabled:bg-white hover:bg-neutral-50 focus:ring-primary-500 active:bg-neutral-100',
   [Color.warning]:
-    'text-gray-700 bg-white hover:text-gray-500 focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 border-gray-300',
+    'border border-neutral-300 text-neutral-700 disabled:text-neutral-400 bg-white disabled:bg-white hover:bg-neutral-50 focus:ring-primary-500 active:bg-neutral-100',
   [Color.danger]:
-    'text-gray-700 bg-white hover:text-gray-500 focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 border-gray-300',
+    'border border-neutral-300 text-neutral-700 disabled:text-neutral-400 bg-white disabled:bg-white hover:bg-neutral-50 focus:ring-primary-500 active:bg-neutral-100',
   [Color.alternative]:
-    'text-gray-700 bg-white hover:text-gray-500 focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 border-gray-300',
-};
-
-const colorsHovered: Record<Color, string> = {
-  [Color.primary]: 'text-primary-500 hover:bg-primary-100 focus:bg-primary-100',
-  [Color.neutral]: 'text-neutral-500 hover:bg-neutral-100 focus:bg-neutral-100',
-  [Color.success]: 'text-success-500 hover:bg-success-100 focus:bg-success-100',
-  [Color.warning]: 'text-warning-500 hover:bg-warning-100 focus:bg-warning-100',
-  [Color.alternative]:
-    'text-alternative-500 hover:bg-alternative-100 focus:bg-alternative-100',
-  [Color.danger]: 'text-danger-500 hover:bg-danger-100 focus:bg-danger-100',
+    'border border-neutral-300 text-neutral-700 disabled:text-neutral-400 bg-white disabled:bg-white hover:bg-neutral-50 focus:ring-primary-500 active:bg-neutral-100',
 };
 
 function getVariantColor(variant: Variant, color: Color): string {
@@ -71,10 +61,8 @@ function getVariantColor(variant: Variant, color: Color): string {
       return colorsSecondary[color];
     case Variant.white:
       return colorsWhite[color];
-    case Variant.hover:
-      return colorsHovered[color];
     default:
-      throw new Error('Varriant cannot be null');
+      throw new Error('Variant cannot be null');
   }
 }
 

@@ -1,15 +1,58 @@
-import { Formik, Form as FormikForm, FormikConfig } from 'formik';
-import React, { ReactNode } from 'react';
+import clsx from 'clsx';
+import {
+  Formik,
+  Form as FormikForm,
+  FormikFormProps,
+  FormikConfig,
+  FormikHelpers,
+} from 'formik';
+import React, { CSSProperties } from 'react';
 
-export interface IFormProps<T> extends FormikConfig<T> {
-  children: ReactNode;
+type InnerFormProps = Omit<FormikFormProps, 'children' | 'className' | 'style'>;
+
+export interface FormProps<T> extends FormikConfig<T> {
+  className?: string;
+  style?: CSSProperties;
+  noDefaultStyle?: boolean;
+  formProps?: InnerFormProps;
 }
 
-export function Form<T>(props: IFormProps<T>): JSX.Element {
-  const { children, ...otherProps } = props;
+export function Form<T>(props: FormProps<T>): JSX.Element {
+  const {
+    children,
+    className,
+    style,
+    onSubmit,
+    noDefaultStyle = false,
+    formProps: { noValidate = true, ...otherFormProps } = {},
+    ...otherProps
+  } = props;
+
+  async function handleSubmit(values: T, helpers: FormikHelpers<T>) {
+    try {
+      helpers.setStatus(null);
+      await onSubmit(values, helpers);
+    } catch (error) {
+      helpers.setStatus({ error });
+    } finally {
+      helpers.setSubmitting(false);
+    }
+  }
+
   return (
-    <Formik {...otherProps}>
-      <FormikForm>{children}</FormikForm>
+    <Formik onSubmit={handleSubmit} {...otherProps}>
+      {(formik) => {
+        return (
+          <FormikForm
+            className={clsx({ 'space-y-4': !noDefaultStyle }, className)}
+            style={style}
+            noValidate={noValidate}
+            {...otherFormProps}
+          >
+            {typeof children === 'function' ? children(formik) : children}
+          </FormikForm>
+        );
+      }}
     </Formik>
   );
 }

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { IPaginationProps } from '../elements/pagination/Pagination';
+import { PaginationProps } from '../elements/pagination/Pagination';
 
-export interface IUSeTableOptions {
+export interface TableHookOptions {
   initialPage?: number;
   itemsPerPage?: number;
   maxVisiblePages?: number;
@@ -10,15 +10,15 @@ export interface IUSeTableOptions {
   withText?: boolean;
 }
 
-export interface IUseTableResult<T> {
-  pagination: IPaginationProps;
+export interface TableHookResult<T> {
+  pagination: PaginationProps;
   data: Array<T>;
 }
 
 export function useTable<T>(
   data: Array<T>,
-  options: IUSeTableOptions = { itemsPerPage: 10, initialPage: 1 },
-): IUseTableResult<T> {
+  options: TableHookOptions = { itemsPerPage: 10, initialPage: 1 },
+): TableHookResult<T> {
   const { itemsPerPage = 10, initialPage = 1 } = options;
 
   const [page, setPage] = useState(initialPage);
