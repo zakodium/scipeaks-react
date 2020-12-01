@@ -3,12 +3,13 @@ import NMRDisplayer from 'nmr-displayer';
 import React from 'react';
 
 import Container from '../../components/Container';
-import { useRoc } from '../../contexts/roc';
+import { useMainSample } from '../../contexts/mainSample';
 
 export default function NmrDisplayer() {
-  const { sample } = useRoc();
-  if (!sample) return null;
+  const sample = useMainSample();
   const nmr = sample.getValue().$content.spectra.nmr;
+  console.log(nmr);
+  console.log(sample.getAttachmentList());
 
   const spectra = nmr
     .map((value) =>

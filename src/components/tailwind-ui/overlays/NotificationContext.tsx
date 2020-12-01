@@ -13,11 +13,13 @@ export type NotificationActions =
   | ActionType<'DISAPPEAR', string>;
 
 export interface NotificationContext {
+  isEnabled: boolean;
   notifications: Array<NotificationState | NotificationToastState>;
   dispatch: (type: NotificationActions) => void;
 }
 
 export const Context = createContext<NotificationContext>({
+  isEnabled: false,
   notifications: [],
   dispatch: () => {
     throw new Error('unreachable');

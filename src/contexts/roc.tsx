@@ -12,7 +12,7 @@ export function useRoc() {
 }
 
 const roc = new Roc({
-  url: 'http://test.cheminfo.org/roc',
+  url: 'https://test.cheminfo.org/roc',
   database: 'eln',
 });
 

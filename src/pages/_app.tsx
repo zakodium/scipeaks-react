@@ -1,6 +1,7 @@
 import React from 'react';
 
 import '../../styles/index.css';
+import { MainSampleProvider } from '../contexts/mainSample';
 import { RocProvider } from '../contexts/roc';
 
 // nmr-displayer style dependencies
@@ -15,7 +16,9 @@ import 'prismjs/themes/prism.css';
 function MyApp({ Component, pageProps }: any) {
   return (
     <RocProvider>
-      <Component {...pageProps} />
+      <MainSampleProvider uuid="6a6bb043cc1fb7ab0f7a9db4d0995728">
+        <Component {...pageProps} />
+      </MainSampleProvider>
     </RocProvider>
   );
 }

@@ -17,7 +17,7 @@ export function ErrorReport({
   const details = `${
     componentStack ? `<br>Error details:\n\n${componentStack}\n\n\n` : ''
   }${error.stack || ''}`;
-  const { addNotification } = useNotificationCenter();
+  const { isEnabled, addNotification } = useNotificationCenter();
   return (
     <div className="text-justify">
       <Alert title="What should I do?" type={AlertType.WARNING}>
@@ -29,16 +29,18 @@ export function ErrorReport({
           className="mt-3"
           onClick={() => {
             void navigator.clipboard.writeText(details).then(() => {
-              addNotification(
-                {
-                  title: 'Successfully copied error report',
-                  content: '',
-                  icon: (
-                    <SvgOutlineCheck className="w-5 h-5 text-success-600" />
-                  ),
-                },
-                3000,
-              );
+              if (isEnabled) {
+                addNotification(
+                  {
+                    title: 'Successfully copied error report',
+                    content: '',
+                    icon: (
+                      <SvgOutlineCheck className="w-5 h-5 text-success-600" />
+                    ),
+                  },
+                  3000,
+                );
+              }
             });
           }}
           color={Color.warning}

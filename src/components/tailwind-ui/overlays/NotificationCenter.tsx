@@ -45,6 +45,7 @@ export interface NotificationToastState {
 }
 
 export interface NotificationCenterHookResult {
+  isEnabled: boolean;
   useNotifications: () => Array<NotificationState | NotificationToastState>;
   addNotification: (
     notification: Omit<NotificationConfig, 'isToast'>,
@@ -96,14 +97,16 @@ export function NotificationProvider(props: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, { notifications: [] });
 
   return (
-    <Context.Provider value={{ notifications: state.notifications, dispatch }}>
+    <Context.Provider
+      value={{ isEnabled: true, notifications: state.notifications, dispatch }}
+    >
       {props.children}
     </Context.Provider>
   );
 }
 
 export function useNotificationCenter(): NotificationCenterHookResult {
-  const { dispatch, notifications } = useContext(Context);
+  const { isEnabled, dispatch, notifications } = useContext(Context);
 
   const dismiss = useCallback(
     function dismiss(payload: string) {
@@ -116,6 +119,7 @@ export function useNotificationCenter(): NotificationCenterHookResult {
   );
 
   return {
+    isEnabled,
     useNotifications: () => notifications,
     addNotification: useCallback(
       (notification, timeout) => {

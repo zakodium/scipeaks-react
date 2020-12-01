@@ -1,6 +1,13 @@
 import React from 'react';
 
-import { Alert, AlertType, Table, useTable } from '../components/tailwind-ui';
+import {
+  Alert,
+  AlertType,
+  Table,
+  Td,
+  Th,
+  useTable,
+} from '../components/tailwind-ui';
 import { MainSampleProvider, useMainSample } from '../contexts/mainSample';
 import { useRocQuery } from '../hooks/useRocQuery';
 
@@ -18,7 +25,9 @@ export default function Index() {
   return (
     <div className="flex">
       <div>
-        <TocTable toc={toc.result} />
+        <RocQuery viewName="sample_toc">
+          {({ result }) => <TocTable toc={result} />}
+        </RocQuery>
       </div>
       <div>
         <MainSampleProvider uuid="6a6bb043cc1fb7ab0f7a9db4d0995728">
@@ -42,16 +51,16 @@ function TocTable(props: { toc: any[] }) {
 
 function Header() {
   return (
-    <th>
-      <td>Reference</td>
-    </th>
+    <tr>
+      <Th>Reference</Th>
+    </tr>
   );
 }
 
 function Tr(props: { value: any }) {
   return (
     <tr>
-      <td>{props.value.value.reference}</td>
+      <Td>{props.value.value.reference}</Td>
     </tr>
   );
 }
