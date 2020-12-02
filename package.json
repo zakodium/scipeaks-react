@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "check-types": "tsc --noEmit",
     "components-update": "components-update --out src/components/tailwind-ui",
     "dev": "next dev",
     "eslint": "eslint src --ext ts,tsx",
     "eslint-fix": "npm run eslint -- --fix",
     "export": "next build && next export",
-    "start": "next start"
+    "start": "next start",
+    "test": "npm run eslint && npm run check-types"
   },
   "dependencies": {
     "@headlessui/react": "^0.2.0",
