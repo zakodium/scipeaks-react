@@ -41,7 +41,11 @@ Options examples:
 - Save a sample
 - `useSampleToc` ?
 - handle changes, to know if sample is still unsaved
+  - `dirty` field
+  - function to update in-memory copy -> update((draft) => { draft.x = y })
+  - function to revert in-memory changes
 - detect server-side change of sample (polling revision id with HEAD ?)
+- re-fetch
 
 Reference: https://github.com/cheminfo-js/visualizer-helper/blob/master/eln/Sample.js
 

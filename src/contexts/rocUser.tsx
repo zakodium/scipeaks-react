@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { ICouchUser, Roc } from 'rest-on-couch-client';
+import { ICouchUser } from 'rest-on-couch-client';
 
 import { useRoc } from './roc';
 

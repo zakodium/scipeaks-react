@@ -1,6 +1,13 @@
 import React from 'react';
 
-import { Alert, AlertType, Table, useTable } from '../components/tailwind-ui';
+import {
+  Alert,
+  AlertType,
+  Table,
+  Td,
+  Th,
+  useTable,
+} from '../components/tailwind-ui';
 import { MainSampleProvider, useMainSample } from '../contexts/mainSample';
 import { useRocQuery } from '../hooks/useRocQuery';
 
@@ -42,16 +49,16 @@ function TocTable(props: { toc: any[] }) {
 
 function Header() {
   return (
-    <th>
-      <td>Reference</td>
-    </th>
+    <tr>
+      <Th>Reference</Th>
+    </tr>
   );
 }
 
 function Tr(props: { value: any }) {
   return (
     <tr>
-      <td>{props.value.value.reference}</td>
+      <Td>{props.value.value.reference}</Td>
     </tr>
   );
 }
