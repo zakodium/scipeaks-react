@@ -1,9 +1,8 @@
 import Head from 'next/head';
-// eslint-disable-next-line import/no-unresolved
-import NMRDisplayer from 'nmr-displayer';
 import React from 'react';
 
 import Container from '../../components/Container';
+import EnhancedNMRDisplayer from '../../components/nmr/EnhancedNMRDisplayer';
 import { useMainSample } from '../../contexts/mainSample';
 
 function noop() {
@@ -34,7 +33,7 @@ export default function NmrDisplayer() {
       </Head>
 
       <main style={{ height: '100vh' }}>
-        <NMRDisplayer
+        <EnhancedNMRDisplayer
           docsBaseUrl=""
           onDataChange={noop}
           data={{ spectra }}
