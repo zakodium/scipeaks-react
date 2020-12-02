@@ -25,9 +25,7 @@ export default function Index() {
   return (
     <div className="flex">
       <div>
-        <RocQuery viewName="sample_toc">
-          {({ result }) => <TocTable toc={result} />}
-        </RocQuery>
+        <TocTable toc={toc.result} />
       </div>
       <div>
         <MainSampleProvider uuid="6a6bb043cc1fb7ab0f7a9db4d0995728">
