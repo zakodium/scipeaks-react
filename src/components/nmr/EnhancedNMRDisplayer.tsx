@@ -8,12 +8,6 @@ import 'react-animated-slider-2/build/horizontal.css';
 import 'prismjs/themes/prism.css';
 /* eslint-enable */
 
-// TODO: remove this once fixed in nmr-displayer
-if (typeof document !== 'undefined') {
-  // @ts-expect-error: Will be fixed.
-  document.nmrDisplayerRootNode = document.body;
-}
-
 export default function EnhancedNMRDisplayer(props: NMRDisplayerProps) {
   return <NMRDisplayer {...props} />;
 }
