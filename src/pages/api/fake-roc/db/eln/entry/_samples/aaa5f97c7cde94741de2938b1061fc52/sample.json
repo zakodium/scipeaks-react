@@ -1,0 +1,193 @@
+{
+  "_id": "aaa5f97c7cde94741de2938b1061fc52",
+  "_rev": "4-b6398c94640b62a55c00ae6d929fa2ff",
+  "$type": "entry",
+  "$id": [
+    "934-00-9",
+    ""
+  ],
+  "$kind": "sample",
+  "$owners": [
+    "sample@cheminfo.org",
+    "anonymousRead",
+    "sampleRW"
+  ],
+  "$content": {
+    "general": {
+      "mf": "C7H8O3",
+      "mw": 140.136892,
+      "em": 140.0473441153,
+      "molfile": "C1(=C(O)C=CC=C1OC)(O)\n\n\n 10 10  0  0  0  0  0  0  0  0999 V2000\n    1.7320   -1.4999    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.5980   -1.9999    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.7320   -0.5000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.8660   -1.9999    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    2.5980   -3.0000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    0.8660    0.0000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    3.4641   -0.5000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.4641   -1.4999    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.5980    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000   -0.5000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  2  1  2  0  0  0  0\n  3  1  1  0  0  0  0\n  4  1  1  0  0  0  0\n  5  2  1  0  0  0  0\n  6  3  1  0  0  0  0\n  7  9  1  0  0  0  0\n  8  2  1  0  0  0  0\n  9  3  2  0  0  0  0\n 10  6  1  0  0  0  0\n  8  7  2  0  0  0  0\nM  END\n\n\n",
+      "ocl": {
+        "value": "deTL@@hTin^zZBB@@@",
+        "coordinates": "!BmwvH__ympJH_[]}mww~_{\\B",
+        "index": [
+          420352000,
+          33620480,
+          132,
+          8388609,
+          -2146304000,
+          2,
+          8196,
+          0,
+          0,
+          2105344,
+          67239936,
+          2097152,
+          0,
+          33554432,
+          1048576,
+          32772
+        ]
+      }
+    },
+    "identifier": {
+      "cas": [
+        {
+          "value": "934-00-9"
+        }
+      ]
+    },
+    "physical": {},
+    "spectra": {
+      "nmr": [
+        {
+          "dimension": 1,
+          "nucleus": [
+            "1H"
+          ],
+          "isFid": false,
+          "isFt": true,
+          "title": "934-00-9 -",
+          "solvent": "CDCl3",
+          "pulse": "zg",
+          "experiment": "1d",
+          "temperature": 303,
+          "frequency": 400.112,
+          "type": "NMR SPECTRUM",
+          "date": "2005-07-27T14:31:53.000Z",
+          "range": [
+            {
+              "from": 6.7561510289764515,
+              "to": 6.818547754020569,
+              "integral": 0.7873108270898458,
+              "signal": [
+                {
+                  "nbAtoms": 0,
+                  "diaID": [],
+                  "multiplicity": "m",
+                  "kind": "",
+                  "remark": "",
+                  "delta": 6.786919948515949
+                }
+              ]
+            },
+            {
+              "from": 6.611561806460719,
+              "to": 6.65400781254069,
+              "integral": 0.7348483383366152,
+              "signal": [
+                {
+                  "nbAtoms": 0,
+                  "diaID": [],
+                  "multiplicity": "m",
+                  "kind": "",
+                  "remark": "",
+                  "delta": 6.639165376633831
+                }
+              ]
+            },
+            {
+              "from": 6.484557747332352,
+              "to": 6.526780117022792,
+              "integral": 0.8090168292978709,
+              "signal": [
+                {
+                  "nbAtoms": 0,
+                  "diaID": [],
+                  "multiplicity": "dd",
+                  "kind": "",
+                  "remark": "",
+                  "j": [
+                    {
+                      "coupling": 1.3094236563856612,
+                      "multiplicity": "d"
+                    },
+                    {
+                      "coupling": 8.223728737586498,
+                      "multiplicity": "d"
+                    }
+                  ],
+                  "delta": 6.5056689321775725
+                }
+              ]
+            },
+            {
+              "from": 5.4118464573804825,
+              "to": 5.5954072716186865,
+              "integral": 1.474026417944459,
+              "signal": [
+                {
+                  "nbAtoms": 0,
+                  "diaID": [],
+                  "multiplicity": "br s",
+                  "kind": "",
+                  "remark": "",
+                  "delta": 5.5036268644995845
+                }
+              ]
+            },
+            {
+              "from": 5.347120814765885,
+              "to": 5.529581476392545,
+              "integral": 1.4718129708445098,
+              "signal": [
+                {
+                  "nbAtoms": 0,
+                  "diaID": [],
+                  "multiplicity": "br s",
+                  "kind": "",
+                  "remark": "",
+                  "delta": 5.438351145579215
+                }
+              ]
+            },
+            {
+              "from": 3.8934478205426832,
+              "to": 3.9126627655596926,
+              "integral": 2.652739750237763,
+              "signal": [
+                {
+                  "nbAtoms": 0,
+                  "diaID": [],
+                  "multiplicity": "s",
+                  "kind": "",
+                  "remark": "",
+                  "delta": 3.903055293051188
+                }
+              ]
+            }
+          ],
+          "jcamp": {
+            "filename": "spectra/nmr/1837.jdx"
+          }
+        }
+      ]
+    },
+    "misc": {
+      "externalID": 7565
+    }
+  },
+  "$lastModification": "sample@cheminfo.org",
+  "$modificationDate": 1479736049380,
+  "$creationDate": 1479736049314,
+  "_attachments": {
+    "spectra/nmr/1837.jdx": {
+      "content_type": "chemical/x-jcamp-dx",
+      "revpos": 1,
+      "digest": "md5-IblupQzoAJUkB3VgN5+5yw==",
+      "length": 182900,
+      "stub": true
+    }
+  }
+}

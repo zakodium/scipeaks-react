@@ -1,30 +1,27 @@
-import { useEffect, useReducer } from 'react';
+import { Reducer, useEffect, useReducer } from 'react';
+import { IQueryResult } from 'rest-on-couch-client';
 
 import { useRoc } from '../contexts/roc';
 
-interface RocQueryState {
+export type RocQueryResult<T> = IQueryResult<[string, string], T>;
+
+interface RocQueryState<T = unknown> {
   loading: boolean;
   error: null | Error;
-  result: null | any[];
+  result: null | RocQueryResult<T>[];
 }
 
-type RocQueryHookResult = RocQueryState;
+type RocQueryHookResult<T> = RocQueryState<T>;
 
-const initialState: RocQueryState = {
-  loading: true,
-  error: null,
-  result: null,
-};
-
-type RocQueryAction =
-  | { type: 'SET_RESULT'; value: any[] }
+type RocQueryAction<T> =
+  | { type: 'SET_RESULT'; value: RocQueryResult<T>[] }
   | { type: 'ERROR'; value: Error }
   | { type: 'LOAD' };
 
-function rocQueryReducer(
-  state: RocQueryState,
-  action: RocQueryAction,
-): RocQueryState {
+function rocQueryReducer<T>(
+  state: RocQueryState<T>,
+  action: RocQueryAction<T>,
+): RocQueryState<T> {
   switch (action.type) {
     case 'LOAD':
       return {
@@ -49,16 +46,22 @@ interface RocQueryHookOptions {
   mine?: boolean;
 }
 
-export function useRocQuery(
+export function useRocQuery<T = unknown>(
   viewName: string,
   options: RocQueryHookOptions = {},
-): RocQueryHookResult {
+): RocQueryHookResult<T> {
   const { mine = false } = options;
   const roc = useRoc();
-  const [state, dispatch] = useReducer(rocQueryReducer, initialState);
+  const [state, dispatch] = useReducer<
+    Reducer<RocQueryState<T>, RocQueryAction<T>>
+  >(rocQueryReducer, {
+    loading: true,
+    error: null,
+    result: null,
+  });
   useEffect(() => {
     dispatch({ type: 'LOAD' });
-    const query = roc.getQuery(viewName, { mine });
+    const query = roc.getQuery<[string, string], T>(viewName, { mine });
     query
       .fetch()
       .then((result) => dispatch({ type: 'SET_RESULT', value: result }))

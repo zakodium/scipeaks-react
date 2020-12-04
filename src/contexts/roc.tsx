@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useContext } from 'react';
+import React, { createContext, ReactNode, useContext, useMemo } from 'react';
 import { Roc } from 'rest-on-couch-client';
 
 const rocContext = createContext<Roc | null>(null);
@@ -11,13 +11,12 @@ export function useRoc() {
   return roc;
 }
 
-const roc = new Roc({
-  url: 'https://test.cheminfo.org/roc',
-  database: 'eln',
-});
-
-export function RocProvider(props: { children: ReactNode }) {
-  return (
-    <rocContext.Provider value={roc}>{props.children}</rocContext.Provider>
-  );
+export function RocProvider(props: {
+  children: ReactNode;
+  url: string;
+  database: string;
+}) {
+  const { url, database, children } = props;
+  const roc = useMemo(() => new Roc({ url, database }), [url, database]);
+  return <rocContext.Provider value={roc}>{children}</rocContext.Provider>;
 }

@@ -20,14 +20,15 @@
     "clsx": "^1.1.1",
     "date-fns": "^2.16.1",
     "formik": "^2.2.5",
-    "iframe-bridge": "file:iframe-bridge-1.1.0.tgz",
+    "iframe-bridge": "^1.2.0",
+    "immer": "^8.0.0",
     "next": "^10.0.3",
     "nmr-displayer": "^0.5.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-dropzone": "^11.2.4",
     "react-popper": "^2.2.4",
-    "rest-on-couch-client": "^2.2.4"
+    "rest-on-couch-client": "^2.3.0"
   },
   "devDependencies": {
     "@types/node": "^14.14.10",

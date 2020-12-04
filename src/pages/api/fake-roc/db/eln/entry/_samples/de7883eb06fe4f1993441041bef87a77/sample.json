@@ -1,0 +1,94 @@
+{
+  "_id": "de7883eb06fe4f1993441041bef87a77",
+  "_rev": "4-1fba21c4d94b4665bcce8798f7629ce2",
+  "$type": "entry",
+  "$id": [
+    "AC1208",
+    "toasted"
+  ],
+  "$kind": "sample",
+  "$owners": [
+    "coffee@cheminfo.org",
+    "anonymousRead"
+  ],
+  "$content": {
+    "general": {
+      "meta": {
+        "dataset": "coffee",
+        "percentArabica": 0,
+        "country": "Colombia",
+        "presentation": "toasted",
+        "species": "arabica",
+        "isColombian": true,
+        "project": [
+          "toasted",
+          "arabicaVsRobusta",
+          "mix"
+        ]
+      },
+      "description": "",
+      "title": "",
+      "name": [],
+      "mf": "",
+      "molfile": "",
+      "mw": 0,
+      "keyword": [],
+      "sequence": "",
+      "kind": ""
+    },
+    "spectra": {
+      "chromatogram": [],
+      "cyclicVoltammetry": [],
+      "differentialScanningCalorimetry": [],
+      "elementalAnalysis": [],
+      "ir": [],
+      "iv": [],
+      "mass": [],
+      "nmr": [
+        {
+          "dimension": 1,
+          "nucleus": [
+            "1H"
+          ],
+          "isFid": false,
+          "isFt": true,
+          "title": "AC1208_HCOAH12050_6673652_9lKH1umkHA",
+          "solvent": "COFFEE_meoh",
+          "pulse": "noesygpps1d.comp",
+          "experiment": "noesy",
+          "temperature": 300,
+          "frequency": 400.02188249412,
+          "type": "NMR SPECTRUM",
+          "probe": "5 mm PABBO BB-1H/D Z-GRD Z104450/0119",
+          "acquisitionMode": 0,
+          "expno": 12,
+          "date": "2012-08-15T01:07:21.000Z",
+          "jcamp": {
+            "filename": "spectra/nmr/ac1208.hcoah12050.origin.meoh.roasted.6676976.jdx"
+          }
+        }
+      ],
+      "raman": [],
+      "thermogravimetricAnalysis": [],
+      "uv": [],
+      "xray": []
+    },
+    "biology": {
+      "nucleic": []
+    },
+    "image": [],
+    "physical": {}
+  },
+  "$lastModification": "coffee@cheminfo.org",
+  "$modificationDate": 1584978453682,
+  "$creationDate": 1584978452440,
+  "_attachments": {
+    "spectra/nmr/ac1208.hcoah12050.origin.meoh.roasted.6676976.jdx": {
+      "content_type": "chemical/x-jcamp-dx",
+      "revpos": 3,
+      "digest": "md5-5UwUNEjHFvsQq/CWv9Q/LQ==",
+      "length": 2613556,
+      "stub": true
+    }
+  }
+}
