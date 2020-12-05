@@ -34,25 +34,29 @@ export function useIframeBridgeSample(): RocDocument<SampleEntryContent> {
 
 interface IframeBridgeContextType {
   state: 'initial' | 'loading' | 'ready' | 'standalone-error';
-  data: IframeMessage['message'] | null;
+  data: IframeDataMessage | null;
   roc: Roc | null;
   hasSample: boolean;
   sample: RocDocument<SampleEntryContent> | null;
 }
 
-interface IframeMessage {
-  type: 'tab.data';
-  message: {
-    couchDB: {
-      url: string;
-      database: string;
-    };
-    uuid: string;
+interface IframeDataMessage {
+  couchDB: {
+    url: string;
+    database: string;
   };
+  uuid: string;
 }
 
+type IframeMessage =
+  | {
+      type: 'tab.data';
+      message: IframeDataMessage;
+    }
+  | { type: 'tab.focus' };
+
 type IframeBridgeContextAction =
-  | ActionType<'RECEIVE_DATA', IframeMessage['message']>
+  | ActionType<'RECEIVE_DATA', IframeDataMessage>
   | ActionType<'SET_SAMPLE', RocDocument<SampleEntryContent>>
   | ActionType<'STANDALONE_TIMEOUT'>;
 
@@ -109,6 +113,11 @@ export function IframeBridgeProvider(props: {
       switch (message.type) {
         case 'tab.data': {
           dispatch({ type: 'RECEIVE_DATA', payload: message.message });
+          break;
+        }
+        case 'tab.focus': {
+          // Ignore this event. Happens in C6H6 when an already opened tab is
+          // refocused.
           break;
         }
         default:
