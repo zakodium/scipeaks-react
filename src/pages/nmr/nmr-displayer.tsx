@@ -10,7 +10,7 @@ export default function NmrDisplayer() {
       <Head>
         <title>NMR Displayer</title>
       </Head>
-      <IframeBridgeProvider withSample>
+      <IframeBridgeProvider requireSample>
         <NmrDisplayerPage />
       </IframeBridgeProvider>
     </>

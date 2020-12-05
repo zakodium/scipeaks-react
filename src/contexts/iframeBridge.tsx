@@ -1,25 +1,22 @@
 import { ready, onMessage } from 'iframe-bridge/iframe';
+import { produce } from 'immer';
 import {
   createContext,
   ReactNode,
+  Reducer,
   useContext,
   useEffect,
-  useMemo,
-  useState,
+  useReducer,
 } from 'react';
 import { Roc, RocDocument } from 'rest-on-couch-client';
 
-import { Spinner } from '../components/tailwind-ui';
+import LoadingFull from '../components/LoadingFull';
+import { ActionType, ErrorPage } from '../components/tailwind-ui';
 import { SampleEntryContent } from '../types/db';
 
-interface IframBridgeContextType {
-  roc: Roc;
-  sample: RocDocument<SampleEntryContent> | null;
-}
+const iframeBridgeContext = createContext<IframeBridgeContextType | null>(null);
 
-const iframeBridgeContext = createContext<IframBridgeContextType | null>(null);
-
-export function useIframeBridgeContext(): IframBridgeContextType {
+export function useIframeBridgeContext(): IframeBridgeContextType {
   const context = useContext(iframeBridgeContext);
   if (!context) {
     throw new Error('Iframe bridge context is not ready');
@@ -35,6 +32,14 @@ export function useIframeBridgeSample(): RocDocument<SampleEntryContent> {
   return context.sample;
 }
 
+interface IframeBridgeContextType {
+  state: 'initial' | 'loading' | 'ready' | 'standalone-error';
+  data: IframeMessage['message'] | null;
+  roc: Roc | null;
+  hasSample: boolean;
+  sample: RocDocument<SampleEntryContent> | null;
+}
+
 interface IframeMessage {
   type: 'tab.data';
   message: {
@@ -46,62 +51,136 @@ interface IframeMessage {
   };
 }
 
+type IframeBridgeContextAction =
+  | ActionType<'RECEIVE_DATA', IframeMessage['message']>
+  | ActionType<'SET_SAMPLE', RocDocument<SampleEntryContent>>
+  | ActionType<'STANDALONE_TIMEOUT'>;
+
+const iframeBridgeReducer: Reducer<
+  IframeBridgeContextType,
+  IframeBridgeContextAction
+> = produce(
+  (state: IframeBridgeContextType, action: IframeBridgeContextAction) => {
+    switch (action.type) {
+      case 'RECEIVE_DATA': {
+        state.data = action.payload;
+        state.roc = new Roc(action.payload.couchDB);
+        if (action.payload.uuid) {
+          state.state = 'loading';
+          state.hasSample = true;
+          state.sample = null;
+        } else {
+          state.state = 'ready';
+        }
+        break;
+      }
+      case 'SET_SAMPLE': {
+        state.sample = action.payload;
+        state.state = 'ready';
+        break;
+      }
+      case 'STANDALONE_TIMEOUT': {
+        state.state = 'standalone-error';
+        break;
+      }
+      default:
+        throw new Error('unreachable');
+    }
+  },
+);
+
+const initialState: IframeBridgeContextType = {
+  state: 'initial',
+  data: null,
+  roc: null,
+  hasSample: false,
+  sample: null,
+};
+
 export function IframeBridgeProvider(props: {
   children: ReactNode;
-  withSample?: boolean;
+  requireSample?: boolean;
+  allowStandalone?: boolean;
 }) {
-  const [data, setData] = useState<IframeMessage['message']>();
+  const [state, dispatch] = useReducer(iframeBridgeReducer, initialState);
 
   useEffect(() => {
     onMessage((message: IframeMessage) => {
       switch (message.type) {
         case 'tab.data': {
-          setData(message.message);
+          dispatch({ type: 'RECEIVE_DATA', payload: message.message });
           break;
         }
         default:
+          // eslint-disable-next-line no-console
+          console.error(message);
           throw new Error('unreachable');
       }
     });
     ready();
   }, []);
 
-  const roc = useMemo(() => {
-    if (data) {
-      return new Roc(data.couchDB);
+  useEffect(() => {
+    if (!props.allowStandalone && state.state === 'initial') {
+      const timeout = setTimeout(() => {
+        dispatch({ type: 'STANDALONE_TIMEOUT' });
+      }, 3000);
+      return () => clearTimeout(timeout);
     }
-  }, [data]);
-
-  const [sample, setSample] = useState<RocDocument<SampleEntryContent> | null>(
-    null,
-  );
+  }, [props.allowStandalone, state.state]);
 
   useEffect(() => {
-    if (!roc || !data || !data.uuid) return;
-    const document = roc.getDocument<SampleEntryContent>(data.uuid);
+    if (!state.roc || !state.data || !state.data.uuid) return;
+    let cancelled = false;
+    const document = state.roc.getDocument<SampleEntryContent>(state.data.uuid);
     document
       .fetch()
       .then(() => {
-        setSample(document);
+        if (!cancelled) {
+          dispatch({ type: 'SET_SAMPLE', payload: document });
+        }
       })
       .catch((error) => {
         // TODO: handle error
         // eslint-disable-next-line no-console
         console.error(error);
       });
-  }, [roc, data]);
+    return () => {
+      cancelled = true;
+    };
+  }, [state.roc, state.data]);
 
-  if (!roc || (!sample && props.withSample)) {
+  if (state.state === 'standalone-error') {
     return (
-      <div className="flex items-center justify-center w-screen h-screen">
-        <Spinner className="w-10 h-10 text-alternative-500" />
+      <ErrorPage
+        title="Invalid access"
+        subtitle="This page cannot be accessed without iframe-bridge."
+        hideImage
+      />
+    );
+  }
+
+  if (state.state !== 'ready') {
+    return (
+      <div className="w-screen h-screen">
+        <LoadingFull />
       </div>
+    );
+  }
+
+  if (!state.hasSample && props.requireSample) {
+    return (
+      <ErrorPage
+        title="Invalid access"
+        subtitle="This page must be accessed with a sample."
+        hideImage
+      />
     );
   }
 
   return (
     <div className="w-screen h-screen">
-      <iframeBridgeContext.Provider value={{ roc, sample }}>
+      <iframeBridgeContext.Provider value={state}>
         {props.children}
       </iframeBridgeContext.Provider>
     </div>

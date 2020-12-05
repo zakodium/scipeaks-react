@@ -15,6 +15,7 @@ interface HomeContextType {
   rocUrl: string;
   database: string;
   iframePage: string;
+  iframeMode: 'closed' | 'sample' | 'no-sample';
   selectedSample: string | null;
 }
 
@@ -22,15 +23,23 @@ const initialHomeContext: HomeContextType = {
   rocUrl: 'http://localhost:3000/api/fake-roc',
   database: 'eln',
   iframePage: '/nmr/nmr-displayer',
+  iframeMode: 'closed',
   selectedSample: null,
 };
 
-type HomeContextAction = ActionType<'SELECT_SAMPLE', string>;
+type HomeContextAction =
+  | ActionType<'SELECT_SAMPLE', string>
+  | ActionType<'OPEN_NO_SAMPLE'>;
 
 const homeReducer: Reducer<HomeContextType, HomeContextAction> = produce(
   (state: HomeContextType, action: HomeContextAction) => {
     switch (action.type) {
+      case 'OPEN_NO_SAMPLE':
+        state.iframeMode = 'no-sample';
+        state.selectedSample = null;
+        break;
       case 'SELECT_SAMPLE':
+        state.iframeMode = 'sample';
         state.selectedSample = action.payload;
         break;
       default:

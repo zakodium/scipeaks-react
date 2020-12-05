@@ -4,17 +4,11 @@ import { resolve } from 'path';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const validSampleId = /^[a-f0-9]{32}$/;
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   const sampleId = req.query.sampleId as string;
-
-  if (!validSampleId.test(sampleId)) {
-    return notFound(res);
-  }
 
   try {
     const sampleData = await readFile(

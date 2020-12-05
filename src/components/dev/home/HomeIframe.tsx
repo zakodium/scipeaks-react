@@ -9,7 +9,13 @@ interface AdminMessage {
 }
 
 export default function HomeIframe() {
-  const { database, iframePage, rocUrl, selectedSample } = useHomeContext();
+  const {
+    database,
+    iframePage,
+    rocUrl,
+    selectedSample,
+    iframeMode,
+  } = useHomeContext();
 
   const [windowId, setWindowId] = useState<number>();
 
@@ -43,7 +49,7 @@ export default function HomeIframe() {
 
   return (
     <div className="flex items-center justify-center flex-1">
-      {selectedSample ? (
+      {iframeMode !== 'closed' ? (
         <iframe
           key={selectedSample}
           allowFullScreen
@@ -51,7 +57,7 @@ export default function HomeIframe() {
           className="w-full h-full"
         />
       ) : (
-        <div>Please select a sample</div>
+        <div>Please select something</div>
       )}
     </div>
   );
