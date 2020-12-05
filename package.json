@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "build": "next build",
     "check-types": "tsc --noEmit",
     "components-update": "components-update --out src/components/tailwind-ui",
     "dev": "next dev",
