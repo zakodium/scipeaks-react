@@ -198,5 +198,41 @@
       "names": [],
       "reference": "2237-36-7 "
     }
+  },
+  {
+    "id": "aaa5f97c7cde94741de2938b1066d647",
+    "key": ["anonymousRead", "134-20-3 pur"],
+    "value": {
+      "mf": "C8H9NO2",
+      "mw": 151.162867,
+      "em": 151.0633285326,
+      "ocl": {
+        "value": "dmvD@NADfVyyUjB@@@",
+        "coordinates": "!B`BH@k\\BbOvw__x@g~w@k_|`@"
+      },
+      "title": "",
+      "nbNmr": 6,
+      "nbIR": 1,
+      "nbRaman": 0,
+      "nbMass": 1,
+      "nb1d": 3,
+      "nb2d": 3,
+      "nb1h": 1,
+      "nb13c": 2,
+      "nbTGA": 0,
+      "nbDSC": 0,
+      "nbXRD": 0,
+      "nbXPS": 0,
+      "nbUV": 0,
+      "nbChromatogram": 0,
+      "nbXray": 0,
+      "nbNucleic": 0,
+      "nbPeptidic": 0,
+      "modificationDate": 1497646627987,
+      "b64ShortId": "qqX5fHze",
+      "hidden": false,
+      "names": ["Methyl anthranilate", "Methyl 2-aminobenzoate"],
+      "reference": "134-20-3 pur"
+    }
   }
 ]
