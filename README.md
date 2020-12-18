@@ -8,9 +8,16 @@ First, run the development server:
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000/dev/home](http://localhost:3000/dev/home) with your browser to develop with the home page.
 
-You can start editing the page by modifying `src/pages/index.tsx`. The page auto-updates as you edit the file.
+## Deploy
+
+### Deploy HEAD to test with "on-tabs"
+
+Go to [the GitHub actions page](https://github.com/zakodium/c6h6-react/actions?query=workflow%3A%22Publish+HEAD%22)
+and select "Run workflow" to make a HEAD test build.
+
+The build is published to https://www.lactame.com/react/views/HEAD/
 
 ## Learn More
 
