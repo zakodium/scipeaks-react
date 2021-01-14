@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://www.github.com/zakodium/c6h6-react/compare/v1.0.0...v1.1.0) (2021-01-14)
+
+
+### Features
+
+* update nmr-displayer ([b7f5051](https://www.github.com/zakodium/c6h6-react/commit/b7f5051faab57900ea2eb6e48a9eb03dbbedd882))
+
+
+### Bug Fixes
+
+* update NMR displayer ([09499a5](https://www.github.com/zakodium/c6h6-react/commit/09499a55c0eedbaaa6d0fb7e45b1237239177e93))
+
 ## 1.0.0 (2020-12-11)
 
 
