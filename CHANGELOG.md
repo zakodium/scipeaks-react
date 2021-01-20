@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.2](https://www.github.com/zakodium/c6h6-react/compare/v1.1.1...v1.1.2) (2021-01-20)
+
+
+### Bug Fixes
+
+* filter nmr spectra without a jcamp ([2534540](https://www.github.com/zakodium/c6h6-react/commit/253454036bdcfc69904aa7ca95d603478f7b8998))
+
 ### [1.1.1](https://www.github.com/zakodium/c6h6-react/compare/v1.1.0...v1.1.1) (2021-01-20)
 
 
