@@ -5,6 +5,16 @@ import { useIframeBridgeSample } from '../../../contexts/iframeBridge';
 import { ErrorPage } from '../../tailwind-ui';
 import EnhancedNMRDisplayer from '../EnhancedNMRDisplayer';
 
+function NoNmr() {
+  return (
+    <ErrorPage
+      title="Missing NMR data"
+      subtitle="This sample has no NMR spectra."
+      hideImage
+    />
+  );
+}
+
 export default function NmrDisplayerPage() {
   const sample = useIframeBridgeSample();
   const sampleValue = sample.getValue();
@@ -15,16 +25,11 @@ export default function NmrDisplayerPage() {
     !content.spectra.nmr ||
     content.spectra.nmr.length === 0
   ) {
-    return (
-      <ErrorPage
-        title="Missing NMR data"
-        subtitle="This sample has no NMR spectra."
-        hideImage
-      />
-    );
+    return <NoNmr />;
   }
 
   const spectra = content.spectra.nmr
+    .filter((value) => Boolean(value.jcamp?.filename))
     .map((value) => sample.getAttachment(value.jcamp.filename).url)
     .map((attUrl) => ({
       display: {
@@ -32,6 +37,10 @@ export default function NmrDisplayerPage() {
       },
       source: { jcampURL: attUrl },
     }));
+
+  if (spectra.length === 0) {
+    return <NoNmr />;
+  }
 
   const molecules = [];
   if (content.general) {
