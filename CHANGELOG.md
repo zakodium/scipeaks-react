@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.1](https://www.github.com/zakodium/c6h6-react/compare/v1.1.0...v1.1.1) (2021-01-20)
+
+
+### Bug Fixes
+
+* update nmr-displayer ([0344218](https://www.github.com/zakodium/c6h6-react/commit/03442184a800a14f9ffbad64ae05b05f2189a23c))
+
 ## [1.1.0](https://www.github.com/zakodium/c6h6-react/compare/v1.0.0...v1.1.0) (2021-01-14)
 
 
