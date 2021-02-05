@@ -26,10 +26,12 @@
     "next": "^10.0.6",
     "nmr-displayer": "^0.6.3",
     "openchemlib": "^7.3.0",
+    "pubchem": "^0.3.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-dropzone": "^11.3.0",
     "react-popper": "^2.2.4",
+    "react-query": "^3.7.1",
     "rest-on-couch-client": "^2.3.0"
   },
   "devDependencies": {

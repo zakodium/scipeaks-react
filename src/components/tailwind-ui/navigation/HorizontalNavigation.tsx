@@ -32,6 +32,7 @@ export function HorizontalNavigation({
   selected,
   onSelect,
 }: HorizontalNavigationProps): JSX.Element {
+  console.log(onSelect);
   const opts = options.map((element) => {
     return {
       ...element,
@@ -87,8 +88,10 @@ interface NavigationProps {
 
 function Navigation(props: NavigationProps): JSX.Element {
   const isSelected = props.element.value === props.selected?.value;
+  console.log(props.callback);
   const option = (
     <div
+      onClick={props.callback}
       className={clsx(
         'inline-block cursor-pointer whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
         isSelected ? activated : notActivated,
