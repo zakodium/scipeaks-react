@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-unresolved
 import { readFile } from 'fs/promises';
 import { resolve } from 'path';
 
