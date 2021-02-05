@@ -1,11 +1,16 @@
 import React from 'react';
 
-import { Input } from '../../tailwind-ui';
+import { homeViews } from '../../../home-views';
+import { Input, SearchSelect, useSearchSelect } from '../../tailwind-ui';
 
-import { useHomeContext } from './HomeContext';
+import { useHomeContext, useHomeDispatchContext } from './HomeContext';
+
+const options = homeViews.map((view) => ({ value: view, label: view }));
 
 export default function HomeHeader() {
   const { rocUrl, database, iframePage } = useHomeContext();
+  const dispatch = useHomeDispatchContext();
+  const searchSelect = useSearchSelect({ options });
   return (
     <header className="flex flex-row p-2 space-x-4">
       <Input
@@ -24,14 +29,18 @@ export default function HomeHeader() {
         value={database}
         readOnly
       />
-      <Input
-        name="iframePage"
-        type="text"
-        label="Page to open"
-        className="flex-1"
-        value={iframePage}
-        readOnly
-      />
+      <div className="flex-1">
+        <SearchSelect
+          label="Page to open"
+          {...searchSelect}
+          selected={{ label: iframePage, value: iframePage }}
+          onSelect={(option) => {
+            if (!option) return;
+            dispatch({ type: 'SET_IFRAME_PAGE', payload: option.value });
+            searchSelect.onSelect(option);
+          }}
+        />
+      </div>
     </header>
   );
 }

@@ -3,7 +3,11 @@ import clsx from 'clsx';
 import React, { ReactNode, useCallback, useContext, useReducer } from 'react';
 
 import { Notification } from './Notification';
-import { Context, NotificationActions } from './NotificationContext';
+import {
+  NotificationContext,
+  NotificationActions,
+  NotificationConfig,
+} from './NotificationContext';
 import { ToastNotification } from './ToastNotification';
 
 export interface NotificationCenterProps {
@@ -14,14 +18,6 @@ export interface NotificationCenterProps {
 export interface ToastNotificationCenterProps {
   position: 'top' | 'bottom';
   className?: string;
-}
-
-interface NotificationConfig {
-  title: string;
-  content: ReactNode;
-  icon?: ReactNode;
-
-  isToast?: false;
 }
 
 type ShowingOrRemoving = 'SHOWING' | 'REMOVING';
@@ -42,20 +38,6 @@ export interface NotificationToastState {
   };
 
   isToast: true;
-}
-
-export interface NotificationCenterHookResult {
-  isEnabled: boolean;
-  useNotifications: () => Array<NotificationState | NotificationToastState>;
-  addNotification: (
-    notification: Omit<NotificationConfig, 'isToast'>,
-    timeout?: number,
-  ) => string;
-  addToastNotification: (
-    notification: Omit<NotificationToastState, 'id' | 'state' | 'isToast'>,
-    timeout?: number,
-  ) => string;
-  deleteNotification: (id: string) => void;
 }
 
 interface NotificationsState {
@@ -96,18 +78,6 @@ function reducer(
 export function NotificationProvider(props: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, { notifications: [] });
 
-  return (
-    <Context.Provider
-      value={{ isEnabled: true, notifications: state.notifications, dispatch }}
-    >
-      {props.children}
-    </Context.Provider>
-  );
-}
-
-export function useNotificationCenter(): NotificationCenterHookResult {
-  const { isEnabled, dispatch, notifications } = useContext(Context);
-
   const dismiss = useCallback(
     function dismiss(payload: string) {
       dispatch({ type: 'DISAPPEAR', payload });
@@ -118,9 +88,8 @@ export function useNotificationCenter(): NotificationCenterHookResult {
     [dispatch],
   );
 
-  return {
-    isEnabled,
-    useNotifications: () => notifications,
+  const utils = {
+    notifications: state.notifications,
     addNotification: useCallback(
       (notification, timeout) => {
         const id = uuid();
@@ -158,11 +127,27 @@ export function useNotificationCenter(): NotificationCenterHookResult {
     ),
     deleteNotification: dismiss,
   };
+
+  return (
+    <NotificationContext.Provider value={utils}>
+      {props.children}
+    </NotificationContext.Provider>
+  );
+}
+
+export function useNotificationCenter() {
+  const context = useContext(NotificationContext);
+
+  if (context === null) {
+    throw new Error('No context was provided');
+  }
+
+  return context;
 }
 
 export function ToastNotificationCenter(props: ToastNotificationCenterProps) {
-  const { deleteNotification, useNotifications } = useNotificationCenter();
-  const notifications = useNotifications();
+  const { deleteNotification, notifications } = useNotificationCenter();
+
   return (
     <div
       className={clsx(
@@ -208,8 +193,7 @@ export function ToastNotificationCenter(props: ToastNotificationCenterProps) {
 }
 
 export function NotificationCenter(props: NotificationCenterProps) {
-  const { deleteNotification, useNotifications } = useNotificationCenter();
-  const notifications = useNotifications();
+  const { deleteNotification, notifications } = useNotificationCenter();
 
   return (
     <div

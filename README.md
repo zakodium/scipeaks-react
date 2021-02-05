@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# C6H6 React views
 
 ## Getting Started
 
@@ -10,7 +10,35 @@ npm run dev
 
 Open [http://localhost:3000/dev/home](http://localhost:3000/dev/home) with your browser to develop with the home page.
 
-## Deploy
+## Create new views
+
+### Decide the view URL
+
+Before actually creating the view, you need to decide what its URL will be.
+Next.js will map the `src/pages` directory structure on the disk to the view URL.
+
+For example, a page located at `src/pages/category/subcategory/my-page.tsx` will
+be available at the URL `/category/subcategory/my-page.html`.
+
+### Create the new view
+
+To create a new view, copy `pages/dev/base-page.tsx` to the location for the new
+view. Then edit it:
+
+- Set the `<title>` tag.
+- Configure `IframeBridgeProvider`:
+  - If the view needs a sample to work, add `requireSample`.
+  - If the view can work standalone outside of `on-tabs`, add `allowStandalone`.
+- Create a new component to design the page in `components/YourPageNamePage.tsx`,
+  and render it as a child of `IframeBridgeProvider`.
+- To be able to develop the view in a context similar to `on-tabs`, add its path
+  to the list in `src/home-views.ts`.
+- Open the dev home page, select the new view in the top-right box and select a
+  demo sample to load the view with it.
+
+## Documentation for the components in `tailwind-ui`
+
+https://zakodium.github.io/components/
 
 ### Deploy HEAD to test with "on-tabs"
 
