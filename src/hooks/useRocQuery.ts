@@ -1,7 +1,7 @@
 import { Reducer, useEffect, useReducer } from 'react';
 import { IQueryResult } from 'rest-on-couch-client';
 
-import { useRoc } from '../contexts/roc';
+import { useRoc } from '@/contexts/roc';
 
 export type RocQueryResult<T> = IQueryResult<[string, string], T>;
 

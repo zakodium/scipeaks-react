@@ -10,9 +10,9 @@ import {
 } from 'react';
 import { Roc, RocDocument } from 'rest-on-couch-client';
 
-import LoadingFull from '../components/LoadingFull';
-import { ActionType, ErrorPage } from '../components/tailwind-ui';
-import { SampleEntryContent } from '../types/db';
+import LoadingFull from '@/components/LoadingFull';
+import { ActionType, ErrorPage } from '@/components/tailwind-ui';
+import { SampleEntryContent } from '@/types/db';
 
 const iframeBridgeContext = createContext<IframeBridgeContextType | null>(null);
 

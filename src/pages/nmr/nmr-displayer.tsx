@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import React from 'react';
 
-import NmrDisplayerPage from '../../components/nmr/nmr-displayer/NmrDisplayerPage';
-import { IframeBridgeProvider } from '../../contexts/iframeBridge';
+import NmrDisplayerPage from '@/components/nmr/nmr-displayer/NmrDisplayerPage';
+import { IframeBridgeProvider } from '@/contexts/iframeBridge';
 
 export default function NmrDisplayer() {
   return (

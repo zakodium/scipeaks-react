@@ -2,7 +2,7 @@ import { AppProps } from 'next/app';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-import { PageErrorBoundary } from '../components/tailwind-ui';
+import { PageErrorBoundary } from '@/components/tailwind-ui';
 
 import '../../styles/index.css';
 

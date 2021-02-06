@@ -1,4 +1,4 @@
-import { PageNotFoundErrorPage } from '../components/tailwind-ui/error/PageNotFoundErrorPage';
+import { PageNotFoundErrorPage } from '@/components/tailwind-ui';
 
 export default function Page404() {
   return (

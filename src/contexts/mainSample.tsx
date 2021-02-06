@@ -1,9 +1,9 @@
 import React, { createContext, ReactNode, useContext } from 'react';
 import { RocDocument } from 'rest-on-couch-client';
 
-import { ErrorPage } from '../components/tailwind-ui';
-import { ErrorReport } from '../components/tailwind-ui/error/ErrorReport';
-import { useRocDocument } from '../hooks/useRocDocument';
+import { ErrorPage } from '@/components/tailwind-ui';
+import { ErrorReport } from '@/components/tailwind-ui/error/ErrorReport';
+import { useRocDocument } from '@/hooks/useRocDocument';
 
 const mainSampleContext = createContext<RocDocument | null>(null);
 

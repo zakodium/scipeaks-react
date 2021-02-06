@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { RocQueryResult, useRocQuery } from '../../../hooks/useRocQuery';
-import { TocEntry } from '../../../types/db';
-import { Spinner } from '../../tailwind-ui';
+import { Spinner } from '@/components/tailwind-ui';
+import { RocQueryResult, useRocQuery } from '@/hooks/useRocQuery';
+import { TocEntry } from '@/types/db';
 
 import { useHomeContext, useHomeDispatchContext } from './HomeContext';
 import HomeSelector from './HomeSelector';

@@ -1,6 +1,6 @@
 import { ReactElement, useState } from 'react';
 
-import { HorizontalNavigation } from '../../tailwind-ui';
+import { HorizontalNavigation } from '@/components/tailwind-ui';
 
 import GHS from './ghs/GHS';
 

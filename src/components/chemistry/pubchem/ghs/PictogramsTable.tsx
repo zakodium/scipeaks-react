@@ -1,4 +1,4 @@
-import { Table, Th, Td } from '../../../tailwind-ui';
+import { Table, Td, Th } from '@/components/tailwind-ui';
 
 import Pictogram from './pictograms/Pictogram';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { homeViews } from '../../../home-views';
-import { Input, SearchSelect, useSearchSelect } from '../../tailwind-ui';
+import { Input, SearchSelect, useSearchSelect } from '@/components/tailwind-ui';
+import { homeViews } from '@/home-views';
 
 import { useHomeContext, useHomeDispatchContext } from './HomeContext';
 

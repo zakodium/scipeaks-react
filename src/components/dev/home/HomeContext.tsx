@@ -8,10 +8,10 @@ import {
   useReducer,
 } from 'react';
 
-import { RocProvider } from '../../../contexts/roc';
-import { useSaveToLocalStorage } from '../../../hooks/localStorage';
-import { getItem } from '../../../utils/localStorage';
-import { ActionType } from '../../tailwind-ui';
+import { ActionType } from '@/components/tailwind-ui';
+import { RocProvider } from '@/contexts/roc';
+import { useSaveToLocalStorage } from '@/hooks/localStorage';
+import { getItem } from '@/utils/localStorage';
 
 interface HomeContextType {
   rocUrl: string;

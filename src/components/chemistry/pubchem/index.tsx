@@ -1,7 +1,7 @@
 import { Compound } from 'pubchem';
 import { useQuery } from 'react-query';
 
-import LoadingFull from '../../LoadingFull';
+import LoadingFull from '@/components/LoadingFull';
 
 import Full from './Full';
 

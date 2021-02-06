@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from 'react';
 import { RocDocument } from 'rest-on-couch-client';
 
-import { useRoc } from '../contexts/roc';
+import { useRoc } from '@/contexts/roc';
 
 interface RocDocumentState {
   loading: boolean;
