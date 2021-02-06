@@ -4,7 +4,6 @@ import PictogramsTable from './PictogramsTable';
 
 export default function GHS(props: any) {
   const ghs = props.ghs;
-  console.log(ghs);
   return (
     <div className="max-w-md">
       <PictogramsTable pictograms={ghs.pictograms} />
