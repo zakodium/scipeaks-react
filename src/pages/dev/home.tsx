@@ -4,7 +4,7 @@ import HomeIframe from '../../components/dev/home/HomeIframe';
 import HomeNoSample from '../../components/dev/home/HomeNoSample';
 import HomeSamples from '../../components/dev/home/HomeSamples';
 
-export default function Home() {
+export default function HomePage() {
   return (
     <HomeContextProvider>
       <div className="flex flex-col w-screen h-screen">

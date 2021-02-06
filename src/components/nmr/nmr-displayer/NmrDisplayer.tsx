@@ -16,7 +16,7 @@ function NoNmr() {
   );
 }
 
-export default function NmrDisplayerPage() {
+export default function NmrDisplayer() {
   const sample = useIframeBridgeSample();
   const sampleValue = sample.getValue();
   const content = sampleValue.$content;

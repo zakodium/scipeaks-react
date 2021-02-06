@@ -4,7 +4,7 @@ import React from 'react';
 import MyNewPage from '@/components/dev/MyNewPage';
 import { IframeBridgeProvider } from '@/contexts/iframeBridge';
 
-export default function NmrDisplayer() {
+export default function BasePage() {
   return (
     <>
       <Head>
