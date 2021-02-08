@@ -3,6 +3,7 @@ import { ReactElement, useState } from 'react';
 import { HorizontalNavigation } from '@/components/tailwind-ui';
 
 import Computed from './computed/Computed';
+import Experimental from './experimental/Experimental';
 import GHSFull from './ghs/full/GHSFull';
 import GHS from './ghs/summary/GHS';
 
@@ -10,6 +11,7 @@ const tabs = [
   { value: 'ghs', label: 'GHS' },
   { value: 'ghsFull', label: 'GHS Detailed' },
   { value: 'computed', label: 'Computed' },
+  { value: 'experimental', label: 'Experimental' },
 ];
 
 export default function Panels(props: any) {
@@ -25,6 +27,20 @@ export default function Panels(props: any) {
       break;
     case 'computed':
       panel = <Computed computed={props.data.computed} />;
+      break;
+    case 'experimental':
+      panel = (
+        <Experimental
+          experimental={props.data.getExperimentalData({
+            pressure: {
+              targetUnits: 'mmHg',
+            },
+            temperature: {
+              targetUnits: '°C',
+            },
+          })}
+        />
+      );
       break;
     default:
       throw Error('Panels.tsx unreachable');
