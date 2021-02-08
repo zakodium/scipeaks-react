@@ -13,6 +13,7 @@ export default function Experimental(props: { experimental: any }) {
       case 'boilingPoint':
         parsedRenderer = Bp;
         break;
+      default:
     }
     components.push(
       <div>
