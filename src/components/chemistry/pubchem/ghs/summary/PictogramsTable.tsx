@@ -1,6 +1,6 @@
 import { Table, Td, Th } from '@/components/tailwind-ui';
 
-import Pictogram from './pictograms/Pictogram';
+import Pictogram from '../pictograms/Pictogram';
 
 function Header() {
   return (
