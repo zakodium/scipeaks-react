@@ -8,7 +8,7 @@ export default function Experimental(props: { experimental: any }) {
 
   const components = [];
   for (let key in experimental) {
-    let parsedRenderer = LowHighUnits;
+    let parsedRenderer: any = LowHighUnits;
     switch (key) {
       case 'boilingPoint':
         parsedRenderer = Bp;

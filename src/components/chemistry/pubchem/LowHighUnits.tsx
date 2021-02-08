@@ -1,4 +1,4 @@
-export default function Bp(props: {
+export default function LowHighUnits(props: {
   data: {
     low: number;
     high: number;

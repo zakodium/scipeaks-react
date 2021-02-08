@@ -1,4 +1,4 @@
-import { Table, Td, Th } from '@/components/tailwind-ui';
+import { CompactTable, Td, Th } from '../../CompactTable';
 
 function Header() {
   return (
@@ -20,5 +20,5 @@ function Row(props: any) {
 }
 
 export default function PStatementsTable(props: any) {
-  return <Table Header={Header} data={props.pStatements} Tr={Row} />;
+  return <CompactTable Header={Header} data={props.pStatements} Tr={Row} />;
 }

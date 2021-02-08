@@ -1,5 +1,4 @@
-import { Table, Td, Th } from '@/components/tailwind-ui';
-
+import { CompactTable, Td, Th } from '../../CompactTable';
 import Pictogram from '../pictograms/Pictogram';
 
 function Header() {
@@ -26,5 +25,5 @@ function Row(props: any) {
 }
 
 export default function PictogramsTable(props: any) {
-  return <Table Header={Header} data={props.pictograms} Tr={Row} />;
+  return <CompactTable Header={Header} data={props.pictograms} Tr={Row} />;
 }

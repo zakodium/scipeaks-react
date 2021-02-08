@@ -1,9 +1,6 @@
-import {
-  SvgOutlineExternalLink,
-  Table,
-  Td,
-  Th,
-} from '@/components/tailwind-ui';
+import { SvgOutlineExternalLink } from '@/components/tailwind-ui';
+
+import { CompactTable, Td, Th } from '../CompactTable';
 
 export default function OnePropertyTable(props: {
   data: any;
@@ -11,7 +8,7 @@ export default function OnePropertyTable(props: {
 }) {
   const { data, parsedRenderer } = props;
 
-  return <Table Header={Header} data={data} Tr={Row} />;
+  return <CompactTable Header={Header} data={data} Tr={Row} />;
 
   function Row(props: any) {
     const value = props.value;
