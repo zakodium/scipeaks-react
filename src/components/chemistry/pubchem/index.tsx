@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 
 import LoadingFull from '@/components/LoadingFull';
 
-import Full from './Full';
+import Panels from './Panels';
 
 export default function Pubchem(props: { smiles: string }) {
   const { smiles } = props;
@@ -22,5 +22,5 @@ export default function Pubchem(props: { smiles: string }) {
     throw error;
   }
 
-  return <Full data={data} />;
+  return <Panels data={data} />;
 }
