@@ -28,7 +28,6 @@ function Header() {
 }
 
 function Row(props: any) {
-  console.log({ props });
   const row = props.value;
   return (
     <tr key={row.label}>
