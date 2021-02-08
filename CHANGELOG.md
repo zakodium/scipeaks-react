@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://www.github.com/zakodium/c6h6-react/compare/v1.1.3...v1.2.0) (2021-02-08)
+
+
+### Features
+
+* add a way to create new pages ([2146844](https://www.github.com/zakodium/c6h6-react/commit/21468440f32528435d691f968045c0c767b4fc29))
+* add Experimental ([4a80ed7](https://www.github.com/zakodium/c6h6-react/commit/4a80ed7314066e17733d38eeb52f28f2d37104e3))
+* add useSearchParam hook ([93569ab](https://www.github.com/zakodium/c6h6-react/commit/93569abdca2591288903145b5760630a3955cccc))
+* improve  experimental layout ([4c28421](https://www.github.com/zakodium/c6h6-react/commit/4c2842125fd54b0a7df37e14cc038a4f2966b706))
+* **pubchem:** add Reference component ([7d60c4d](https://www.github.com/zakodium/c6h6-react/commit/7d60c4de3944a6109aef23ae8e5a52c9dcb45c49))
+* starting to work on pubchem smiles lookup ([3508cd7](https://www.github.com/zakodium/c6h6-react/commit/3508cd7d3742afd2c6e77d41ddcd9003e26edb6a))
+
 ### [1.1.3](https://www.github.com/zakodium/c6h6-react/compare/v1.1.2...v1.1.3) (2021-01-21)
 
 
