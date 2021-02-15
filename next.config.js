@@ -8,7 +8,7 @@ module.exports = {
       {
         source: '/',
         destination: '/dev/home',
-        permanent: true,
+        permanent: false,
       },
     ];
   },
