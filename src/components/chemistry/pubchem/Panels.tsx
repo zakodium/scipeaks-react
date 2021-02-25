@@ -1,13 +1,16 @@
 import { ReactElement, useState } from 'react';
 
-import { HorizontalNavigation } from '@/components/tailwind-ui';
+import {
+  HorizontalNavigation,
+  HorizontalNavigationOption,
+} from '@/components/tailwind-ui';
 
 import Computed from './computed/Computed';
 import Experimental from './experimental/Experimental';
 import GHSFull from './ghs/full/GHSFull';
 import GHS from './ghs/summary/GHS';
 
-const tabs = [
+const tabs: HorizontalNavigationOption[] = [
   { value: 'ghs', label: 'GHS' },
   { value: 'ghsFull', label: 'GHS Detailed' },
   { value: 'computed', label: 'Computed' },
@@ -51,7 +54,6 @@ export default function Panels(props: any) {
       <HorizontalNavigation
         options={tabs}
         selected={selectedTab}
-        //@ts-ignore
         onSelect={setSelectedTab}
       />
       {panel}

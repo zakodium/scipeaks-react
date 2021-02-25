@@ -1,6 +1,6 @@
-import { SvgOutlineExternalLink } from '@/components/tailwind-ui';
+import CompactTd from '@/components/common/CompactTd';
+import { SvgOutlineExternalLink, Table, Th } from '@/components/tailwind-ui';
 
-import { CompactTable, Td, Th } from '../CompactTable';
 import LowHighUnits from '../LowHighUnits';
 
 export default function MpTable(props: { data: any }) {
@@ -8,8 +8,8 @@ export default function MpTable(props: { data: any }) {
   if (!data) return <></>;
   return (
     <div>
-      <div className="text-xl pt-5">Melting point</div>
-      <CompactTable Header={Header} data={data} Tr={Row} />
+      <div className="pt-5 text-xl">Melting point</div>
+      <Table Header={Header} data={data} Tr={Row} />
     </div>
   );
 }
@@ -28,18 +28,18 @@ function Row(props: any) {
   const value = props.value;
   return (
     <tr key={value.label}>
-      <Td>{value.data.original}</Td>
-      <Td>
+      <CompactTd>{value.data.original}</CompactTd>
+      <CompactTd>
         <LowHighUnits data={value?.data?.parsed} />
-      </Td>
-      <Td>
+      </CompactTd>
+      <CompactTd>
         <div>
           {value.reference.sourceName}{' '}
           <a href={value.reference.url} rel="noreferrer" target="_blank">
             <SvgOutlineExternalLink style={{ display: 'inline' }} />
           </a>
         </div>
-      </Td>
+      </CompactTd>
     </tr>
   );
 }

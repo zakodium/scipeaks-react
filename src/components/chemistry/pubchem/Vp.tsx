@@ -30,9 +30,7 @@ export default function Vp(props: {
       {pressureLow}
       {pressureHigh && `-${pressureHigh}`}
       {pressure.units && ` ${pressure.units}`}
-      {temperature &&
-        temperature.low &&
-        ` (${temperature.low} ${temperature.units})`}
+      {temperature?.low && ` (${temperature.low} ${temperature.units})`}
     </span>
   );
 }

@@ -1,4 +1,5 @@
-import { CompactTable, Td, Th } from '../CompactTable';
+import CompactTd from '@/components/common/CompactTd';
+import { Table, Th } from '@/components/tailwind-ui';
 
 export default function Computed(props: { computed: any }) {
   const { computed } = props;
@@ -14,7 +15,7 @@ export default function Computed(props: { computed: any }) {
     });
   }
 
-  return <CompactTable Header={Header} data={rows} Tr={Row} />;
+  return <Table Header={Header} data={rows} Tr={Row} />;
 }
 
 function Header() {
@@ -31,9 +32,9 @@ function Row(props: any) {
   const row = props.value;
   return (
     <tr key={row.label}>
-      <Td>{row.label}</Td>
-      <Td>{row.value}</Td>
-      <Td>{row.description}</Td>
+      <CompactTd>{row.label}</CompactTd>
+      <CompactTd>{row.value}</CompactTd>
+      <CompactTd>{row.description}</CompactTd>
     </tr>
   );
 }

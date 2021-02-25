@@ -20,7 +20,7 @@ export default function Bp(props: {
       {temperature.low.toPrecision(3)}
       {temperature.high && `-${temperature.high.toPrecision(3)}`}
       {temperature.units && temperature.units}
-      {pressure && pressure.low && ` (${pressure.low} ${pressure.units})`}
+      {pressure?.low && ` (${pressure.low} ${pressure.units})`}
     </span>
   );
 }

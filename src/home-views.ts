@@ -1,5 +1,1 @@
-export const homeViews = [
-  '/dev/base-page',
-  '/nmr/nmr-displayer',
-  '/chemistry/pubchem',
-];
+export const homeViews = ['/dev/base-page', '/nmr/nmr-displayer'];
