@@ -1,14 +1,13 @@
+import dynamic from 'next/dynamic';
 import type { NMRDisplayerProps } from 'nmr-displayer';
-import React, { lazy, Suspense } from 'react';
+import React from 'react';
 
 import LoadingFull from '../LoadingFull';
 
-const NMRDisplayer = lazy(() => import('nmr-displayer'));
+const NMRDisplayer = dynamic(() => import('nmr-displayer'), {
+  loading: () => <LoadingFull />,
+});
 
 export default function EnhancedNMRDisplayer(props: NMRDisplayerProps) {
-  return (
-    <Suspense fallback={<LoadingFull />}>
-      <NMRDisplayer {...props} />
-    </Suspense>
-  );
+  return <NMRDisplayer {...props} />;
 }
