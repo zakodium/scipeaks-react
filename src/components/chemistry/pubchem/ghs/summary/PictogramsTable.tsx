@@ -5,7 +5,7 @@ import Pictogram from '../pictograms/Pictogram';
 
 function Header() {
   return (
-    <tr>
+    <tr key="pictogramTableHeader">
       <Th>Code</Th>
       <Th>Pictogram</Th>
       <Th>Description</Th>

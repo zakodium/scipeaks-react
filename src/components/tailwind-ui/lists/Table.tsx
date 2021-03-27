@@ -85,8 +85,8 @@ export function Td(props: TdProps) {
   return (
     <td
       className={clsx(
-        'text-sm font-semibold whitespace-nowrap text-neutral-900',
-        { 'px-6 py-4': !compact },
+        'text-sm font-semibold  text-neutral-900',
+        { 'px-6 py-4': !compact, 'whitespace-nowrap': !'whitespace-*' },
         props.className,
       )}
       {...otherProps}

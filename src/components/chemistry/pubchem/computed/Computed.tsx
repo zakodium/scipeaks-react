@@ -7,6 +7,7 @@ export default function Computed(props: { computed: any }) {
   const rows: Array<any> = [];
   for (let key in computed) {
     rows.push({
+      key: key,
       label: computed[key].label,
       value:
         computed[key].value +
@@ -29,7 +30,7 @@ export default function Computed(props: { computed: any }) {
 
 function Header() {
   return (
-    <tr>
+    <tr key="computedPropertiesHeader">
       <Th className="w-1/4">Label </Th>
       <Th>Value</Th>
       <Th className="w-1/2">Description</Th>
@@ -41,11 +42,11 @@ function Header() {
 function Row(props: any) {
   const row = props.value;
   return (
-    <tr key={row.label}>
-      <CompactTd style={{ whiteSpace: 'normal' }}>{row.label}</CompactTd>
-      <CompactTd style={{ whiteSpace: 'normal' }}>{row.value}</CompactTd>
-      <CompactTd style={{ whiteSpace: 'normal' }}>{row.description}</CompactTd>
-      <CompactTd style={{ whiteSpace: 'normal' }}>{row.reference}</CompactTd>
+    <tr key={row.key}>
+      <CompactTd className="whitespace-normal">{row.label}</CompactTd>
+      <CompactTd className="whitespace-normal">{row.value}</CompactTd>
+      <CompactTd className="whitespace-normal">{row.description}</CompactTd>
+      <CompactTd className="whitespace-normal">{row.reference}</CompactTd>
     </tr>
   );
 }
