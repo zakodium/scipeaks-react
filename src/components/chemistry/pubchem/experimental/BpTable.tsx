@@ -5,7 +5,7 @@ import Bp from '../Bp';
 
 export default function BpTable(props: { data: any }) {
   const { data } = props;
-  if (!data) return <></>;
+  if (!data) return <>No boiling point data found.</>;
   return (
     <div>
       <div className="pt-5 text-xl">Boiling point</div>

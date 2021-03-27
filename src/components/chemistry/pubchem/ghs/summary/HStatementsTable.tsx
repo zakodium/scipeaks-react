@@ -21,5 +21,9 @@ function Row(props: any) {
 }
 
 export default function HStatementsTable(props: any) {
-  return <Table Header={Header} data={props.hStatements} Tr={Row} />;
+  if (!props.hStatements || props.hStatements.length < 1) {
+    return <>No hazard statements found.</>;
+  } else {
+    return <Table Header={Header} data={props.hStatements} Tr={Row} />;
+  }
 }

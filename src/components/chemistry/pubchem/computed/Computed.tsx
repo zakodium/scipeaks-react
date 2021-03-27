@@ -7,11 +7,11 @@ export default function Computed(props: { computed: any }) {
   const rows: Array<any> = [];
   for (let key in computed) {
     rows.push({
-      label: key,
+      label: computed[key].label,
       value:
         computed[key].value +
         (computed[key].units ? ` ${computed[key].units}` : ''),
-      description: computed[key].reference.description,
+      reference: computed[key].reference.description,
     });
   }
 
@@ -23,7 +23,7 @@ function Header() {
     <tr>
       <Th>Label</Th>
       <Th>Value</Th>
-      <Th>Description</Th>
+      <Th>Reference</Th>
     </tr>
   );
 }
@@ -34,7 +34,7 @@ function Row(props: any) {
     <tr key={row.label}>
       <CompactTd>{row.label}</CompactTd>
       <CompactTd>{row.value}</CompactTd>
-      <CompactTd>{row.description}</CompactTd>
+      <CompactTd>{row.reference}</CompactTd>
     </tr>
   );
 }
