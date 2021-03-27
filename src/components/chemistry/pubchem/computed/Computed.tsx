@@ -12,17 +12,27 @@ export default function Computed(props: { computed: any }) {
         computed[key].value +
         (computed[key].units ? ` ${computed[key].units}` : ''),
       reference: computed[key].reference.description,
+      description: computed[key].description,
     });
   }
 
-  return <Table Header={Header} data={rows} Tr={Row} />;
+  return (
+    <Table
+      Header={Header}
+      data={rows}
+      Tr={Row}
+      tableClassName="table-fixed"
+      tableStyle={{ width: '50%' }}
+    />
+  );
 }
 
 function Header() {
   return (
     <tr>
-      <Th>Label</Th>
+      <Th className="w-1/4">Label </Th>
       <Th>Value</Th>
+      <Th className="w-1/2">Description</Th>
       <Th>Reference</Th>
     </tr>
   );
@@ -32,9 +42,10 @@ function Row(props: any) {
   const row = props.value;
   return (
     <tr key={row.label}>
-      <CompactTd>{row.label}</CompactTd>
-      <CompactTd>{row.value}</CompactTd>
-      <CompactTd>{row.reference}</CompactTd>
+      <CompactTd style={{ whiteSpace: 'normal' }}>{row.label}</CompactTd>
+      <CompactTd style={{ whiteSpace: 'normal' }}>{row.value}</CompactTd>
+      <CompactTd style={{ whiteSpace: 'normal' }}>{row.description}</CompactTd>
+      <CompactTd style={{ whiteSpace: 'normal' }}>{row.reference}</CompactTd>
     </tr>
   );
 }
