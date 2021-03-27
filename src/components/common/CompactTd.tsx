@@ -9,7 +9,12 @@ export default function CompactTd(props: {
   className?: string;
 }) {
   return (
-    <Td compact className={clsx('px-6', props.className)} style={props.style}>
+    <Td
+      compact
+      wrap
+      className={clsx('px-6', props.className)}
+      style={props.style}
+    >
       {props.children}
     </Td>
   );

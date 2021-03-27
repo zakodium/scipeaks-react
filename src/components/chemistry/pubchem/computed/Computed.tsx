@@ -43,10 +43,10 @@ function Row(props: any) {
   const row = props.value;
   return (
     <tr key={row.key}>
-      <CompactTd className="whitespace-normal">{row.label}</CompactTd>
-      <CompactTd className="whitespace-normal">{row.value}</CompactTd>
-      <CompactTd className="whitespace-normal">{row.description}</CompactTd>
-      <CompactTd className="whitespace-normal">{row.reference}</CompactTd>
+      <CompactTd>{row.label}</CompactTd>
+      <CompactTd>{row.value}</CompactTd>
+      <CompactTd>{row.description}</CompactTd>
+      <CompactTd>{row.reference}</CompactTd>
     </tr>
   );
 }
