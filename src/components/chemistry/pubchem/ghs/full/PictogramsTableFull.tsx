@@ -6,7 +6,6 @@ export default function PictogramsTableFull(props: { pictograms: Array<any> }) {
   if (!pictograms || pictograms.length === 0) {
     return <>No GHS pictograms found.</>;
   } else {
-    console.log(pictograms);
     return (
       <div>
         {pictograms.map((pictograms) => (
