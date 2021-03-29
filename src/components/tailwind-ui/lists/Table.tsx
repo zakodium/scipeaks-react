@@ -74,7 +74,6 @@ export function Table<T extends { id: number | string }>(props: TableProps<T>) {
 
 export interface TdProps extends TdHTMLAttributes<HTMLTableDataCellElement> {
   compact?: boolean;
-  wrap?: boolean;
 }
 
 export interface ThProps extends ThHTMLAttributes<HTMLTableHeaderCellElement> {
@@ -82,15 +81,13 @@ export interface ThProps extends ThHTMLAttributes<HTMLTableHeaderCellElement> {
 }
 
 export function Td(props: TdProps) {
-  const { className, compact, wrap, ...otherProps } = props;
+  const { className, compact, ...otherProps } = props;
   return (
     <td
       className={clsx(
-        'text-sm font-semibold  text-neutral-900',
+        'text-sm font-semibold whitespace-nowrap text-neutral-900',
         {
           'px-6 py-4': !compact,
-          'whitespace-nowrap': !wrap,
-          'whitespace-normal': wrap,
         },
         props.className,
       )}

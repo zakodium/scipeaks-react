@@ -22,8 +22,7 @@ export default function Computed(props: { computed: any }) {
       Header={Header}
       data={rows}
       Tr={Row}
-      tableClassName="table-fixed"
-      tableStyle={{ width: '50%' }}
+      tableClassName="table-fixed w-1/2"
     />
   );
 }

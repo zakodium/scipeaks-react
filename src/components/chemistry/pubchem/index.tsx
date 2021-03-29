@@ -1,9 +1,8 @@
 import { Compound } from 'pubchem';
 import { useQuery } from 'react-query';
 
-import { ErrorPage } from '@/components/tailwind-ui';
-
 import LoadingFull from '@/components/LoadingFull';
+import { ErrorPage } from '@/components/tailwind-ui';
 
 import Panels from './Panels';
 

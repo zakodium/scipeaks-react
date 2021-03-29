@@ -21,7 +21,7 @@ function Row(props: any) {
 }
 
 export default function PStatementsTable(props: any) {
-  if (!props.pStatements || props.pStatements.length < 1) {
+  if (!props.pStatements || props.pStatements.length === 0) {
     return <>No precautionary statements found.</>;
   } else {
     return <Table Header={Header} data={props.pStatements} Tr={Row} />;
