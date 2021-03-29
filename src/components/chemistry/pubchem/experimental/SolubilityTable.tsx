@@ -3,7 +3,7 @@ import { SvgOutlineExternalLink, Table, Th } from '@/components/tailwind-ui';
 
 export default function SolubilityTable(props: { data: any }) {
   const { data } = props;
-  if (!data) return <></>;
+  if (!data) return <>No solubility data found.</>;
   return (
     <div>
       <div className="pt-5 text-xl">Solubility</div>
@@ -15,7 +15,7 @@ export default function SolubilityTable(props: { data: any }) {
 function Header() {
   return (
     <tr>
-      <Th>Original value</Th>
+      <Th className="w-3/4">Original value</Th>
       <Th>Reference</Th>
     </tr>
   );

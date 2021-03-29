@@ -2,8 +2,19 @@ import { Compound } from 'pubchem';
 import { useQuery } from 'react-query';
 
 import LoadingFull from '@/components/LoadingFull';
+import { ErrorPage } from '@/components/tailwind-ui';
 
 import Panels from './Panels';
+
+function PubchemChemError() {
+  return (
+    <ErrorPage
+      title="Pubchem query not successful."
+      subtitle="Maybe the SMILES string you entered was invalid."
+      hideImage
+    />
+  );
+}
 
 export default function Pubchem(props: { smiles: string }) {
   const { smiles } = props;
@@ -19,7 +30,7 @@ export default function Pubchem(props: { smiles: string }) {
   if (isLoading) {
     return <LoadingFull />;
   } else if (error) {
-    throw error;
+    return <PubchemChemError />;
   }
 
   return <Panels data={data} />;

@@ -27,5 +27,9 @@ function Row(props: any) {
 }
 
 export default function PictogramsTable(props: any) {
-  return <Table Header={Header} data={props.pictograms} Tr={Row} />;
+  if (!props.pictograms || props.pictograms.length < 1) {
+    return <>No pictograms found.</>;
+  } else {
+    return <Table Header={Header} data={props.pictograms} Tr={Row} />;
+  }
 }

@@ -7,23 +7,33 @@ export default function Computed(props: { computed: any }) {
   const rows: Array<any> = [];
   for (let key in computed) {
     rows.push({
-      label: key,
+      key: key,
+      label: computed[key].label,
       value:
         computed[key].value +
         (computed[key].units ? ` ${computed[key].units}` : ''),
-      description: computed[key].reference.description,
+      reference: computed[key].reference.description,
+      description: computed[key].description,
     });
   }
 
-  return <Table Header={Header} data={rows} Tr={Row} />;
+  return (
+    <Table
+      Header={Header}
+      data={rows}
+      Tr={Row}
+      tableClassName="table-fixed w-1/2"
+    />
+  );
 }
 
 function Header() {
   return (
     <tr>
-      <Th>Label</Th>
+      <Th className="w-1/4">Label</Th>
       <Th>Value</Th>
-      <Th>Description</Th>
+      <Th className="w-1/2">Description</Th>
+      <Th>Reference</Th>
     </tr>
   );
 }
@@ -31,10 +41,11 @@ function Header() {
 function Row(props: any) {
   const row = props.value;
   return (
-    <tr key={row.label}>
+    <tr key={row.key}>
       <CompactTd>{row.label}</CompactTd>
       <CompactTd>{row.value}</CompactTd>
       <CompactTd>{row.description}</CompactTd>
+      <CompactTd>{row.reference}</CompactTd>
     </tr>
   );
 }

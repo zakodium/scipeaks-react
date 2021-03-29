@@ -5,7 +5,7 @@ import LowHighUnits from '../LowHighUnits';
 
 export default function MpTable(props: { data: any }) {
   const { data } = props;
-  if (!data) return <></>;
+  if (!data) return <>No melting point data found</>;
   return (
     <div>
       <div className="pt-5 text-xl">Melting point</div>

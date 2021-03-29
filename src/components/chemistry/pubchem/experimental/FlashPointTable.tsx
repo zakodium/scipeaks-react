@@ -5,7 +5,7 @@ import LowHighUnits from '../LowHighUnits';
 
 export default function FlashPointTable(props: { data: any }) {
   const { data } = props;
-  if (!data) return <></>;
+  if (!data) return <>No flash point data found.</>;
   return (
     <div>
       <div className="pt-5 text-xl">Flash point</div>
