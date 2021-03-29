@@ -29,8 +29,8 @@ export default function Computed(props: { computed: any }) {
 
 function Header() {
   return (
-    <tr key="computedPropertiesHeader">
-      <Th className="w-1/4">Label </Th>
+    <tr>
+      <Th className="w-1/4">Label</Th>
       <Th>Value</Th>
       <Th className="w-1/2">Description</Th>
       <Th>Reference</Th>

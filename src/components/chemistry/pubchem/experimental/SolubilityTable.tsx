@@ -15,7 +15,7 @@ export default function SolubilityTable(props: { data: any }) {
 function Header() {
   return (
     <tr>
-      <Th>Original value</Th>
+      <Th className="w-3/4">Original value</Th>
       <Th>Reference</Th>
     </tr>
   );
