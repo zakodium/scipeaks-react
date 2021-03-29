@@ -55,7 +55,7 @@
     "trailingComma": "all"
   },
   "volta": {
-    "node": "15.10.0",
-    "npm": "7.5.6"
+    "node": "15.12.0",
+    "npm": "7.7.5"
   }
 }
