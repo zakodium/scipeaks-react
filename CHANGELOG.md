@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.2.1](https://www.github.com/zakodium/c6h6-react/compare/v1.2.0...v1.2.1) (2021-04-13)
+
+
+### Bug Fixes
+
+* show error page in case pubchem query fails ([#15](https://www.github.com/zakodium/c6h6-react/issues/15)) ([ee39b22](https://www.github.com/zakodium/c6h6-react/commit/ee39b220a2ce3144b0089c8f8ba090087a1ad020))
+* update next config and dependencies ([#12](https://www.github.com/zakodium/c6h6-react/issues/12)) ([d74521e](https://www.github.com/zakodium/c6h6-react/commit/d74521edc17f015af877ba4b63038a5cc9c2dfb3))
+
 ## [1.2.0](https://www.github.com/zakodium/c6h6-react/compare/v1.1.3...v1.2.0) (2021-02-08)
 
 
