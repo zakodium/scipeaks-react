@@ -24,7 +24,7 @@ export default function Pubchem(props: { smiles: string }) {
       const compound = await Compound.fromSmiles(smiles);
       const data = await compound.getData();
 
-      if (!(typeof data.data === 'object')) {
+      if (typeof data.data !== 'object') {
         throw new Error('Failed to retrieve information');
       }
       return data;
