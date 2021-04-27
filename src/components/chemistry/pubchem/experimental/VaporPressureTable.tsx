@@ -5,11 +5,15 @@ import Vp from '../Vp';
 
 export default function VaporPressureTable(props: { data: any }) {
   const { data } = props;
-  if (!data) return <></>;
+
   return (
     <div>
       <div className="pt-5 text-xl">Vapor pressure</div>
-      <Table Header={Header} data={data} Tr={Row} />
+      {data?.length ? (
+        <Table Header={Header} data={data} Tr={Row} />
+      ) : (
+        <>No vapor pressure data found.</>
+      )}
     </div>
   );
 }

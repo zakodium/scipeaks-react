@@ -3,11 +3,14 @@ import { SvgOutlineExternalLink, Table, Th } from '@/components/tailwind-ui';
 
 export default function SolubilityTable(props: { data: any }) {
   const { data } = props;
-  if (!data) return <>No solubility data found.</>;
   return (
     <div>
       <div className="pt-5 text-xl">Solubility</div>
-      <Table Header={Header} data={data} Tr={Row} />
+      {data?.length ? (
+        <Table Header={Header} data={data} Tr={Row} />
+      ) : (
+        <>No solubility data found.</>
+      )}
     </div>
   );
 }
