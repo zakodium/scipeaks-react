@@ -6,11 +6,12 @@ import { ErrorPage } from '@/components/tailwind-ui';
 
 import Panels from './Panels';
 
-function PubchemChemError() {
+function PubchemChemError(props: { smiles: string }) {
+  const { smiles } = props;
   return (
     <ErrorPage
       title="Pubchem query not successful."
-      subtitle="Maybe the SMILES string you entered was invalid."
+      subtitle={`Maybe the SMILES string "${smiles}" you entered was invalid.`}
       hideImage
     />
   );
@@ -34,7 +35,7 @@ export default function Pubchem(props: { smiles: string }) {
   if (isLoading) {
     return <LoadingFull />;
   } else if (error) {
-    return <PubchemChemError />;
+    return <PubchemChemError smiles={smiles} />;
   }
 
   return <Panels data={data} />;
