@@ -21,7 +21,6 @@ const tabs: HorizontalNavigationOption[] = [
 
 export default function Panels(props: any) {
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
-
   let panel: ReactElement;
   switch (selectedTab.value) {
     case 'ghs':
