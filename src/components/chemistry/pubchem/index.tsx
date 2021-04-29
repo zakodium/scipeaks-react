@@ -24,11 +24,10 @@ export default function Pubchem(props: { smiles: string }) {
     async () => {
       const compound = await Compound.fromSmiles(smiles);
       const data = await compound.getData();
-
       if (typeof data.data !== 'object') {
         throw new Error('Failed to retrieve information');
       }
-      return data;
+      return { compoundData: data, compound: compound };
     },
   );
 
