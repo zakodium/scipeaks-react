@@ -6,7 +6,6 @@ import { Table, Th, SvgOutlineExternalLink } from '@/components/tailwind-ui';
 
 export default function Identifiers(props: { identifiers: any; cid: any }) {
   const { identifiers, cid } = props;
-  console.log(identifiers);
   const rows: Array<any> = [];
   for (let key in identifiers) {
     if (key === 'formula') {
