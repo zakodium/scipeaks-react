@@ -24,7 +24,7 @@ export default function Identifiers(props: { identifiers: any; cid: any }) {
       });
       rows.push({
         key: 'structure',
-        label: 'structure',
+        label: 'Structure',
         value: <SmilesSvgRenderer smiles={identifiers[key].value} />,
         description: '2D chemical structure derived from the SMILES.',
       });
