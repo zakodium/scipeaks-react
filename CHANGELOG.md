@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://www.github.com/zakodium/c6h6-react/compare/v1.2.1...v1.3.0) (2021-05-01)
+
+
+### Features
+
+* add identifier panel in pubchem page ([#20](https://www.github.com/zakodium/c6h6-react/issues/20)) ([7c8d0fb](https://www.github.com/zakodium/c6h6-react/commit/7c8d0fbb0d905a018bf33adbfddfaa6958734ad6))
+* add SMILES in pubchem error message ([8d19eee](https://www.github.com/zakodium/c6h6-react/commit/8d19eee76c1afa2c7c4933e74bfb94fac1ac982a))
+
 ### [1.2.1](https://www.github.com/zakodium/c6h6-react/compare/v1.2.0...v1.2.1) (2021-04-13)
 
 
