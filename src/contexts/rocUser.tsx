@@ -5,9 +5,8 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { useRoc } from 'react-iframe-bridge';
 import { ICouchUser } from 'rest-on-couch-client';
-
-import { useRoc } from './roc';
 
 interface RocUserState {
   auth: ICouchUser;
