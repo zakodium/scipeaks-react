@@ -1,8 +1,8 @@
 import { Molecule } from 'openchemlib/full';
 import React from 'react';
+import { useIframeBridgeSample } from 'react-iframe-bridge';
 
 import { ErrorPage } from '@/components/tailwind-ui';
-import { useIframeBridgeSample } from '@/contexts/iframeBridge';
 
 import EnhancedNMRDisplayer from '../EnhancedNMRDisplayer';
 
