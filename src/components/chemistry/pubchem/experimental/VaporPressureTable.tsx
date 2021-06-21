@@ -1,5 +1,7 @@
+import { ExternalLinkIcon } from '@heroicons/react/outline';
+
 import CompactTd from '@/components/common/CompactTd';
-import { SvgOutlineExternalLink, Table, Th } from '@/components/tailwind-ui';
+import { Table, Th } from '@/components/tailwind-ui';
 
 import Vp from '../Vp';
 
@@ -34,9 +36,9 @@ function Row(props: any) {
       </CompactTd>
       <CompactTd>
         <div>
-          {value.reference.sourceName}{' '}
+          {value.reference.sourceName}
           <a href={value.reference.url} rel="noreferrer" target="_blank">
-            <SvgOutlineExternalLink style={{ display: 'inline' }} />
+            <ExternalLinkIcon className="inline w-5 h-5" />
           </a>
         </div>
       </CompactTd>

@@ -20,13 +20,10 @@ export function useSameWidthPopper(options: {
   placement: 'top' | 'bottom';
   distance?: number;
 }) {
-  const [
-    referenceElement,
-    setReferenceElement,
-  ] = useState<HTMLDivElement | null>(null);
-  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
-    null,
-  );
+  const [referenceElement, setReferenceElement] =
+    useState<HTMLDivElement | null>(null);
+  const [popperElement, setPopperElement] =
+    useState<HTMLDivElement | null>(null);
 
   const modifiers: Modifier<'sameWidth' | 'offset'>[] = [sameWidth];
   if (options.distance) {

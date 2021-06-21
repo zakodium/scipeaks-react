@@ -1,4 +1,6 @@
 import { Transition } from '@headlessui/react';
+import { XIcon } from '@heroicons/react/outline';
+import clsx from 'clsx';
 import React, {
   ElementType,
   ReactElement,
@@ -6,11 +8,23 @@ import React, {
   createElement,
   useRef,
 } from 'react';
-import ReactDOM from 'react-dom';
 
 import { useOnClickOutside } from '../hooks/useOnClickOutside';
-import { SvgOutlineX } from '../svg/heroicon/outline';
-import { PropsOf } from '../types';
+import { PropsOf, Size } from '../types';
+
+import { Portal } from './Portal';
+
+function getSizeClassname(size: Size): string {
+  const record: Record<Size, string> = {
+    xSmall: 'max-w-xs',
+    small: 'max-w-sm',
+    medium: 'max-w-md',
+    large: 'max-w-lg',
+    xLarge: 'max-w-xl',
+  };
+
+  return record[size];
+}
 
 export interface SlideOverProps<T extends ElementType> {
   isOpen: boolean;
@@ -18,12 +32,23 @@ export interface SlideOverProps<T extends ElementType> {
   onClose?: () => void;
   wrapperComponent?: T;
   wrapperProps?: Omit<PropsOf<T>, 'children'>;
+  requestCloseOnClickOutside?: boolean;
+  maxWidth?: Size;
+  allowPageInteraction?: boolean;
 }
 
 export function SlideOver<T extends ElementType>(props: SlideOverProps<T>) {
+  const {
+    requestCloseOnClickOutside = true,
+    maxWidth: maxWidthSlideOver = Size.medium,
+    allowPageInteraction = false,
+  } = props;
+
   const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, () => {
-    props.onClose?.();
+    if (requestCloseOnClickOutside) {
+      props.onClose?.();
+    }
   });
 
   const Header = props.children.find((node) => node.type === SlideOver.Header);
@@ -33,8 +58,8 @@ export function SlideOver<T extends ElementType>(props: SlideOverProps<T>) {
   );
 
   let slideOverContents = (
-    <div className="absolute inset-0 overflow-hidden">
-      <section className="absolute inset-y-0 right-0 flex max-w-full pl-10">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <section className="absolute inset-y-0 right-0 flex max-w-full pl-10 pointer-events-auto">
         <Transition.Child
           enter="transform transition ease-out duration-400 sm:duration-500"
           enterFrom="translate-x-full"
@@ -42,7 +67,7 @@ export function SlideOver<T extends ElementType>(props: SlideOverProps<T>) {
           leave="transform transition ease-out duration-500 sm:duration-600"
           leaveFrom="translate-x-0"
           leaveTo="translate-x-full"
-          className="w-screen max-w-md"
+          className={clsx('w-screen', getSizeClassname(maxWidthSlideOver))}
         >
           <div
             ref={ref}
@@ -59,7 +84,7 @@ export function SlideOver<T extends ElementType>(props: SlideOverProps<T>) {
                         onClick={props.onClose}
                         className="bg-white rounded-full text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500"
                       >
-                        <SvgOutlineX className="w-6 h-6" />
+                        <XIcon className="w-6 h-6" />
                       </button>
                     </div>
                   )}
@@ -86,7 +111,10 @@ export function SlideOver<T extends ElementType>(props: SlideOverProps<T>) {
     <Portal>
       <Transition
         show={props.isOpen}
-        className="fixed inset-0 z-50 overflow-hidden"
+        className={clsx(
+          'fixed inset-0 z-50 overflow-hidden',
+          allowPageInteraction && 'pointer-events-none',
+        )}
       >
         {slideOverContents}
       </Transition>
@@ -108,8 +136,4 @@ SlideOver.Footer = function (props: { children: ReactNode }) {
       {props.children}
     </div>
   );
-};
-
-const Portal: React.FC = ({ children }) => {
-  return ReactDOM.createPortal(children, document.body);
 };
