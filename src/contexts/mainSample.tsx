@@ -26,8 +26,9 @@ export function MainSampleProvider(props: {
       <ErrorPage
         title="Error loading the main sample"
         subtitle={sample.error.message}
-        children={<ErrorReport error={sample.error} />}
-      />
+      >
+        <ErrorReport error={sample.error} />
+      </ErrorPage>
     );
   }
 
