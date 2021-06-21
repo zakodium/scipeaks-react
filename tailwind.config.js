@@ -2,5 +2,9 @@
 
 module.exports = {
   presets: [require('@zakodium/tailwind-config')],
-  purge: ['./src/**/*.{ts,tsx}'],
+  mode: 'jit',
+  purge: [
+    './src/**/*.{ts,tsx}',
+    './node_modules/react-iframe-bridge/lib/**/*.js',
+  ],
 };

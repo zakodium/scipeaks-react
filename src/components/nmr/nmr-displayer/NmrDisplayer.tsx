@@ -4,7 +4,7 @@ import { useIframeBridgeSample } from 'react-iframe-bridge';
 
 import { ErrorPage } from '@/components/tailwind-ui';
 
-import EnhancedNMRDisplayer from '../EnhancedNMRDisplayer';
+import EnhancedNMRium from '../EnhancedNMRium';
 
 function NoNmr() {
   return (
@@ -57,7 +57,7 @@ export default function NmrDisplayer() {
   }
 
   return (
-    <EnhancedNMRDisplayer
+    <EnhancedNMRium
       data={{ spectra, molecules }}
       preferences={{
         general: {},
