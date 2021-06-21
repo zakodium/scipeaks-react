@@ -1,9 +1,10 @@
-import { ExternalLinkIcon } from '@heroicons/react/outline';
 import { MF } from 'react-mf';
 import { SmilesSvgRenderer } from 'react-ocl';
 
 import CompactTd from '@/components/common/CompactTd';
 import { Table, Th } from '@/components/tailwind-ui';
+
+import ExternalLink from '../ExternalLink';
 
 export default function Identifiers(props: { identifiers: any; cid: any }) {
   const { identifiers, cid } = props;
@@ -44,13 +45,10 @@ export default function Identifiers(props: { identifiers: any; cid: any }) {
       key: 'cid',
       label: 'Pubchem compound ID (CID)',
       value: (
-        <a
-          href={`https://pubchem.ncbi.nlm.nih.gov/compound/${cid}`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {cid} <ExternalLinkIcon className="inline w-5 h-5" />
-        </a>
+        <ExternalLink
+          text={cid}
+          url={`https://pubchem.ncbi.nlm.nih.gov/compound/${cid}`}
+        />
       ),
       description: 'Unique identifer of a compound in the PubChem database.',
     });

@@ -1,8 +1,7 @@
-import { ExternalLinkIcon } from '@heroicons/react/outline';
-
 import CompactTd from '@/components/common/CompactTd';
 import { Table, Th } from '@/components/tailwind-ui';
 
+import ExternalLink from '../ExternalLink';
 import LowHighUnits from '../LowHighUnits';
 
 export default function MpTable(props: { data: any }) {
@@ -35,12 +34,10 @@ function Row(props: any) {
         <LowHighUnits data={value?.data?.parsed} />
       </CompactTd>
       <CompactTd>
-        <div>
-          {value.reference.sourceName}
-          <a href={value.reference.url} rel="noreferrer" target="_blank">
-            <ExternalLinkIcon className="inline w-5 h-5" />
-          </a>
-        </div>
+        <ExternalLink
+          text={value.reference.sourceName}
+          url={value.reference.url}
+        />
       </CompactTd>
     </tr>
   );
