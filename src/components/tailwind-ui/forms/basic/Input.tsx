@@ -1,11 +1,8 @@
+import { CheckIcon, ExclamationCircleIcon } from '@heroicons/react/solid';
 import clsx from 'clsx';
 import React, { ReactNode, Ref } from 'react';
 
 import { Spinner } from '../../elements/spinner/Spinner';
-import {
-  SvgSolidCheck,
-  SvgSolidExclamationCircle,
-} from '../../svg/heroicon/solid';
 import { forwardRefWithAs } from '../../util';
 
 import {
@@ -19,17 +16,7 @@ import {
   Valid,
 } from './common';
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-  /**
-   * Ref for the <input> element.
-   */
-  ref?: Ref<HTMLInputElement>;
-  /**
-   * Ref for the <div> wrapping the <input> element.
-   */
-  wrapperRef?: Ref<HTMLDivElement>;
-  name: string;
+export interface CustomInputProps {
   error?: string;
   valid?: boolean | string;
   leadingAddon?: ReactNode;
@@ -43,6 +30,20 @@ export interface InputProps
   help?: string;
   inlinePlaceholder?: ReactNode;
   inputClassName?: string;
+}
+
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement>,
+    CustomInputProps {
+  name: string;
+  /**
+   * Ref for the <input> element.
+   */
+  ref?: Ref<HTMLInputElement>;
+  /**
+   * Ref for the <div> wrapping the <input> element.
+   */
+  wrapperRef?: Ref<HTMLDivElement>;
 }
 
 export const Input = forwardRefWithAs(
@@ -119,7 +120,8 @@ export const Input = forwardRefWithAs(
               }
               className={clsx(
                 {
-                  'flex-1 focus:outline-none focus:ring-0 sm:text-sm border-none p-0': true,
+                  'flex-1 focus:outline-none focus:ring-0 sm:text-sm border-none p-0':
+                    true,
                   'bg-neutral-50 text-neutral-500': props.disabled,
                 },
                 inputClassName,
@@ -151,11 +153,11 @@ export const Input = forwardRefWithAs(
 );
 
 function InputErrorIcon() {
-  return <SvgSolidExclamationCircle className="w-5 h-5 ml-2 text-danger-500" />;
+  return <ExclamationCircleIcon className="w-5 h-5 ml-2 text-danger-500" />;
 }
 
 function InputValidIcon() {
-  return <SvgSolidCheck className="w-5 h-5 ml-2 text-success-600" />;
+  return <CheckIcon className="w-5 h-5 ml-2 text-success-600" />;
 }
 
 function LeadingInlineAddon(props: { value: ReactNode }) {

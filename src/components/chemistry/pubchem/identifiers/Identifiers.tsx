@@ -1,8 +1,9 @@
+import { ExternalLinkIcon } from '@heroicons/react/outline';
 import { MF } from 'react-mf';
 import { SmilesSvgRenderer } from 'react-ocl';
 
 import CompactTd from '@/components/common/CompactTd';
-import { Table, Th, SvgOutlineExternalLink } from '@/components/tailwind-ui';
+import { Table, Th } from '@/components/tailwind-ui';
 
 export default function Identifiers(props: { identifiers: any; cid: any }) {
   const { identifiers, cid } = props;
@@ -48,7 +49,7 @@ export default function Identifiers(props: { identifiers: any; cid: any }) {
           target="_blank"
           rel="noreferrer"
         >
-          {cid} <SvgOutlineExternalLink style={{ display: 'inline' }} />
+          {cid} <ExternalLinkIcon className="inline w-5 h-5" />
         </a>
       ),
       description: 'Unique identifer of a compound in the PubChem database.',

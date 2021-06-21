@@ -25,15 +25,8 @@ export interface TableProps<T = any> {
 }
 
 export function Table<T extends { id: number | string }>(props: TableProps<T>) {
-  const {
-    data,
-    Tr,
-    Empty,
-    Header,
-    pagination,
-    tableStyle,
-    tableClassName,
-  } = props;
+  const { data, Tr, Empty, Header, pagination, tableStyle, tableClassName } =
+    props;
 
   if (data.length === 0) {
     return Empty ? <Empty /> : null;
@@ -86,9 +79,7 @@ export function Td(props: TdProps) {
     <td
       className={clsx(
         'text-sm font-semibold whitespace-nowrap text-neutral-900',
-        {
-          'px-6 py-4': !compact,
-        },
+        { 'px-6 py-4': !compact },
         props.className,
       )}
       {...otherProps}

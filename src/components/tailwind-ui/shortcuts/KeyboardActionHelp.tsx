@@ -1,10 +1,10 @@
+import { InformationCircleIcon } from '@heroicons/react/outline';
 import React, { useContext, useMemo } from 'react';
 
 import { useGlobalKeyboardActions } from '../hooks/globalKeyboardActions';
 import { useOnOff } from '../hooks/useOnOff';
 import { TrProps, Table, Td } from '../lists/Table';
 import { Modal } from '../overlays/Modal';
-import { SvgOutlineInformationCircle } from '../svg/heroicon/outline';
 import { Color } from '../types';
 import { commandKeyExists } from '../util';
 
@@ -18,7 +18,8 @@ export interface KeyboardActionHelpProps {
 
 export function KeyboardActionHelp(props: KeyboardActionHelpProps) {
   const { key = '?', alt = false } = props;
-  const [showHelp, helpOn, helpOff] = useOnOff(false);
+  const [showHelp, helpOn, helpOff] = useOnOff();
+
   const helpActions = useMemo(() => {
     return [
       {
@@ -38,8 +39,7 @@ export function KeyboardActionHelp(props: KeyboardActionHelpProps) {
     <Modal
       isOpen={showHelp}
       onRequestClose={helpOff}
-      requestCloseOnEsc
-      icon={<SvgOutlineInformationCircle />}
+      icon={<InformationCircleIcon />}
       iconColor={Color.primary}
       fluid
     >

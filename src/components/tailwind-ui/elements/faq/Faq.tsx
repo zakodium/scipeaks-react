@@ -1,7 +1,6 @@
+import { ChevronDownIcon } from '@heroicons/react/outline';
 import clsx from 'clsx';
 import React, { ReactNode } from 'react';
-
-import { SvgOutlineChevronDown } from '../../svg/heroicon/outline';
 
 export interface QuestionType {
   id: string;
@@ -44,7 +43,7 @@ const Question = (props: QuestionProps) => {
         >
           <span className="font-semibold text-neutral-900">{question}</span>
           <span className="flex items-center ml-6 h-7">
-            <SvgOutlineChevronDown
+            <ChevronDownIcon
               className={clsx('w-6 h-6 transform', {
                 '-rotate-180': selectedQuestionId === id,
               })}
@@ -67,11 +66,11 @@ export function Faq(props: FaqProps) {
   const { title, questions, selectedQuestionId, onSelect } = props;
 
   return (
-    <div className="max-w-3xl divide-y-2 divide-gray-200">
-      <h2 className="text-3xl font-extrabold text-center text-gray-900 sm:text-4xl">
+    <div className="max-w-3xl divide-y-2 divide-neutral-200">
+      <h2 className="text-3xl font-extrabold text-center text-neutral-900 sm:text-4xl">
         {title}
       </h2>
-      <dl className="mt-6 space-y-6 divide-y divide-gray-200">
+      <dl className="mt-6 space-y-6 divide-y divide-neutral-200">
         {questions.map((question) => (
           <Question
             key={question.id}
