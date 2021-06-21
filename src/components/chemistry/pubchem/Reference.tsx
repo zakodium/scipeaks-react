@@ -1,4 +1,4 @@
-import { ExternalLinkIcon } from '@heroicons/react/outline';
+import ExternalLink from './ExternalLink';
 
 export default function Reference(props: {
   reference: {
@@ -12,10 +12,7 @@ export default function Reference(props: {
   return (
     <div>
       <div className="font-bold">
-        {reference.sourceName}{' '}
-        <a href={reference.url} rel="noreferrer" target="_blank">
-          <ExternalLinkIcon className="inline w-5 h-5" />
-        </a>
+        <ExternalLink text={reference.sourceName} url={reference.url} />
       </div>
       <div className="text-xs italic">{reference.description}</div>
       <div className="font-bold text-center">{reference.name}</div>

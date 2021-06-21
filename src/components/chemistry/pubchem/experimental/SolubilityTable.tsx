@@ -1,7 +1,7 @@
-import { ExternalLinkIcon } from '@heroicons/react/outline';
-
 import CompactTd from '@/components/common/CompactTd';
 import { Table, Th } from '@/components/tailwind-ui';
+
+import ExternalLink from '../ExternalLink';
 
 export default function SolubilityTable(props: { data: any }) {
   const { data } = props;
@@ -29,12 +29,10 @@ function Row(props: any) {
     <tr key={value.label}>
       <CompactTd>{value.data.original}</CompactTd>
       <CompactTd>
-        <div>
-          {value.reference.sourceName}
-          <a href={value.reference.url} rel="noreferrer" target="_blank">
-            <ExternalLinkIcon className="inline w-5 h-5" />
-          </a>
-        </div>
+        <ExternalLink
+          text={value.reference.sourceName}
+          url={value.reference.url}
+        />
       </CompactTd>
     </tr>
   );

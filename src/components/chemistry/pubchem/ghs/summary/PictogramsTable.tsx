@@ -16,7 +16,7 @@ function Header() {
 function Row(props: any) {
   const row = props.value;
   return (
-    <tr key={row.code}>
+    <tr>
       <CompactTd>{row.code}</CompactTd>
       <CompactTd>
         <Pictogram code={row.code} />
