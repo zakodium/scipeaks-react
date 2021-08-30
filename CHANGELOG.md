@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://www.github.com/zakodium/c6h6-react/compare/v1.3.0...v1.4.0) (2021-06-21)
+
+
+### Features
+
+* update dependencies ([abc6abb](https://www.github.com/zakodium/c6h6-react/commit/abc6abb35f3a71427e7b21dfd3aba0f7651b5332))
+
 ## [1.3.0](https://www.github.com/zakodium/c6h6-react/compare/v1.2.1...v1.3.0) (2021-05-01)
 
 
