@@ -1,14 +1,16 @@
-import React, { useMemo } from 'react';
+import React, { ReactNode, Ref, useMemo } from 'react';
 
+import { forwardRefWithGeneric } from '../../util';
 import {
   defaultCanCreate,
   defaultGetValue,
+  defaultRenderCreate,
   defaultRenderOption,
   InternalSearchSelect,
   useSearchSelectInternals,
 } from '../../utils/search-select-utils';
 
-import { SimpleSelectOption, GetValue, RenderOption } from './Select';
+import { GetValue, RenderOption, SimpleSelectOption } from './Select';
 
 export interface SimpleSearchSelectProps<OptionType> {
   /**
@@ -33,6 +35,10 @@ export interface SimpleSearchSelectProps<OptionType> {
    * user. If it is present and doesn't return `true`, the option will not be displayed.
    */
   canCreate?: (value: string) => boolean;
+  /**
+   * Custom function to render the "create" option.
+   */
+  renderCreate?: (value: string) => ReactNode;
 
   /**
    * Function to get the value that uniquely identifies each option.
@@ -42,6 +48,16 @@ export interface SimpleSearchSelectProps<OptionType> {
    * Custom function to render each option.
    */
   renderOption?: RenderOption<OptionType>;
+
+  /**
+   * Whether the list should be closed when an element is selected.
+   */
+  closeListOnSelect?: boolean;
+  /**
+   * Whether the search value should be cleared (by calling `onSearchChange`
+   * with an empty string) when an element is selected.
+   */
+  clearSearchOnSelect?: boolean;
 
   /**
    * Value to control the input field.
@@ -56,6 +72,14 @@ export interface SimpleSearchSelectProps<OptionType> {
    */
   label: string;
   /**
+   * Do not display the label, keeping it in the DOM for accessibility.
+   */
+  hiddenLabel?: boolean;
+  /**
+   * Custom react node to display in the upper right corner of the input
+   */
+  corner?: ReactNode;
+  /**
    * Placeholder to display when no value is selected and no search text is entered.
    */
   placeholder?: string;
@@ -67,6 +91,10 @@ export interface SimpleSearchSelectProps<OptionType> {
    * Called when the input field is blurred.
    */
   onBlur?: (e: React.FocusEvent) => void;
+  /**
+   * Input field's id.
+   */
+  id?: string;
   /**
    * Input field's name.
    */
@@ -95,6 +123,14 @@ export interface SimpleSearchSelectProps<OptionType> {
    * Class applied to the highlighted option.
    */
   highlightClassName?: string;
+  /**
+   * Size for input.
+   */
+  size?: number;
+  /**
+   * Focus input on mount.
+   */
+  autoFocus?: boolean;
 }
 
 export interface SearchSelectProps<OptionType>
@@ -103,10 +139,13 @@ export interface SearchSelectProps<OptionType>
   renderOption: RenderOption<OptionType>;
 }
 
-export function SearchSelect<OptionType>(
+export const SearchSelect = forwardRefWithGeneric(SearchSelectForwardRef);
+
+function SearchSelectForwardRef<OptionType>(
   props: OptionType extends SimpleSelectOption
     ? SimpleSearchSelectProps<OptionType>
     : SearchSelectProps<OptionType>,
+  ref: Ref<HTMLInputElement>,
 ): JSX.Element {
   const {
     onSearchChange,
@@ -115,8 +154,11 @@ export function SearchSelect<OptionType>(
     selected,
     getValue = defaultGetValue,
     renderOption = defaultRenderOption,
+    closeListOnSelect = true,
+    clearSearchOnSelect = true,
     onCreate,
     canCreate = defaultCanCreate,
+    renderCreate = defaultRenderCreate,
     ...otherProps
   } = props;
 
@@ -136,8 +178,11 @@ export function SearchSelect<OptionType>(
     onSelect,
     getValue,
     renderOption,
+    closeListOnSelect,
+    clearSearchOnSelect,
     onCreate,
     canCreate,
+    renderCreate,
     formattedSelected,
   });
 
@@ -145,8 +190,9 @@ export function SearchSelect<OptionType>(
     <InternalSearchSelect
       {...internalProps}
       {...otherProps}
+      inputRef={ref}
       formattedSelected={formattedSelected}
-      hasValue={formattedSelected !== undefined}
+      hasClearableValue={formattedSelected !== undefined}
     />
   );
 }

@@ -21,15 +21,27 @@ import {
   RenderOption,
   SimpleSelectOption,
 } from '../forms/basic/Select';
-import { useSameWidthPopper } from '../hooks/popper';
+import {
+  Help,
+  inputColor,
+  inputError,
+  Label,
+  InputErrorIcon,
+  InputCorner,
+} from '../forms/basic/common';
+import { useSameWidthPopper, UseSameWidthPopperReturn } from '../hooks/popper';
 import { useOnClickOutside } from '../hooks/useOnClickOutside';
 import { useOnOff } from '../hooks/useOnOff';
 import { Color } from '../types';
 
-export type FilterOptions<OptionType> = (
+export type OptionsFilter<OptionType> = (
   query: string,
   options: OptionType[],
 ) => OptionType[];
+
+export type IsOptionRemovableCallback<OptionType> = (
+  option: OptionType,
+) => boolean;
 
 export function defaultOptionsFilter<OptionType extends SimpleSelectOption>(
   query: string,
@@ -37,7 +49,7 @@ export function defaultOptionsFilter<OptionType extends SimpleSelectOption>(
 ): OptionType[] {
   const lowerQuery = query.toLowerCase();
   return options.filter((option) =>
-    String(option.label).toLowerCase().includes(lowerQuery),
+    String(defaultRenderOption(option)).toLowerCase().includes(lowerQuery),
   );
 }
 
@@ -58,20 +70,28 @@ function DefaultNoResultsHint() {
 
 export const defaultNoResultsHint = <DefaultNoResultsHint />;
 
-export function defaultRenderOption(option: SimpleSelectOption) {
-  return option.label;
+export function defaultRenderOption(option: SimpleSelectOption): ReactNode {
+  return typeof option === 'object' ? option.label : option;
 }
 
-export function defaultGetValue(option: SimpleSelectOption) {
-  return option.value;
+export function defaultGetValue(option: SimpleSelectOption): string | number {
+  return typeof option === 'object' ? option.value : option;
 }
 
 export function defaultCanCreate() {
   return true;
 }
 
+export function defaultRenderCreate(value: string) {
+  return `Create "${value}"`;
+}
+
 export function defaultGetBadgeColor() {
   return Color.neutral;
+}
+
+export function defaultIsOptionRemovable() {
+  return true;
 }
 
 export function preventDefault(event: UIEvent) {
@@ -88,7 +108,7 @@ export type InternalOption<OptionType> =
   | {
       type: 'create';
       value: '___internal_create___';
-      label: string;
+      label: ReactNode;
       originalValue: string;
     };
 
@@ -96,6 +116,7 @@ export function buildInternalOptions<OptionType>(
   options: OptionType[],
   getValue: GetValue<OptionType>,
   renderOption: RenderOption<OptionType>,
+  renderCreate: (value: string) => ReactNode,
   createValue?: string,
 ): InternalOption<OptionType>[] {
   const internalOptions: InternalOption<OptionType>[] = options.map(
@@ -112,7 +133,7 @@ export function buildInternalOptions<OptionType>(
     internalOptions.push({
       type: 'create',
       value: '___internal_create___',
-      label: `Create "${createValue}"`,
+      label: renderCreate(createValue),
       originalValue: createValue,
     });
   }
@@ -124,14 +145,14 @@ export interface FormattedOptionProps<OptionType> {
   option: InternalOption<OptionType>;
   focused: number;
   setFocused: (index: number) => void;
-  select: (option: InternalOption<OptionType>) => void;
+  onSelect: (option: InternalOption<OptionType>) => void;
   highlightClassName: string;
 }
 
 export function FormattedOption<OptionType>(
   props: FormattedOptionProps<OptionType>,
 ) {
-  const { index, option, focused, setFocused, select } = props;
+  const { index, option, focused, setFocused, onSelect } = props;
   const isFocused = focused === index;
   const ref = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
@@ -147,7 +168,7 @@ export function FormattedOption<OptionType>(
         'py-2 px-4',
       )}
       onMouseMove={() => setFocused(index)}
-      onClick={() => select(option)}
+      onClick={() => onSelect(option)}
     >
       {option.label}
     </div>
@@ -161,9 +182,13 @@ interface UseSearchSelectInternalsConfig<OptionType> {
   onSelect: (option: OptionType | undefined) => void;
   getValue: GetValue<OptionType>;
   renderOption: RenderOption<OptionType>;
+  closeListOnSelect: boolean;
+  clearSearchOnSelect: boolean;
   onCreate?: (value: string) => void;
   canCreate: (value: string) => boolean;
+  onBackspace?: () => void;
   formattedSelected?: { value: string | number; label: ReactNode };
+  renderCreate: (value: string) => ReactNode;
 }
 
 export function useSearchSelectInternals<OptionType>(
@@ -176,9 +201,13 @@ export function useSearchSelectInternals<OptionType>(
     onSelect,
     getValue,
     renderOption,
+    closeListOnSelect,
+    clearSearchOnSelect,
     onCreate,
     canCreate,
     formattedSelected,
+    onBackspace,
+    renderCreate,
   } = config;
 
   const [isListOpen, openList, closeList] = useOnOff(false);
@@ -191,8 +220,15 @@ export function useSearchSelectInternals<OptionType>(
     onCreate && searchValue && canCreate(searchValue) ? searchValue : undefined;
 
   const formattedOptions = useMemo(
-    () => buildInternalOptions(options, getValue, renderOption, createValue),
-    [options, getValue, renderOption, createValue],
+    () =>
+      buildInternalOptions(
+        options,
+        getValue,
+        renderOption,
+        renderCreate,
+        createValue,
+      ),
+    [options, getValue, renderOption, renderCreate, createValue],
   );
 
   // Always reset focus to the first element if the options list has changed.
@@ -209,7 +245,7 @@ export function useSearchSelectInternals<OptionType>(
   }, [formattedOptions, formattedSelected]);
 
   const { setReferenceElement, setPopperElement, popperProps } =
-    useSameWidthPopper({ placement: 'bottom', distance: 6 });
+    useSameWidthPopper<HTMLElement>({ placement: 'bottom', distance: 6 });
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     if (!isListOpen) {
@@ -218,14 +254,18 @@ export function useSearchSelectInternals<OptionType>(
     onSearchChange(event.target.value);
   }
 
-  function select(option: InternalOption<OptionType>): void {
+  function selectOption(option: InternalOption<OptionType>): void {
     if (option.type === 'option') {
       onSelect(option.originalValue);
     } else {
       onCreate?.(option.originalValue);
     }
-    closeList();
-    onSearchChange('');
+    if (closeListOnSelect) {
+      closeList();
+    }
+    if (clearSearchOnSelect) {
+      onSearchChange('');
+    }
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
@@ -257,7 +297,7 @@ export function useSearchSelectInternals<OptionType>(
         break;
       case 'Enter':
         if (isListOpen && formattedOptions[focused]) {
-          select(formattedOptions[focused]);
+          selectOption(formattedOptions[focused]);
         }
         // Prevent submitting the form.
         event.preventDefault();
@@ -270,6 +310,11 @@ export function useSearchSelectInternals<OptionType>(
             openList();
           }
           event.preventDefault();
+        }
+        break;
+      case 'Backspace':
+        if (searchValue === '') {
+          onBackspace?.();
         }
         break;
       default:
@@ -299,7 +344,7 @@ export function useSearchSelectInternals<OptionType>(
     formattedOptions,
     focused,
     setFocused,
-    select,
+    onSelect: selectOption,
     setReferenceElement,
     setPopperElement,
     popperProps,
@@ -311,7 +356,7 @@ export function useSearchSelectInternals<OptionType>(
 }
 
 interface UseSearchSelectInternalsReturn<OptionType>
-  extends ReturnType<typeof useSameWidthPopper> {
+  extends UseSameWidthPopperReturn<HTMLElement> {
   mainRef: Ref<HTMLDivElement>;
   closeList: () => void;
   openList: () => void;
@@ -319,7 +364,7 @@ interface UseSearchSelectInternalsReturn<OptionType>
   formattedOptions: InternalOption<OptionType>[];
   focused: number;
   setFocused: (newFocus: number) => void;
-  select: (option: InternalOption<OptionType>) => void;
+  onSelect: (option: InternalOption<OptionType>) => void;
   handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
   handleKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
   handleChevronDownClick: (event: MouseEvent) => void;
@@ -331,19 +376,24 @@ interface InternalSearchSelectProps<OptionType>
   clearable?: boolean;
   disabled?: boolean;
   loading?: boolean;
+  autoFocus?: boolean;
   noResultsHint?: ReactNode;
   error?: string;
   help?: string;
   label: string;
+  hiddenLabel?: boolean;
+  corner?: ReactNode;
   placeholder?: string;
   searchValue: string;
   formattedSelected?: { value: string | number; label: ReactNode };
-  hasValue: boolean;
-  leadingInlineAddon?: ReactNode;
+  hasClearableValue: boolean;
   highlightClassName?: string;
   required?: boolean;
+  inputRef?: Ref<HTMLInputElement>;
   onBlur?: (e: React.FocusEvent) => void;
   name?: string;
+  id?: string;
+  size?: number;
 }
 
 export function InternalSearchSelect<OptionType>(
@@ -351,13 +401,14 @@ export function InternalSearchSelect<OptionType>(
 ): JSX.Element {
   const {
     mainRef,
+    inputRef,
     closeList,
     openList,
     isListOpen,
     formattedOptions,
     focused,
     setFocused,
-    select,
+    onSelect,
     setReferenceElement,
     setPopperElement,
     popperProps,
@@ -374,26 +425,32 @@ export function InternalSearchSelect<OptionType>(
     error,
     help,
     label,
+    hiddenLabel,
+    corner,
     placeholder,
     searchValue,
     formattedSelected,
-    leadingInlineAddon,
-    hasValue,
+    hasClearableValue,
     name,
     onBlur,
     highlightClassName = 'text-white bg-primary-600',
+    size,
   } = props;
 
   return (
     <div ref={mainRef}>
       <Input
+        ref={inputRef}
         required={required}
         wrapperRef={setReferenceElement}
         type="text"
         name={name || label}
         label={label}
+        hiddenLabel={hiddenLabel}
+        corner={corner}
         value={searchValue}
         disabled={disabled}
+        size={size}
         error={error}
         help={help}
         onBlur={(event) => {
@@ -404,61 +461,269 @@ export function InternalSearchSelect<OptionType>(
         onKeyDown={handleKeyDown}
         onClick={openList}
         placeholder={placeholder}
-        leadingInlineAddon={leadingInlineAddon}
         inlinePlaceholder={
           formattedSelected && !searchValue
             ? formattedSelected.label
             : undefined
         }
         trailingInlineAddon={
-          <div className="inline-flex flex-row items-center cursor-default text-neutral-400">
-            {loading && <Spinner className="w-5 h-5 mr-1 text-neutral-400" />}
-            {clearable && hasValue && !disabled && (
-              <XIcon
-                className="w-4 h-4 hover:text-neutral-500"
-                onClick={handleXClick}
-              />
-            )}
-            {/* font-mono so the vertical bar is vertically aligned with the SVG */}
-            <span className="mx-1 font-mono font-light">{` | `}</span>
-            <ChevronDownIcon
-              className={clsx({
-                'w-5 h-5': true,
-                'hover:text-neutral-500': !disabled,
-              })}
-              onMouseDown={preventDefault}
-              onClick={disabled ? undefined : handleChevronDownClick}
-            />
-          </div>
+          <TrailingTools
+            {...{
+              loading,
+              clearable,
+              hasClearableValue,
+              disabled,
+              handleXClick,
+              handleChevronDownClick,
+            }}
+          />
         }
       />
 
       {isListOpen && (
-        <div
-          ref={setPopperElement}
-          {...popperProps}
-          className="z-20 w-full py-1 overflow-auto text-base bg-white rounded-md shadow-lg cursor-default max-h-60 sm:text-sm"
-          // Prevent click in the options list from blurring the input,
-          // because that would close the list.
-          onMouseDown={preventDefault}
-        >
-          {formattedOptions.length === 0 ? (
-            <div className="p-2">{noResultsHint}</div>
-          ) : (
-            formattedOptions.map((option, index) => (
-              <FormattedOption
-                key={option.value}
-                index={index}
-                option={option}
-                focused={focused}
-                setFocused={setFocused}
-                select={select}
-                highlightClassName={highlightClassName}
-              />
-            ))
-          )}
-        </div>
+        <OptionsList
+          {...{
+            setPopperElement,
+            popperProps,
+            formattedOptions,
+            noResultsHint,
+            focused,
+            setFocused,
+            onSelect,
+            highlightClassName,
+          }}
+        />
       )}
+    </div>
+  );
+}
+
+interface InternalMultiSearchSelectProps<OptionType>
+  extends InternalSearchSelectProps<OptionType> {
+  selectedBadges?: ReactNode[];
+}
+export function InternalMultiSearchSelect<OptionType>(
+  props: InternalMultiSearchSelectProps<OptionType>,
+): JSX.Element {
+  const {
+    mainRef,
+    inputRef,
+    closeList,
+    openList,
+    isListOpen,
+    formattedOptions,
+    focused,
+    setFocused,
+    onSelect,
+    setReferenceElement,
+    setPopperElement,
+    popperProps,
+    handleChange,
+    handleKeyDown,
+    handleChevronDownClick,
+    handleXClick,
+
+    clearable = false,
+    disabled = false,
+    required = false,
+    loading = false,
+    autoFocus = false,
+    noResultsHint,
+    error,
+    help,
+    label,
+    hiddenLabel,
+    corner,
+    placeholder,
+    searchValue,
+    selectedBadges,
+    hasClearableValue,
+    name,
+    id = name,
+    onBlur,
+    highlightClassName,
+  } = props;
+
+  return (
+    <div ref={mainRef} className="flex flex-col">
+      <div className="flex items-baseline justify-between gap-2">
+        <Label
+          id={id}
+          text={label}
+          hidden={hiddenLabel}
+          required={required}
+          disabled={disabled}
+        />
+        <InputCorner>{corner}</InputCorner>
+      </div>
+      <label
+        ref={setReferenceElement}
+        htmlFor={id}
+        className={clsx(
+          'border bg-white py-2 px-3 focus-within:ring-1',
+          'relative flex flex-1 flex-row text-base shadow-sm sm:text-sm',
+          'rounded-md',
+          {
+            'mt-1': !hiddenLabel || corner,
+            [inputColor]: !error,
+            [inputError]: error,
+            'bg-neutral-50 text-neutral-500': disabled,
+          },
+        )}
+      >
+        <div className="flex flex-1 flex-row flex-wrap gap-1.5">
+          {selectedBadges}
+          <input
+            id={id}
+            ref={inputRef}
+            type="text"
+            name={name || label}
+            value={searchValue}
+            size={Math.max(5, placeholder?.length || 0, searchValue.length)}
+            disabled={disabled}
+            autoFocus={autoFocus}
+            onBlur={(event) => {
+              onBlur?.(event);
+              closeList();
+            }}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            onClick={openList}
+            placeholder={placeholder}
+            className={clsx(
+              {
+                'flex-1 border-none p-0 focus:outline-none focus:ring-0 sm:text-sm':
+                  true,
+                'bg-neutral-50 text-neutral-500': disabled,
+              },
+              error ? 'placeholder-danger-300' : 'placeholder-neutral-400',
+            )}
+          />
+        </div>
+        <TrailingTools
+          {...{
+            loading,
+            clearable,
+            hasClearableValue,
+            hasError: Boolean(error),
+            disabled,
+            handleXClick,
+            handleChevronDownClick,
+          }}
+        />
+      </label>
+      <Help error={error} help={help} />
+      {isListOpen && (
+        <OptionsList
+          {...{
+            setPopperElement,
+            popperProps,
+            formattedOptions,
+            noResultsHint,
+            focused,
+            setFocused,
+            onSelect,
+            highlightClassName,
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+type OptionsListProps<OptionType> = Pick<
+  UseSearchSelectInternalsReturn<OptionType>,
+  | 'setPopperElement'
+  | 'popperProps'
+  | 'formattedOptions'
+  | 'focused'
+  | 'setFocused'
+  | 'onSelect'
+> &
+  Pick<
+    InternalSearchSelectProps<OptionType>,
+    'noResultsHint' | 'highlightClassName'
+  >;
+
+function OptionsList<OptionType>(props: OptionsListProps<OptionType>) {
+  const {
+    setPopperElement,
+    popperProps,
+    formattedOptions,
+    noResultsHint = defaultNoResultsHint,
+    focused,
+    setFocused,
+    onSelect,
+    highlightClassName = 'text-white bg-primary-600',
+  } = props;
+  return (
+    <div
+      ref={setPopperElement}
+      {...popperProps}
+      className="z-20 max-h-60 w-full cursor-default overflow-auto rounded-md bg-white py-1 text-base shadow-lg sm:text-sm"
+      // Prevent click in the options list from blurring the input,
+      // because that would close the list.
+      onMouseDown={preventDefault}
+    >
+      {formattedOptions.length === 0 ? (
+        <div className="p-2">{noResultsHint}</div>
+      ) : (
+        formattedOptions.map((option, index) => (
+          <FormattedOption
+            key={option.value}
+            index={index}
+            option={option}
+            focused={focused}
+            setFocused={setFocused}
+            onSelect={onSelect}
+            highlightClassName={highlightClassName}
+          />
+        ))
+      )}
+    </div>
+  );
+}
+
+interface TrailingToolsProps {
+  loading?: boolean;
+  clearable?: boolean;
+  hasClearableValue: boolean;
+  hasError?: boolean;
+  disabled?: boolean;
+  handleXClick: (event: MouseEvent) => void;
+  handleChevronDownClick: (event: MouseEvent) => void;
+}
+
+function TrailingTools(props: TrailingToolsProps) {
+  const {
+    loading,
+    clearable,
+    hasClearableValue,
+    hasError,
+    disabled,
+    handleXClick,
+    handleChevronDownClick,
+  } = props;
+  return (
+    <div className="inline-flex cursor-default flex-row items-center text-neutral-400">
+      {loading && <Spinner className="mr-1 h-5 w-5 text-neutral-400" />}
+      {clearable && hasClearableValue && !disabled && (
+        <XIcon
+          className="h-4 w-4 hover:text-neutral-500"
+          onClick={handleXClick}
+        />
+      )}
+      {/* font-mono so the vertical bar is vertically aligned with the SVG */}
+      <span className="mx-1 font-mono font-light">{` | `}</span>
+      <ChevronDownIcon
+        className={clsx({
+          'h-5 w-5': true,
+          'hover:text-neutral-500': !disabled,
+        })}
+        onMouseDown={preventDefault}
+        onClick={disabled ? undefined : handleChevronDownClick}
+      />
+      {hasError && <InputErrorIcon />}
     </div>
   );
 }

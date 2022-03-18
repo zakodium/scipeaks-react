@@ -1,7 +1,7 @@
 import clsx from 'clsx';
-import React from 'react';
+import React, { forwardRef, Ref } from 'react';
 
-import { helpColor, labelColor, labelDisabledColor } from './common';
+import { Help, labelColor, labelDisabledColor } from './common';
 
 export interface RadioProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
@@ -11,7 +11,10 @@ export interface RadioProps
   help?: string;
 }
 
-export function Radio(props: RadioProps): JSX.Element {
+export const Radio = forwardRef(function RadioForwardRef(
+  props: RadioProps,
+  ref: Ref<HTMLInputElement>,
+) {
   const {
     name,
     value,
@@ -23,14 +26,15 @@ export function Radio(props: RadioProps): JSX.Element {
   } = props;
   return (
     <div className={clsx('flex items-start', className)}>
-      <div className="flex items-center h-5">
+      <div className="flex h-5 items-center">
         <input
           {...otherProps}
+          ref={ref}
           id={id}
           name={name}
           value={value}
           type="radio"
-          className="w-4 h-4 form-radio focus:ring-primary-500 border-neutral-300 text-primary-600 disabled:text-neutral-300"
+          className="form-radio h-4 w-4 border-neutral-300 text-primary-600 focus:ring-primary-500 disabled:text-neutral-300"
         />
       </div>
       <div className="ml-3 text-sm">
@@ -43,8 +47,8 @@ export function Radio(props: RadioProps): JSX.Element {
         >
           {label}
         </label>
-        {help && <p className={helpColor}>{help}</p>}
+        <Help help={help} noMargin />
       </div>
     </div>
   );
-}
+});

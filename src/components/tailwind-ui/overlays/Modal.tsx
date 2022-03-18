@@ -1,18 +1,17 @@
-import { Transition } from '@headlessui/react';
-import { XIcon } from '@heroicons/react/outline';
+import { XIcon, AnnotationIcon } from '@heroicons/react/outline';
 import clsx from 'clsx';
 import polyfill from 'dialog-polyfill-universal';
 import React, {
   createElement,
+  CSSProperties,
   ElementType,
   ReactNode,
-  useContext,
   useEffect,
   useRef,
 } from 'react';
+import { useKbsDisableGlobal } from 'react-kbs';
 
 import { useLockBodyScroll } from '../hooks/useLockBodyScroll';
-import { dispatchContext } from '../shortcuts/KeyboardActionContext';
 import { Color, PropsOf } from '../types';
 
 import { Portal } from './Portal';
@@ -39,52 +38,43 @@ export interface ModalProps<T extends ElementType> {
   children: ReactNode;
   isOpen: boolean;
   onRequestClose?: () => void;
-  icon: ReactNode;
-  iconColor: Color;
+  icon?: ReactNode;
+  iconColor?: Color;
   hasCloseButton?: boolean;
   requestCloseOnBackdrop?: boolean;
   requestCloseOnEsc?: boolean;
   wrapperComponent?: T;
+  // This prop isn't used anymore but kept for backwards-compatibility in case
+  // we re-add the functionality in the future.
   animated?: boolean;
   fluid?: boolean;
   wrapperProps?: Omit<PropsOf<T>, 'children'>;
+  dialogStyle?: CSSProperties;
 }
 
-// @ts-ignore Chrome isn't in the standard
+// @ts-expect-error Chrome isn't in the standard
 const isChrome = typeof window !== 'undefined' && window.chrome;
 
 export function Modal<T extends ElementType>(props: ModalProps<T>) {
   const {
     isOpen,
     onRequestClose,
+    icon = <AnnotationIcon />,
+    iconColor = Color.primary,
     hasCloseButton = true,
     requestCloseOnBackdrop = true,
     requestCloseOnEsc = true,
-    animated = true,
     fluid = true,
+    dialogStyle,
+    wrapperComponent,
+    wrapperProps,
+    children,
   } = props;
 
   useLockBodyScroll(isOpen);
-  const { dispatch } = useContext(dispatchContext);
-  const ref = useRef(props.isOpen);
-  useEffect(() => {
-    if (!ref.current) {
-      dispatch({ type: 'DISABLE_COUNT' });
-    }
-  }, [dispatch]);
-  useEffect(() => {
-    if (isOpen) {
-      dispatch({
-        type: 'DISABLE_COUNT',
-      });
-    } else {
-      dispatch({
-        type: 'ENABLE_COUNT',
-      });
-    }
-  }, [dispatch, isOpen]);
-
+  useKbsDisableGlobal(isOpen);
   const dialogRef = useRef<HTMLDialogElement>(null);
+
   useEffect(() => {
     function onEsc(event: Event) {
       event.preventDefault();
@@ -98,58 +88,57 @@ export function Modal<T extends ElementType>(props: ModalProps<T>) {
       return () => dialog.removeEventListener('cancel', onEsc);
     }
   }, [onRequestClose, requestCloseOnEsc]);
+
   useEffect(() => {
     if (dialogRef.current) {
       polyfill.registerDialog(dialogRef.current);
     }
   }, []);
+
   useEffect(() => {
     if (isOpen) {
+      // @ts-ignore
       dialogRef.current?.showModal();
     } else if (!isOpen && dialogRef.current?.hasAttribute('open')) {
+      // @ts-ignore
       dialogRef.current?.close();
     }
   }, [isOpen]);
 
   let modalContents = (
-    <div>
+    <div className="flex max-h-full flex-1 flex-col">
+      <div className="flex max-h-full w-full flex-col sm:flex-row sm:items-start">
+        <div
+          className={clsx(
+            'mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10',
+            bgColors[iconColor],
+          )}
+        >
+          <span className={clsx(textColors[iconColor], 'h-6 w-6')}>{icon}</span>
+        </div>
+        <div className="flex min-h-0 min-w-0 grow flex-col gap-2 text-center sm:mt-0 sm:ml-4 sm:max-h-full sm:gap-3 sm:text-left">
+          {children}
+        </div>
+      </div>
       {onRequestClose && hasCloseButton ? (
         <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
           <button
             type="button"
             onClick={onRequestClose}
-            className="bg-white rounded-full text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500"
+            className="rounded-full bg-white text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2"
             aria-label="Close"
           >
-            <XIcon className="w-6 h-6" />
+            <XIcon className="h-6 w-6" />
           </button>
         </div>
       ) : null}
-
-      <div className="w-full max-h-full sm:flex sm:items-start">
-        <div
-          className={clsx(
-            'flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto rounded-full sm:mx-0 sm:h-10 sm:w-10',
-            bgColors[props.iconColor],
-          )}
-        >
-          <span
-            className={clsx(textColors[props.iconColor], 'text-2xl w-6 h-6')}
-          >
-            {props.icon}
-          </span>
-        </div>
-        <div className="flex flex-col flex-grow min-w-0 mt-3 text-center sm:max-h-full sm:mt-0 sm:ml-4 sm:text-left">
-          {props.children}
-        </div>
-      </div>
     </div>
   );
 
-  if (props.wrapperComponent) {
+  if (wrapperComponent) {
     modalContents = createElement(
-      props.wrapperComponent,
-      props.wrapperProps,
+      wrapperComponent,
+      wrapperProps,
       modalContents,
     );
   }
@@ -165,80 +154,94 @@ export function Modal<T extends ElementType>(props: ModalProps<T>) {
           }
         }}
         ref={dialogRef}
-        style={
+        style={Object.assign(
+          { maxWidth: fluid ? 'calc(100% - 2rem)' : undefined },
+          dialogStyle,
           !isChrome
             ? {
-                position: 'fixed',
                 top: '50%',
-                transform: 'translate(0, -50%)',
+                // Custom transform is cumulative
+                transform: `translateY(-50%) ${
+                  dialogStyle?.transform ? dialogStyle.transform : ''
+                }`,
                 maxHeight: 'calc((100% - 6px) - 2em)',
-                overflow: 'auto',
               }
-            : undefined
-        }
+            : {},
+        )}
         className={clsx(
-          'text-left align-bottom bg-white rounded-lg shadow-xl',
+          'fixed flex rounded-lg bg-white text-left align-bottom shadow-xl',
           {
-            'sm:max-w-lg sm:w-full': !fluid,
-            'max-w-full': fluid,
+            'sm:w-full sm:max-w-lg': !fluid,
+            hidden: !isOpen,
           },
         )}
       >
-        <Transition
-          show={props.isOpen}
-          enter={clsx('ease-out', { 'duration-300': animated })}
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave={clsx('ease-in', {
-            'duration-200': animated,
-          })}
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-          className="px-4 pt-5 pb-4"
-        >
-          {modalContents}
-        </Transition>
+        <div className="flex flex-1 px-2 pt-5 pb-4 sm:py-6 sm:pl-6 sm:pr-4">
+          {isOpen ? modalContents : null}
+        </div>
       </dialog>
     </Portal>
   );
 }
 
-Modal.Header = function ModalHeader(props: { children: ReactNode }) {
+Modal.Header = function ModalHeader(props: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
     <h3
-      className="mr-10 text-lg font-semibold text-neutral-900"
-      id="modal-headline"
+      className={clsx(
+        'pl-2 text-lg font-semibold text-neutral-900 sm:mr-8',
+        props.className,
+      )}
     >
       {props.children}
     </h3>
   );
 };
 
-Modal.Body = function ModalBody(props: { children: ReactNode }) {
+Modal.Body = function ModalBody(props: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <div className="max-w-full min-h-0 mt-2 overflow-auto">
+    <div
+      className={clsx(
+        'flex min-h-0 max-w-full flex-col overflow-auto px-2 pt-1 pb-2',
+        props.className,
+      )}
+    >
       {props.children}
     </div>
   );
 };
 
-Modal.Description = function ModalDescription(props: { children: ReactNode }) {
-  return <div className="text-sm text-neutral-500">{props.children}</div>;
+Modal.Description = function ModalDescription(props: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={clsx('text-sm text-neutral-500', props.className)}>
+      {props.children}
+    </div>
+  );
 };
 
 Modal.Footer = function ModalFooter(props: {
   children: ReactNode;
+  className?: string;
   align?: 'right' | 'left' | 'center';
 }) {
   const { align = 'right' } = props;
   return (
     <div
       className={clsx(
-        'mt-5 sm:mt-4 flex space-y-2 flex-col sm:flex-row sm:space-x-3 sm:space-y-0',
+        'flex flex-col-reverse gap-1 px-2 sm:flex-row sm:gap-2',
         {
           'sm:justify-end': align === 'right',
           'sm:justify-center': align === 'center',
         },
+        props.className,
       )}
     >
       {props.children}

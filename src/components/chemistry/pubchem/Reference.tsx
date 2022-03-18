@@ -15,7 +15,7 @@ export default function Reference(props: {
         <ExternalLink text={reference.sourceName} url={reference.url} />
       </div>
       <div className="text-xs italic">{reference.description}</div>
-      <div className="font-bold text-center">{reference.name}</div>
+      <div className="text-center font-bold">{reference.name}</div>
     </div>
   );
 }

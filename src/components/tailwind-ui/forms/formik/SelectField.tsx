@@ -7,25 +7,19 @@ import {
   SimpleSelectProps,
   SimpleSelectOption,
 } from '../basic/Select';
+import { FieldProps } from '../util';
 
-export interface SelectFieldProps<OptionType>
-  extends Omit<SelectProps<OptionType>, 'selected' | 'onSelect' | 'error'> {
-  /**
-   * Field name.
-   */
-  name: string;
-}
+export type SelectFieldProps<OptionType> = Omit<
+  SelectProps<OptionType>,
+  'selected' | 'onSelect' | 'error'
+> &
+  FieldProps;
 
-export interface SimpleSelectFieldProps<OptionType>
-  extends Omit<
-    SimpleSelectProps<OptionType>,
-    'selected' | 'onSelect' | 'error'
-  > {
-  /**
-   * Field name.
-   */
-  name: string;
-}
+export type SimpleSelectFieldProps<OptionType> = Omit<
+  SimpleSelectProps<OptionType>,
+  'selected' | 'onSelect' | 'error'
+> &
+  FieldProps;
 
 export function SelectField<OptionType>(
   props: OptionType extends SimpleSelectOption
@@ -36,8 +30,8 @@ export function SelectField<OptionType>(
   const [field, meta, formik] = useField<OptionType | null>(name);
 
   return (
-    // @ts-ignore
-    <Select
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    <Select<any>
       selected={field.value}
       onSelect={(option: OptionType | undefined) => {
         formik.setValue(option || null);

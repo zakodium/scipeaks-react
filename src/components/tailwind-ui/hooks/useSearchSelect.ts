@@ -1,11 +1,16 @@
 import { useField } from 'formik';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 
 import { SimpleSelectOption } from '../forms/basic/Select';
 import {
-  FilterOptions,
+  OptionsFilter,
   defaultOptionsFilter,
 } from '../utils/search-select-utils';
+
+import { useCheckedFormRHFContext } from './useCheckedFormRHF';
+
+export type { OptionsFilter };
 
 export interface SearchSelectHookResult<OptionType> {
   searchValue: string;
@@ -22,7 +27,8 @@ export interface SearchSelectFieldHookResult<OptionType>
 
 export interface SimpleSearchSelectHookConfig<OptionType> {
   options: OptionType[];
-  filterOptions?: FilterOptions<OptionType>;
+  filterOptions?: OptionsFilter<OptionType>;
+  initialSelected?: OptionType;
 }
 
 export interface SimpleSearchSelectFieldHookConfig<OptionType>
@@ -31,7 +37,7 @@ export interface SimpleSearchSelectFieldHookConfig<OptionType>
 }
 export interface SearchSelectHookConfig<OptionType>
   extends SimpleSearchSelectHookConfig<OptionType> {
-  filterOptions: FilterOptions<OptionType>;
+  filterOptions: OptionsFilter<OptionType>;
 }
 
 export interface SearchSelectFieldHookConfig<OptionType>
@@ -55,18 +61,49 @@ export function useSearchSelectField<OptionType>(
   };
 }
 
+export function useSearchSelectFieldRHF<OptionType>(
+  config: OptionType extends SimpleSelectOption
+    ? SimpleSearchSelectFieldHookConfig<OptionType>
+    : SearchSelectFieldHookConfig<OptionType>,
+): SearchSelectFieldHookResult<OptionType> {
+  const searchSelect = useSearchSelect<OptionType>(config);
+  const { setValue } = useCheckedFormRHFContext();
+  const fieldValue = useWatch({
+    name: config.name,
+  });
+  const onSelectHandle = useCallback(
+    (value: OptionType | undefined) => {
+      setValue(config.name, value);
+    },
+    [setValue, config.name],
+  );
+
+  return {
+    ...searchSelect,
+    onSelect: onSelectHandle,
+    selected: fieldValue,
+    name: config.name,
+  };
+}
+
 export function useSearchSelect<OptionType>(
   config: OptionType extends SimpleSelectOption
     ? SimpleSearchSelectHookConfig<OptionType>
     : SearchSelectHookConfig<OptionType>,
 ): SearchSelectHookResult<OptionType> {
-  const { options, filterOptions = defaultOptionsFilter } = config;
+  const {
+    options,
+    filterOptions = defaultOptionsFilter,
+    initialSelected,
+  } = config;
   const [searchValue, setSearchValue] = useState('');
   const newOptions = useMemo(
     () => filterOptions(searchValue, options),
     [options, filterOptions, searchValue],
   );
-  const [selected, onSelect] = useState<OptionType>();
+  const [selected, onSelect] = useState<OptionType | undefined>(
+    initialSelected,
+  );
 
   return {
     searchValue,

@@ -1,15 +1,18 @@
-import clsx from 'clsx';
-import React, { MouseEvent, useCallback, useMemo } from 'react';
+import React, { MouseEvent, Ref, useCallback, useMemo } from 'react';
 
 import { Badge, BadgeVariant } from '../../elements/badge/Badge';
 import { Color } from '../../types';
+import { forwardRefWithGeneric } from '../../util';
 import {
   defaultCanCreate,
   defaultGetValue,
   defaultRenderOption,
   defaultGetBadgeColor,
-  InternalSearchSelect,
+  defaultIsOptionRemovable,
   useSearchSelectInternals,
+  InternalMultiSearchSelect,
+  defaultRenderCreate,
+  IsOptionRemovableCallback,
 } from '../../utils/search-select-utils';
 
 import { SearchSelectProps, SimpleSearchSelectProps } from './SearchSelect';
@@ -20,30 +23,42 @@ export interface SimpleMultiSearchSelectProps<OptionType>
   selected: OptionType[];
   onSelect: (newSelected: OptionType[]) => void;
   getBadgeColor?: (option: OptionType) => Color;
+  isOptionRemovable?: IsOptionRemovableCallback<OptionType>;
 }
 
 export interface MultiSearchSelectProps<OptionType>
   extends Omit<SearchSelectProps<OptionType>, 'selected' | 'onSelect'> {
+  name: string;
   selected: OptionType[];
   onSelect: (newSelected: OptionType[]) => void;
   getBadgeColor?: (option: OptionType) => Color;
+  isOptionRemovable?: IsOptionRemovableCallback<OptionType>;
 }
 
-export function MultiSearchSelect<OptionType>(
+export const MultiSearchSelect = forwardRefWithGeneric(
+  MultiSearchSelectForwardRef,
+);
+
+function MultiSearchSelectForwardRef<OptionType>(
   props: OptionType extends SimpleSelectOption
     ? SimpleMultiSearchSelectProps<OptionType>
     : MultiSearchSelectProps<OptionType>,
+  ref: Ref<HTMLInputElement>,
 ): JSX.Element {
   const {
     onSearchChange,
     options,
     onSelect,
     getBadgeColor = defaultGetBadgeColor,
+    isOptionRemovable = defaultIsOptionRemovable,
     selected,
     getValue = defaultGetValue,
     renderOption = defaultRenderOption,
+    closeListOnSelect = false,
+    clearSearchOnSelect = true,
     onCreate,
     canCreate = defaultCanCreate,
+    renderCreate = defaultRenderCreate,
     clearable = true,
     disabled = false,
     ...otherProps
@@ -53,6 +68,11 @@ export function MultiSearchSelect<OptionType>(
     const selectedValues = new Set(selected.map(getValue));
     return options.filter((option) => !selectedValues.has(getValue(option)));
   }, [options, selected, getValue]);
+
+  const nonRemovableValues = useMemo(
+    () => selected.filter((value) => !isOptionRemovable(value)),
+    [selected, isOptionRemovable],
+  );
 
   const renderedSelected = useMemo(() => {
     return selected.map((option) => {
@@ -71,23 +91,41 @@ export function MultiSearchSelect<OptionType>(
           label={rendered}
           color={getBadgeColor(option)}
           rounded
-          className="mt-1 mr-1"
-          onDismiss={disabled ? undefined : handleDismiss}
+          onDismiss={
+            disabled || !isOptionRemovable(option) ? undefined : handleDismiss
+          }
         />
       );
     });
-  }, [selected, getValue, renderOption, onSelect, getBadgeColor, disabled]);
+  }, [
+    selected,
+    getValue,
+    renderOption,
+    onSelect,
+    getBadgeColor,
+    disabled,
+    isOptionRemovable,
+  ]);
 
   const handleSelect = useCallback(
     (value: OptionType | undefined) => {
       if (value === undefined) {
-        onSelect([]);
+        onSelect(nonRemovableValues);
       } else {
         onSelect([...selected, value]);
       }
     },
-    [selected, onSelect],
+    [selected, onSelect, nonRemovableValues],
   );
+
+  const handleBackspace = useCallback(() => {
+    if (
+      selected.length > 0 &&
+      isOptionRemovable(selected[selected.length - 1])
+    ) {
+      onSelect(selected.slice(0, selected.length - 1));
+    }
+  }, [isOptionRemovable, onSelect, selected]);
 
   const internalProps = useSearchSelectInternals({
     searchValue: props.searchValue,
@@ -96,26 +134,23 @@ export function MultiSearchSelect<OptionType>(
     onSelect: handleSelect,
     getValue,
     renderOption,
+    closeListOnSelect,
+    clearSearchOnSelect,
     onCreate,
     canCreate,
+    renderCreate,
+    onBackspace: handleBackspace,
   });
 
   return (
-    <InternalSearchSelect
+    <InternalMultiSearchSelect
       {...internalProps}
       {...otherProps}
+      inputRef={ref}
       clearable={clearable}
       disabled={disabled}
-      hasValue={selected.length !== 0}
-      leadingInlineAddon={
-        <div
-          className={clsx('inline-flex flex-row flex-wrap -mt-1', {
-            'opacity-75': disabled,
-          })}
-        >
-          {renderedSelected}
-        </div>
-      }
+      hasClearableValue={selected.length !== nonRemovableValues.length}
+      selectedBadges={renderedSelected}
     />
   );
 }

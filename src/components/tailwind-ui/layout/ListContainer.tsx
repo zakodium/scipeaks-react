@@ -38,7 +38,7 @@ export function FlatCardListContainer(props: ListContainerProps) {
   return (
     <div
       className={clsx(
-        'overflow-hidden bg-white border  border-neutral-300',
+        'overflow-hidden border border-neutral-300  bg-white',
         mobileEdgeToEdge ? 'sm:rounded-md' : 'rounded-md',
       )}
     >
@@ -47,15 +47,19 @@ export function FlatCardListContainer(props: ListContainerProps) {
   );
 }
 
-SimpleListContainer.Item = function (props: ListContainerItemProps) {
+SimpleListContainer.Item = function SimpleListContainerItem(
+  props: ListContainerItemProps,
+) {
   return <li className={clsx('py-4', props.className)}>{props.children}</li>;
 };
 
-CardListContainer.Item = function (props: ListContainerItemProps) {
+CardListContainer.Item = function CardListContainerItem(
+  props: ListContainerItemProps,
+) {
   return <SimpleListContainer.Item {...props} />;
 };
 
-FlatCardListContainer.Item = function (
+FlatCardListContainer.Item = function FlatCardListContainerItem(
   props: Omit<ListContainerItemProps, 'mobileEdgeToEdge'>,
 ) {
   return (
