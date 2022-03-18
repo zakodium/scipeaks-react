@@ -11,7 +11,6 @@ function NoNmr() {
     <ErrorPage
       title="Missing NMR data"
       subtitle="This sample has no NMR spectra."
-      hideImage
     />
   );
 }

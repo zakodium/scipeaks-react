@@ -49,7 +49,7 @@ export function useRocDocument(uuid: string): RocDocumentHookResult {
   const roc = useRoc();
   const [state, dispatch] = useReducer(rocDocumentReducer, initialState);
   useEffect(() => {
-    const doc = roc.getDocument(uuid);
+    const doc = roc.getDocument<Record<string, unknown>, string>(uuid);
     doc
       .fetch()
       .then(() => dispatch({ type: 'SET_DOCUMENT', value: doc }))

@@ -1,9 +1,11 @@
 import { useField } from 'formik';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 
 import { SimpleSelectOption } from '../forms/basic/Select';
 import { defaultOptionsFilter } from '../utils/search-select-utils';
 
+import { useCheckedFormRHFContext } from './useCheckedFormRHF';
 import {
   SearchSelectHookConfig,
   SearchSelectHookResult,
@@ -21,20 +23,25 @@ export interface MultiSearchSelectFieldHookResult<OptionType>
   name: string;
 }
 
-export interface SimpleMultiSearchSelectHookConfig<
-  OptionType extends SimpleSelectOption,
-> extends SimpleSearchSelectHookConfig<OptionType> {}
+export interface SimpleMultiSearchSelectHookConfig<OptionType>
+  extends Omit<SimpleSearchSelectHookConfig<OptionType>, 'initialSelected'> {
+  initialSelected?: OptionType[];
+}
 export interface MultiSearchSelectHookConfig<OptionType>
-  extends SearchSelectHookConfig<OptionType> {}
+  extends Omit<SearchSelectHookConfig<OptionType>, 'initialSelected'> {
+  initialSelected?: OptionType[];
+}
 
 export interface MultiSearchSelectFieldHookConfig<OptionType>
-  extends MultiSearchSelectHookConfig<OptionType> {
+  extends Omit<MultiSearchSelectHookConfig<OptionType>, 'initialSelected'> {
   name: string;
 }
 
-export interface SimpleMultiSearchSelectFieldHookConfig<
-  OptionType extends SimpleSelectOption,
-> extends SimpleMultiSearchSelectHookConfig<OptionType> {
+export interface SimpleMultiSearchSelectFieldHookConfig<OptionType>
+  extends Omit<
+    SimpleMultiSearchSelectHookConfig<OptionType>,
+    'initialSelected'
+  > {
   name: string;
 }
 
@@ -54,23 +61,50 @@ export function useMultiSearchSelectField<OptionType>(
   };
 }
 
+export function useMultiSearchSelectFieldRHF<OptionType>(
+  config: OptionType extends SimpleSelectOption
+    ? SimpleMultiSearchSelectFieldHookConfig<OptionType>
+    : MultiSearchSelectFieldHookConfig<OptionType>,
+): MultiSearchSelectFieldHookResult<OptionType> {
+  const searchSelect = useMultiSearchSelect<OptionType>(config);
+  const { setValue } = useCheckedFormRHFContext();
+  const fieldValue = useWatch({ name: config.name });
+  const handleSelect = useCallback(
+    (value: OptionType[]) => {
+      setValue(config.name, value);
+    },
+    [setValue, config.name],
+  );
+
+  return {
+    ...searchSelect,
+    onSelect: handleSelect,
+    selected: fieldValue,
+    name: config.name,
+  };
+}
+
 export function useMultiSearchSelect<OptionType>(
   config: OptionType extends SimpleSelectOption
     ? SimpleMultiSearchSelectHookConfig<OptionType>
     : MultiSearchSelectHookConfig<OptionType>,
 ): MultiSearchSelectHookResult<OptionType> {
-  const { options, filterOptions = defaultOptionsFilter } = config;
+  const {
+    options,
+    filterOptions = defaultOptionsFilter,
+    initialSelected = [],
+  } = config;
   const [searchValue, setSearchValue] = useState('');
-  const newOptions = useMemo(
+  const filteredOptions = useMemo(
     () => filterOptions(searchValue, options),
     [options, filterOptions, searchValue],
   );
-  const [selected, setSelected] = useState<OptionType[]>([]);
+  const [selected, setSelected] = useState<OptionType[]>(initialSelected);
 
   return {
     searchValue,
     onSearchChange: setSearchValue,
-    options: newOptions,
+    options: filteredOptions,
     selected,
     onSelect: setSelected,
   };

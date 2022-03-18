@@ -7,22 +7,19 @@ import {
   SimpleMultiSearchSelectProps,
 } from '../basic/MultiSearchSelect';
 import { SimpleSelectOption } from '../basic/Select';
+import { FieldProps } from '../util';
 
-interface MultiSearchSelectFieldProps<OptionType>
-  extends Omit<
-    MultiSearchSelectProps<OptionType>,
-    'selected' | 'onSelect' | 'error' | 'onBlur'
-  > {
-  name: string;
-}
+export type MultiSearchSelectFieldProps<OptionType> = Omit<
+  MultiSearchSelectProps<OptionType>,
+  'selected' | 'onSelect' | 'error' | 'onBlur'
+> &
+  FieldProps;
 
-interface SimpleMultiSearchSelectFieldProps<OptionType>
-  extends Omit<
-    SimpleMultiSearchSelectProps<OptionType>,
-    'selected' | 'onSelect' | 'error' | 'onBlur'
-  > {
-  name: string;
-}
+export type SimpleMultiSearchSelectFieldProps<OptionType> = Omit<
+  SimpleMultiSearchSelectProps<OptionType>,
+  'selected' | 'onSelect' | 'error' | 'onBlur'
+> &
+  FieldProps;
 
 export function MultiSearchSelectField<OptionType>(
   props: OptionType extends SimpleSelectOption

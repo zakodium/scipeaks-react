@@ -11,7 +11,7 @@ import GHSFull from './ghs/full/GHSFull';
 import GHS from './ghs/summary/GHS';
 import Identifiers from './identifiers/Identifiers';
 
-const tabs: HorizontalNavigationOption[] = [
+const tabs: HorizontalNavigationOption<string>[] = [
   { value: 'ghs', label: 'GHS' },
   { value: 'ghsFull', label: 'GHS Detailed' },
   { value: 'computed', label: 'Computed' },

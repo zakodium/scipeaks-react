@@ -15,7 +15,7 @@ export default function ExternalLink(props: ExternalLinkProps) {
         rel="noreferrer"
         target="_blank"
       >
-        <ExternalLinkIcon className="inline w-4 h-4" />
+        <ExternalLinkIcon className="inline h-4 w-4" />
       </a>
     </>
   );

@@ -12,7 +12,6 @@ function PubchemChemError(props: { smiles: string }) {
     <ErrorPage
       title="Pubchem query not successful."
       subtitle={`Maybe the SMILES string "${smiles}" you entered was invalid.`}
-      hideImage
     />
   );
 }

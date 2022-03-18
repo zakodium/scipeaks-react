@@ -2,8 +2,8 @@ import { Spinner } from './tailwind-ui';
 
 export default function LoadingFull() {
   return (
-    <div className="flex items-center justify-center w-full h-full">
-      <Spinner className="w-10 h-10 text-alternative-500" />
+    <div className="flex h-full w-full items-center justify-center">
+      <Spinner className="h-10 w-10 text-alternative-500" />
     </div>
   );
 }
