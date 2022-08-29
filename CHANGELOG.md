@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/zakodium/c6h6-react/compare/v1.4.1...v1.4.2) (2022-08-29)
+
+
+### Bug Fixes
+
+* update pubchem library to fix when no experimental and identifiers ([#31](https://github.com/zakodium/c6h6-react/issues/31)) ([8576217](https://github.com/zakodium/c6h6-react/commit/8576217c693e288a3f68d04383b2a606188524b3))
+
 ### [1.4.1](https://www.github.com/zakodium/c6h6-react/compare/v1.4.0...v1.4.1) (2022-03-18)
 
 
