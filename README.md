@@ -10,6 +10,8 @@ npm run dev
 
 Open [http://localhost:3000/dev/home](http://localhost:3000/dev/home) with your browser to develop with the home page.
 
+- [pubchem](http://localhost:3000/chemistry/pubchem?smiles=C1%28C%28N2%28C1SC%28C2C%28%3DO%29O%29%28C%29C%29%29%3DO%29%28NC%28CC%3D3%28C%3DCC%3DCC%3D3%29%29%3DO%29)
+
 ## Create new views
 
 ### Decide the view URL
