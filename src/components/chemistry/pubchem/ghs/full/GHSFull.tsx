@@ -15,9 +15,9 @@ export default function GHSFull(props: {
       <p className="mt-4 text-3xl">Pictograms</p>
       <PictogramsTableFull pictograms={ghsFull.pictograms} />
       <p className="mt-4 text-3xl">Hazard Statements</p>
-      <PStatementsTableFull pStatements={ghsFull.pStatements} />
+      <PStatementsTableFull pStatements={ghsFull.hStatements} />
       <p className="mt-4 text-3xl">Precautionary Statements</p>
-      <HStatementsTableFull hStatements={ghsFull.hStatements} />
+      <HStatementsTableFull hStatements={ghsFull.pStatements} />
     </div>
   );
 }
