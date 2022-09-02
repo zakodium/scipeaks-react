@@ -9,12 +9,12 @@ export default function SolubilityTable(props: { data: any }) {
   return (
     <div>
       <div className="pt-5 text-xl">Solubility</div>
-      <Table Header={Header} data={data} Tr={Row} />
+      <Table renderHeader={renderHeader} data={data} renderTr={Row} />
     </div>
   );
 }
 
-function Header() {
+function renderHeader() {
   return (
     <tr>
       <Th className="w-3/4">Original value</Th>
@@ -23,8 +23,7 @@ function Header() {
   );
 }
 
-function Row(props: any) {
-  const value = props.value;
+function Row(value: any) {
   return (
     <tr key={value.label}>
       <CompactTd>{value.data.original}</CompactTd>

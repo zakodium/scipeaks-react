@@ -3,7 +3,7 @@ import { Table, Th } from '@/components/tailwind-ui';
 
 import Pictogram from '../pictograms/Pictogram';
 
-function Header() {
+function renderHeader() {
   return (
     <tr>
       <Th>Code</Th>
@@ -13,8 +13,7 @@ function Header() {
   );
 }
 
-function Row(props: any) {
-  const row = props.value;
+function Row(row: any) {
   return (
     <tr>
       <CompactTd>{row.code}</CompactTd>
@@ -30,6 +29,12 @@ export default function PictogramsTable(props: any) {
   if (!props.pictograms || props.pictograms.length < 1) {
     return <>No pictograms found.</>;
   } else {
-    return <Table Header={Header} data={props.pictograms} Tr={Row} />;
+    return (
+      <Table
+        renderHeader={renderHeader}
+        data={props.pictograms}
+        renderTr={Row}
+      />
+    );
   }
 }
