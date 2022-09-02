@@ -1,4 +1,4 @@
-import { ChevronDownIcon, XIcon } from '@heroicons/react/solid';
+import { ChevronDownIcon, PlusCircleIcon, XIcon } from '@heroicons/react/solid';
 import clsx from 'clsx';
 import React, {
   ChangeEvent,
@@ -15,7 +15,13 @@ import React, {
 } from 'react';
 
 import { Spinner } from '../elements/spinner/Spinner';
+import { Checkbox } from '../forms/basic/Checkbox';
 import { Input } from '../forms/basic/Input';
+import {
+  SearchSelectCanCreateCallback,
+  SearchSelectOnCreateCallback,
+  SearchSelectRenderCreateCallback,
+} from '../forms/basic/SearchSelect';
 import {
   GetValue,
   RenderOption,
@@ -43,13 +49,20 @@ export type IsOptionRemovableCallback<OptionType> = (
   option: OptionType,
 ) => boolean;
 
+function normalize(text: string) {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
 export function defaultOptionsFilter<OptionType extends SimpleSelectOption>(
   query: string,
   options: OptionType[],
 ): OptionType[] {
-  const lowerQuery = query.toLowerCase();
+  const normalizedQuery = normalize(query);
   return options.filter((option) =>
-    String(defaultRenderOption(option)).toLowerCase().includes(lowerQuery),
+    normalize(String(defaultRenderOption(option))).includes(normalizedQuery),
   );
 }
 
@@ -57,9 +70,9 @@ export function customOptionsFilter<OptionType>(
   getText: (option: OptionType) => string,
 ) {
   return (query: string, options: Array<OptionType>) => {
-    const lowerQuery = query.toLowerCase();
+    const normalizedQuery = normalize(query);
     return options.filter((obj) =>
-      getText(obj).toLowerCase().includes(lowerQuery),
+      normalize(getText(obj)).includes(normalizedQuery),
     );
   };
 }
@@ -72,6 +85,11 @@ export const defaultNoResultsHint = <DefaultNoResultsHint />;
 
 export function defaultRenderOption(option: SimpleSelectOption): ReactNode {
   return typeof option === 'object' ? option.label : option;
+}
+
+export function defaultRenderSelectedOptions(options: unknown[]): ReactNode {
+  if (options.length === 0) return null;
+  return `${options.length} item${options.length > 1 ? 's' : ''} selected`;
 }
 
 export function defaultGetValue(option: SimpleSelectOption): string | number {
@@ -104,39 +122,121 @@ export type InternalOption<OptionType> =
       value: string | number;
       label: ReactNode;
       originalValue: OptionType;
+      selected: boolean;
+      removable: boolean;
     }
   | {
       type: 'create';
       value: '___internal_create___';
       label: ReactNode;
       originalValue: string;
+      selected: false;
+      removable: false;
     };
 
-export function buildInternalOptions<OptionType>(
+function buildInternalOptions<OptionType>(
+  // List of options, including the selected ones (duplicated in order to preserve order)
   options: OptionType[],
   getValue: GetValue<OptionType>,
   renderOption: RenderOption<OptionType>,
-  renderCreate: (value: string) => ReactNode,
+  renderCreate: SearchSelectRenderCreateCallback,
+  selected: OptionType[],
+  showSelected: boolean,
+  isOptionRemovable?: IsOptionRemovableCallback<OptionType>,
   createValue?: string,
+
+  // list of every filtered options
+  filteredSelected?: OptionType[],
+  formattedSelected?: { value: string | number; label: ReactNode },
+  pinSelectedOptions = false,
+
+  // liste des options sélectionnées au moment de l’ouverture du dropdown filtrés
+  pinnedOptions?: Array<OptionType>,
 ): InternalOption<OptionType>[] {
-  const internalOptions: InternalOption<OptionType>[] = options.map(
-    (option) => {
-      return {
-        type: 'option',
+  const internalOptions: InternalOption<OptionType>[] = [];
+
+  const pinFiltered =
+    pinnedOptions?.filter(
+      (el) =>
+        filteredSelected?.some(
+          (filtered) => getValue(filtered) === getValue(el),
+        ) || options.some((opt) => getValue(opt) === getValue(el)),
+    ) || [];
+
+  if (showSelected) {
+    // Start with options which are selected but not in the list (in case of pagination)
+    const optionsAdditionnalPinned =
+      filteredSelected?.filter(
+        (option) => !options?.some((opt) => getValue(opt) === getValue(option)),
+      ) || [];
+
+    let renderOptions = [...optionsAdditionnalPinned, ...options];
+
+    if (pinSelectedOptions) {
+      // Create 2 array from options, to separate the pinned and not pinned one (if containing in pinFiltered)
+      const { pinned, notPinned } = options.reduce<{
+        notPinned: Array<OptionType>;
+        pinned: Array<OptionType>;
+      }>(
+        (acc, curr) => {
+          const isPinned = pinFiltered.some(
+            (option) => getValue(option) === getValue(curr),
+          );
+
+          acc[isPinned ? 'pinned' : 'notPinned'].push(curr);
+          return acc;
+        },
+        { notPinned: [], pinned: [] },
+      );
+
+      renderOptions = [...optionsAdditionnalPinned, ...pinned, ...notPinned];
+    }
+
+    internalOptions.push(
+      ...renderOptions.map((option) => {
+        const value = getValue(option);
+        return {
+          type: 'option' as const,
+          value: getValue(option),
+          label: renderOption(option),
+          originalValue: option,
+          selected: selected.some(
+            (selectedOption) => getValue(selectedOption) === value,
+          ),
+          removable: isOptionRemovable?.(option) || false,
+        };
+      }),
+    );
+  } else {
+    const optionsToShow = options.filter((option) => {
+      const value = getValue(option);
+      return (
+        value === formattedSelected?.value ||
+        !selected.some((selectedOption) => getValue(selectedOption) === value)
+      );
+    });
+    internalOptions.push(
+      ...optionsToShow.map((option) => ({
+        type: 'option' as const,
         value: getValue(option),
         label: renderOption(option),
         originalValue: option,
-      };
-    },
-  );
+        selected: false,
+        removable: isOptionRemovable?.(option) || false,
+      })),
+    );
+  }
   if (createValue) {
     internalOptions.push({
       type: 'create',
       value: '___internal_create___',
       label: renderCreate(createValue),
       originalValue: createValue,
+      selected: false,
+      removable: false,
     });
   }
+
   return internalOptions;
 }
 
@@ -147,19 +247,22 @@ export interface FormattedOptionProps<OptionType> {
   setFocused: (index: number) => void;
   onSelect: (option: InternalOption<OptionType>) => void;
   highlightClassName: string;
+  showSelected: boolean;
 }
 
 export function FormattedOption<OptionType>(
   props: FormattedOptionProps<OptionType>,
 ) {
-  const { index, option, focused, setFocused, onSelect } = props;
+  const { index, option, focused, setFocused, onSelect, showSelected } = props;
   const isFocused = focused === index;
   const ref = useRef<HTMLDivElement>(null);
+
   useLayoutEffect(() => {
     if (isFocused) {
       ref.current?.scrollIntoView({ block: 'nearest' });
     }
   }, [isFocused]);
+
   return (
     <div
       ref={ref}
@@ -170,31 +273,62 @@ export function FormattedOption<OptionType>(
       onMouseMove={() => setFocused(index)}
       onClick={() => onSelect(option)}
     >
-      {option.label}
+      {showSelected ? (
+        <div className="flex items-center">
+          {option.type === 'create' ? (
+            <PlusCircleIcon className="-ml-0.5 mr-3 h-5 w-5 text-primary-600" />
+          ) : (
+            <Checkbox
+              readOnly
+              checked={option.selected}
+              disabled={!option.removable}
+              name={String(option.value)}
+            />
+          )}
+
+          <div
+            className={clsx({
+              'text-neutral-500': !option.removable && option.selected,
+            })}
+          >
+            {option.label}
+          </div>
+        </div>
+      ) : option.selected ? null : (
+        option.label
+      )}
     </div>
   );
 }
 
 interface UseSearchSelectInternalsConfig<OptionType> {
+  showSelected: boolean;
+  selected: OptionType[];
+  filteredSelected?: OptionType[];
   searchValue: string;
   onSearchChange: (newValue: string) => void;
   options: OptionType[];
-  onSelect: (option: OptionType | undefined) => void;
+  onSelect: (option: OptionType | undefined, remove?: boolean) => void;
   getValue: GetValue<OptionType>;
   renderOption: RenderOption<OptionType>;
   closeListOnSelect: boolean;
   clearSearchOnSelect: boolean;
-  onCreate?: (value: string) => void;
-  canCreate: (value: string) => boolean;
+  onCreate?: SearchSelectOnCreateCallback<OptionType>;
+  canCreate: SearchSelectCanCreateCallback;
+  renderCreate: SearchSelectRenderCreateCallback;
+  isOptionRemovable?: IsOptionRemovableCallback<OptionType>;
   onBackspace?: () => void;
+  pinSelectedOptions: boolean;
   formattedSelected?: { value: string | number; label: ReactNode };
-  renderCreate: (value: string) => ReactNode;
 }
 
 export function useSearchSelectInternals<OptionType>(
   config: UseSearchSelectInternalsConfig<OptionType>,
 ): UseSearchSelectInternalsReturn<OptionType> {
   const {
+    showSelected,
+    selected,
+    filteredSelected,
     searchValue,
     onSearchChange,
     options,
@@ -208,13 +342,16 @@ export function useSearchSelectInternals<OptionType>(
     formattedSelected,
     onBackspace,
     renderCreate,
+    isOptionRemovable,
+    pinSelectedOptions,
   } = config;
 
-  const [isListOpen, openList, closeList] = useOnOff(false);
+  const [isListOpen, openStateList, closeStateList] = useOnOff(false);
   const [focused, setFocused] = useState(0);
+  const [pinnedOptions, setPinnedOptions] = useState<Array<OptionType>>([]);
 
   const mainRef = useRef<HTMLDivElement>(null);
-  useOnClickOutside(mainRef, closeList);
+  useOnClickOutside(mainRef, closeStateList);
 
   const createValue =
     onCreate && searchValue && canCreate(searchValue) ? searchValue : undefined;
@@ -226,26 +363,51 @@ export function useSearchSelectInternals<OptionType>(
         getValue,
         renderOption,
         renderCreate,
+        selected,
+        showSelected,
+        isOptionRemovable,
         createValue,
+        filteredSelected,
+        formattedSelected,
+        pinSelectedOptions,
+        pinnedOptions,
       ),
-    [options, getValue, renderOption, renderCreate, createValue],
+    [
+      options,
+      getValue,
+      renderOption,
+      renderCreate,
+      createValue,
+      selected,
+      isOptionRemovable,
+      showSelected,
+      filteredSelected,
+      formattedSelected,
+      pinSelectedOptions,
+      pinnedOptions,
+    ],
   );
 
   // Always reset focus to the first element if the options list has changed.
   useEffect(() => {
     if (formattedSelected) {
-      for (let i = 0; i < formattedOptions.length; i++) {
-        if (formattedSelected.value === formattedOptions[i].value) {
+      for (let i = 0; i < options.length; i++) {
+        if (formattedSelected.value === getValue(options[i])) {
           setFocused(i);
           return;
         }
       }
     }
     setFocused(0);
-  }, [formattedOptions, formattedSelected]);
+  }, [options, formattedSelected, getValue]);
 
   const { setReferenceElement, setPopperElement, popperProps } =
     useSameWidthPopper<HTMLElement>({ placement: 'bottom', distance: 6 });
+
+  function openList() {
+    setPinnedOptions(selected.slice());
+    openStateList();
+  }
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     if (!isListOpen) {
@@ -256,12 +418,19 @@ export function useSearchSelectInternals<OptionType>(
 
   function selectOption(option: InternalOption<OptionType>): void {
     if (option.type === 'option') {
-      onSelect(option.originalValue);
+      if (option.selected) {
+        if (option.removable) {
+          onSelect(option.originalValue, true);
+        }
+        // Do not remove if not removable
+      } else {
+        onSelect(option.originalValue, false);
+      }
     } else {
-      onCreate?.(option.originalValue);
+      onCreate?.(option.originalValue, onSelect);
     }
     if (closeListOnSelect) {
-      closeList();
+      closeStateList();
     }
     if (clearSearchOnSelect) {
       onSearchChange('');
@@ -292,7 +461,7 @@ export function useSearchSelectInternals<OptionType>(
       case 'Escape':
         onSearchChange('');
         if (isListOpen) {
-          closeList();
+          closeStateList();
         }
         break;
       case 'Enter':
@@ -305,7 +474,7 @@ export function useSearchSelectInternals<OptionType>(
       case ' ':
         if (searchValue === '') {
           if (isListOpen) {
-            closeList();
+            closeStateList();
           } else {
             openList();
           }
@@ -325,7 +494,7 @@ export function useSearchSelectInternals<OptionType>(
   function handleChevronDownClick(event: MouseEvent) {
     if (isListOpen) {
       event.preventDefault();
-      closeList();
+      closeStateList();
     } else {
       openList();
     }
@@ -338,7 +507,7 @@ export function useSearchSelectInternals<OptionType>(
 
   return {
     mainRef,
-    closeList,
+    closeList: closeStateList,
     openList,
     isListOpen,
     formattedOptions,
@@ -352,6 +521,7 @@ export function useSearchSelectInternals<OptionType>(
     handleKeyDown,
     handleChevronDownClick,
     handleXClick,
+    showSelected,
   };
 }
 
@@ -363,6 +533,7 @@ interface UseSearchSelectInternalsReturn<OptionType>
   isListOpen: boolean;
   formattedOptions: InternalOption<OptionType>[];
   focused: number;
+  showSelected: boolean;
   setFocused: (newFocus: number) => void;
   onSelect: (option: InternalOption<OptionType>) => void;
   handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -386,6 +557,7 @@ interface InternalSearchSelectProps<OptionType>
   placeholder?: string;
   searchValue: string;
   formattedSelected?: { value: string | number; label: ReactNode };
+  showSelected: boolean;
   hasClearableValue: boolean;
   highlightClassName?: string;
   required?: boolean;
@@ -421,6 +593,7 @@ export function InternalSearchSelect<OptionType>(
     disabled = false,
     required = false,
     loading = false,
+    autoFocus = false,
     noResultsHint = defaultNoResultsHint,
     error,
     help,
@@ -433,13 +606,18 @@ export function InternalSearchSelect<OptionType>(
     hasClearableValue,
     name,
     onBlur,
-    highlightClassName = 'text-white bg-primary-600',
+    highlightClassName = '',
+    showSelected = false,
     size,
   } = props;
 
+  const finalHighlightClassName =
+    highlightClassName ||
+    (showSelected ? 'bg-neutral-200' : 'text-white bg-primary-600');
   return (
     <div ref={mainRef}>
       <Input
+        autoFocus={autoFocus}
         ref={inputRef}
         required={required}
         wrapperRef={setReferenceElement}
@@ -453,6 +631,7 @@ export function InternalSearchSelect<OptionType>(
         size={size}
         error={error}
         help={help}
+        autoComplete="off"
         onBlur={(event) => {
           onBlur?.(event);
           closeList();
@@ -490,7 +669,8 @@ export function InternalSearchSelect<OptionType>(
             focused,
             setFocused,
             onSelect,
-            highlightClassName,
+            highlightClassName: finalHighlightClassName,
+            showSelected,
           }}
         />
       )}
@@ -501,6 +681,7 @@ export function InternalSearchSelect<OptionType>(
 interface InternalMultiSearchSelectProps<OptionType>
   extends InternalSearchSelectProps<OptionType> {
   selectedBadges?: ReactNode[];
+  showSelected: boolean;
 }
 export function InternalMultiSearchSelect<OptionType>(
   props: InternalMultiSearchSelectProps<OptionType>,
@@ -542,8 +723,12 @@ export function InternalMultiSearchSelect<OptionType>(
     id = name,
     onBlur,
     highlightClassName,
+    showSelected = false,
   } = props;
 
+  const finalHighlightClassName =
+    highlightClassName ||
+    (showSelected ? 'bg-neutral-200' : 'text-white bg-primary-600');
   return (
     <div ref={mainRef} className="flex flex-col">
       <div className="flex items-baseline justify-between gap-2">
@@ -560,7 +745,7 @@ export function InternalMultiSearchSelect<OptionType>(
         ref={setReferenceElement}
         htmlFor={id}
         className={clsx(
-          'border bg-white py-2 px-3 focus-within:ring-1',
+          'border py-2 px-3 focus-within:ring-1',
           'relative flex flex-1 flex-row text-base shadow-sm sm:text-sm',
           'rounded-md',
           {
@@ -568,6 +753,7 @@ export function InternalMultiSearchSelect<OptionType>(
             [inputColor]: !error,
             [inputError]: error,
             'bg-neutral-50 text-neutral-500': disabled,
+            'bg-white': !disabled,
           },
         )}
       >
@@ -582,6 +768,7 @@ export function InternalMultiSearchSelect<OptionType>(
             size={Math.max(5, placeholder?.length || 0, searchValue.length)}
             disabled={disabled}
             autoFocus={autoFocus}
+            autoComplete="off"
             onBlur={(event) => {
               onBlur?.(event);
               closeList();
@@ -623,7 +810,8 @@ export function InternalMultiSearchSelect<OptionType>(
             focused,
             setFocused,
             onSelect,
-            highlightClassName,
+            highlightClassName: finalHighlightClassName,
+            showSelected,
           }}
         />
       )}
@@ -643,7 +831,9 @@ type OptionsListProps<OptionType> = Pick<
   Pick<
     InternalSearchSelectProps<OptionType>,
     'noResultsHint' | 'highlightClassName'
-  >;
+  > & {
+    showSelected: boolean;
+  };
 
 function OptionsList<OptionType>(props: OptionsListProps<OptionType>) {
   const {
@@ -655,7 +845,11 @@ function OptionsList<OptionType>(props: OptionsListProps<OptionType>) {
     setFocused,
     onSelect,
     highlightClassName = 'text-white bg-primary-600',
+    showSelected,
   } = props;
+  const finalFormattedOptions = showSelected
+    ? formattedOptions
+    : formattedOptions.filter((option) => !option.selected);
   return (
     <div
       ref={setPopperElement}
@@ -665,10 +859,10 @@ function OptionsList<OptionType>(props: OptionsListProps<OptionType>) {
       // because that would close the list.
       onMouseDown={preventDefault}
     >
-      {formattedOptions.length === 0 ? (
+      {finalFormattedOptions.length === 0 ? (
         <div className="p-2">{noResultsHint}</div>
       ) : (
-        formattedOptions.map((option, index) => (
+        finalFormattedOptions.map((option, index) => (
           <FormattedOption
             key={option.value}
             index={index}
@@ -677,6 +871,7 @@ function OptionsList<OptionType>(props: OptionsListProps<OptionType>) {
             setFocused={setFocused}
             onSelect={onSelect}
             highlightClassName={highlightClassName}
+            showSelected={showSelected}
           />
         ))
       )}

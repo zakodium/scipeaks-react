@@ -6,31 +6,35 @@ import {
   XCircleIcon,
 } from '@heroicons/react/solid';
 import clsx from 'clsx';
-import React, { ReactNode } from 'react';
+import React, {
+  ButtonHTMLAttributes,
+  createContext,
+  ReactNode,
+  useContext,
+} from 'react';
 
+import { IconButton } from '../elements/buttons/IconButton';
 import { Color } from '../types';
 
-const closeButtonColors: Record<Color, string> = {
-  [Color.primary]:
+export const AlertType = {
+  INFO: 'info',
+  SUCCESS: 'success',
+  WARNING: 'warning',
+  ERROR: 'error',
+} as const;
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type AlertType = typeof AlertType[keyof typeof AlertType];
+
+const closeButtonColors: Record<AlertType, string> = {
+  [AlertType.INFO]:
     'text-primary-500 bg-primary-50 hover:bg-primary-100 active:bg-primary-200 focus:ring-offset-primary-50 focus:ring-primary-600',
-  [Color.neutral]:
-    'text-neutral-500 bg-neutral-50 hover:bg-neutral-100 active:bg-neutral-200 focus:ring-offset-neutral-50 focus:ring-neutral-600',
-  [Color.success]:
+  [AlertType.SUCCESS]:
     'text-success-500 bg-success-50 hover:bg-success-100 active:bg-success-200 focus:ring-offset-success-50 focus:ring-success-600',
-  [Color.warning]:
+  [AlertType.WARNING]:
     'text-warning-500 bg-warning-50 hover:bg-warning-100 active:bg-warning-200 focus:ring-offset-warning-50 focus:ring-warning-600',
-  [Color.alternative]:
-    'text-alternative-500 bg-alternative-50 hover:bg-alternative-100 active:bg-alternative-200 focus:ring-offset-alternative-50 focus:ring-alternative-600',
-  [Color.danger]:
+  [AlertType.ERROR]:
     'text-danger-500 bg-danger-50 hover:bg-danger-100 active:bg-danger-200 focus:ring-offset-danger-50 focus:ring-danger-600',
 };
-
-export enum AlertType {
-  SUCCESS = 'success',
-  INFO = 'info',
-  WARNING = 'warning',
-  ERROR = 'error',
-}
 
 export interface AlertProps {
   type: AlertType;
@@ -90,6 +94,8 @@ function getColorByType(type: AlertType): Color {
   }
 }
 
+const alertContext = createContext<AlertType>(AlertType.INFO);
+
 export function Alert(props: AlertProps): JSX.Element {
   const type = theme[props.type];
 
@@ -106,31 +112,33 @@ export function Alert(props: AlertProps): JSX.Element {
             </div>
           )}
           {props.children && (
-            <div
-              className={clsx(
-                'text-sm',
-                props.title && 'mt-2',
-                type.theme.text,
-              )}
-            >
-              {props.children}
-            </div>
+            <alertContext.Provider value={props.type}>
+              <div
+                className={clsx(
+                  'text-sm',
+                  props.title && 'mt-2',
+                  type.theme.text,
+                )}
+              >
+                {props.children}
+              </div>
+            </alertContext.Provider>
           )}
         </div>
 
         {props.onDismiss && (
           <div className="ml-auto pl-3">
             <div className="-mx-1.5 -my-1.5">
-              <button
-                type="button"
+              <IconButton
                 onClick={props.onDismiss}
                 className={clsx(
-                  closeButtonColors[getColorByType(props.type)],
+                  closeButtonColors[props.type],
                   'rounded-full p-1.5 focus:outline-none focus:ring-2 focus:ring-offset-2',
                 )}
-              >
-                <XIcon className="h-5 w-5" />
-              </button>
+                icon={<XIcon />}
+                color={getColorByType(props.type)}
+                size="5"
+              />
             </div>
           </div>
         )}
@@ -138,3 +146,43 @@ export function Alert(props: AlertProps): JSX.Element {
     </div>
   );
 }
+
+const alertButtonColors: Record<AlertType, string> = {
+  [AlertType.INFO]:
+    'bg-primary-50 text-primary-800 hover:bg-primary-100 focus:ring-primary-600 focus:ring-offset-primary-50',
+  [AlertType.SUCCESS]:
+    'bg-success-50 text-success-800 hover:bg-success-100 focus:ring-success-600 focus:ring-offset-success-50',
+  [AlertType.WARNING]:
+    'bg-warning-50 text-warning-800 hover:bg-warning-100 focus:ring-warning-600 focus:ring-offset-warning-50',
+  [AlertType.ERROR]:
+    'bg-danger-50 text-danger-800 hover:bg-danger-100 focus:ring-danger-600 focus:ring-offset-danger-50',
+};
+
+export interface AlertButtonsProps {
+  children: ReactNode;
+}
+
+Alert.Buttons = function AlertButtons(props: AlertButtonsProps) {
+  return <div className="-mx-2 mt-1 flex gap-1.5">{props.children}</div>;
+};
+
+export interface AlertButtonProps {
+  onClick?: ButtonHTMLAttributes<HTMLButtonElement>['onClick'];
+  children: ReactNode;
+}
+
+Alert.Button = function AlertButton(props: AlertButtonProps) {
+  const color = useContext(alertContext);
+  return (
+    <button
+      type="button"
+      onClick={props.onClick}
+      className={clsx(
+        'rounded-md px-2 py-1.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2',
+        alertButtonColors[color],
+      )}
+    >
+      {props.children}
+    </button>
+  );
+};

@@ -29,16 +29,16 @@ export interface SimpleSearchSelectProps<OptionType> {
    * Callback which will be called when the user selects the "create" option.
    * Passing this prop is what makes the option to appear.
    */
-  onCreate?: (value: string) => void;
+  onCreate?: SearchSelectOnCreateCallback<OptionType>;
   /**
    * Callback which will be called before displaying the "create" option to the
    * user. If it is present and doesn't return `true`, the option will not be displayed.
    */
-  canCreate?: (value: string) => boolean;
+  canCreate?: SearchSelectCanCreateCallback;
   /**
    * Custom function to render the "create" option.
    */
-  renderCreate?: (value: string) => ReactNode;
+  renderCreate?: SearchSelectRenderCreateCallback;
 
   /**
    * Function to get the value that uniquely identifies each option.
@@ -48,6 +48,10 @@ export interface SimpleSearchSelectProps<OptionType> {
    * Custom function to render each option.
    */
   renderOption?: RenderOption<OptionType>;
+  /**
+   * Custom function to render the selected option.
+   */
+  renderSelectedOption?: RenderOption<OptionType>;
 
   /**
    * Whether the list should be closed when an element is selected.
@@ -133,6 +137,13 @@ export interface SimpleSearchSelectProps<OptionType> {
   autoFocus?: boolean;
 }
 
+export type SearchSelectCanCreateCallback = (value: string) => boolean;
+export type SearchSelectOnCreateCallback<OptionType> = (
+  value: string,
+  select: (option: OptionType | undefined) => void,
+) => void;
+export type SearchSelectRenderCreateCallback = (value: string) => ReactNode;
+
 export interface SearchSelectProps<OptionType>
   extends SimpleSearchSelectProps<OptionType> {
   getValue: GetValue<OptionType>;
@@ -154,6 +165,8 @@ function SearchSelectForwardRef<OptionType>(
     selected,
     getValue = defaultGetValue,
     renderOption = defaultRenderOption,
+    renderSelectedOption,
+
     closeListOnSelect = true,
     clearSearchOnSelect = true,
     onCreate,
@@ -162,16 +175,19 @@ function SearchSelectForwardRef<OptionType>(
     ...otherProps
   } = props;
 
+  const finalRenderSelectedOption = renderSelectedOption || renderOption;
+
   const formattedSelected = useMemo(() => {
     if (selected) {
       return {
         value: getValue(selected),
-        label: renderOption(selected),
+        label: finalRenderSelectedOption(selected),
       };
     }
-  }, [selected, getValue, renderOption]);
+  }, [selected, getValue, finalRenderSelectedOption]);
 
   const internalProps = useSearchSelectInternals({
+    showSelected: false,
     searchValue: props.searchValue,
     onSearchChange,
     options,
@@ -184,6 +200,8 @@ function SearchSelectForwardRef<OptionType>(
     canCreate,
     renderCreate,
     formattedSelected,
+    selected: selected ? [selected] : [],
+    pinSelectedOptions: false,
   });
 
   return (

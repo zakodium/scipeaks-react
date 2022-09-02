@@ -20,10 +20,13 @@ export interface TableSortConfig {
   onChange: TableSortChangeCallback;
 }
 
-export enum TableSortDirection {
-  ASCENDING = 'ASCENDING',
-  DESCENDING = 'DESCENDING',
-}
+export const TableSortDirection = {
+  ASCENDING: 'ASCENDING',
+  DESCENDING: 'DESCENDING',
+} as const;
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type TableSortDirection =
+  typeof TableSortDirection[keyof typeof TableSortDirection];
 
 export type TableSortChangeCallback = (field: string) => void;
 

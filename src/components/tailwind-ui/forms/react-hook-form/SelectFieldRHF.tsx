@@ -2,12 +2,29 @@ import React from 'react';
 import { useController } from 'react-hook-form';
 
 import { useCheckedFormRHFContext } from '../../hooks/useCheckedFormRHF';
-import { Select, SimpleSelectOption } from '../basic/Select';
 import {
-  SelectFieldProps,
-  SimpleSelectFieldProps,
-} from '../formik/SelectField';
-import { defaultErrorSerializer, RHFValidationProps } from '../util';
+  Select,
+  SelectProps,
+  SimpleSelectOption,
+  SimpleSelectProps,
+} from '../basic/Select';
+import {
+  defaultErrorSerializer,
+  FieldProps,
+  RHFValidationProps,
+} from '../util';
+
+export type SelectFieldProps<OptionType> = Omit<
+  SelectProps<OptionType>,
+  'selected' | 'onSelect' | 'error'
+> &
+  FieldProps;
+
+export type SimpleSelectFieldProps<OptionType> = Omit<
+  SimpleSelectProps<OptionType>,
+  'selected' | 'onSelect' | 'error'
+> &
+  FieldProps;
 
 export function SelectFieldRHF<OptionType>(
   props: RHFValidationProps &

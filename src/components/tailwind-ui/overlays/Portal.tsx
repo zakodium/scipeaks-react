@@ -1,6 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { ReactNode, useContext } from 'react';
+import { createPortal } from 'react-dom';
 
-export const Portal: React.FC = ({ children }) => {
-  return ReactDOM.createPortal(children, document.body);
-};
+import { portalContext } from './PortalContext';
+
+export interface PortalProps {
+  children: ReactNode;
+}
+
+export function Portal(props: PortalProps) {
+  const element = useContext(portalContext);
+  if (element === null) {
+    return null;
+  }
+  return createPortal(props.children, element);
+}

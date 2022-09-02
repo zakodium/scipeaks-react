@@ -9,6 +9,15 @@ export function forwardRefWithGeneric<T, P = unknown>(
   return forwardRef(render);
 }
 
+// https://github.com/tailwindlabs/headlessui/blob/main/packages/%40headlessui-react/src/utils/render.ts
+export function forwardRefWithAs<
+  T extends { name: string; displayName?: string },
+>(component: T): T & { displayName: string } {
+  return Object.assign(forwardRef(component as unknown as any) as any, {
+    displayName: component.displayName ?? component.name,
+  });
+}
+
 const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
 export const commandKeyExists =
   userAgent.includes('Macintosh') ||

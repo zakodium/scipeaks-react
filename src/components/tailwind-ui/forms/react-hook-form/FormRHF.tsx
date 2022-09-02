@@ -21,8 +21,9 @@ import type { AnyObjectSchema } from 'yup';
 
 import { EmptyValue, getEmptyValueProp } from '../util';
 
-interface FormStatus {
-  error?: Error;
+interface FormStatus<T extends FieldValues = FieldValues> {
+  error: Error;
+  submitValues: T;
 }
 
 interface RHFConfig {
@@ -40,13 +41,14 @@ export function useRHFConfig() {
   return value;
 }
 
-const formStatusContext = createContext<
+type FormStatusContext<T extends FieldValues = FieldValues> =
   | readonly [
-      FormStatus | null,
-      React.Dispatch<React.SetStateAction<FormStatus | null>>,
+      FormStatus<T> | null,
+      React.Dispatch<React.SetStateAction<FormStatus<T> | null>>,
     ]
-  | null
->(null);
+  | null;
+
+const formStatusContext = createContext<FormStatusContext>(null);
 
 function multiYupResolver<TValues extends FieldValues>(
   schemas: AnyObjectSchema | AnyObjectSchema[],
@@ -85,8 +87,8 @@ export type FormRHFProps<TValues extends FieldValues> = Omit<
   children: ReactNode;
   validationSchema?: AnyObjectSchema | AnyObjectSchema[];
   noDefaultStyle?: boolean;
+  id?: string;
   className?: string;
-  defaultValues: TValues;
   emptyValue?: EmptyValue;
 };
 
@@ -97,6 +99,7 @@ export function FormRHF<TValues extends FieldValues>(
     onSubmit,
     onInvalidSubmit,
     noDefaultStyle = false,
+    id,
     className,
     validationSchema,
     children,
@@ -125,15 +128,22 @@ export function FormRHF<TValues extends FieldValues>(
       <formStatusContext.Provider value={contextValue}>
         <FormProvider {...methods}>
           <form
+            id={id}
             className={clsx(
               { 'flex flex-1 flex-col gap-y-4': !noDefaultStyle },
               className,
             )}
-            onSubmit={async (event) => {
-              const submit = methods.handleSubmit(onSubmit, onInvalidSubmit);
-              try {
-                await submit(event);
-              } catch (err) {
+            onSubmit={(event) => {
+              event.stopPropagation();
+
+              let submitValues: TValues;
+
+              const submit = methods.handleSubmit((data, event) => {
+                submitValues = data;
+                return onSubmit(data, event);
+              }, onInvalidSubmit);
+
+              submit(event).catch((err) => {
                 if (!(err instanceof Error)) {
                   // eslint-disable-next-line no-console
                   console.error(
@@ -141,12 +151,14 @@ export function FormRHF<TValues extends FieldValues>(
                     'FormRHF submit resulted in a non-error exception',
                   );
                 }
+
                 setStatus({
                   error: err as Error,
+                  submitValues,
                 });
                 // Make sure RHF counts this submit as unsuccessful
                 throw err;
-              }
+              });
             }}
             noValidate
           >
@@ -158,8 +170,8 @@ export function FormRHF<TValues extends FieldValues>(
   );
 }
 
-export function useFormStatus() {
-  const context = useContext(formStatusContext);
+export function useFormStatus<T extends FieldValues = FieldValues>() {
+  const context = useContext(formStatusContext) as FormStatusContext<T>;
   if (context === null) {
     throw new Error('useFormStatus cannot be used outside a Provider');
   }

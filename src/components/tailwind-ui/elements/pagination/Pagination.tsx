@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 
 import { Size, Variant } from '../../types';
 import { ButtonGroup } from '../buttons/ButtonGroup';
@@ -19,6 +19,10 @@ export interface PaginationProps {
   position?: PaginationPosition;
   className?: string;
   buttonSize?: Size;
+
+  previousText?: string;
+  nextText?: string;
+  getText?: (actual: number, total: number) => ReactNode;
 }
 
 export function Pagination(props: PaginationProps) {
@@ -33,6 +37,10 @@ export function Pagination(props: PaginationProps) {
     position = 'center',
     buttonSize = Size.medium,
     className,
+
+    previousText = 'Previous',
+    nextText = 'Next',
+    getText = getPaginationText,
   } = props;
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
@@ -75,20 +83,20 @@ export function Pagination(props: PaginationProps) {
       className={clsx(
         'flex items-center',
         {
-          'justify-between': withText === true,
-          'justify-center': withText === false && position === 'center',
-          'justify-start': withText === false && position === 'start',
-          'justify-end': withText === false && position === 'end',
+          'justify-between': withText,
+          'justify-center': !withText && position === 'center',
+          'justify-start': !withText && position === 'start',
+          'justify-end': !withText && position === 'end',
         },
         className,
       )}
     >
-      {withText && <Text page={page} total={totalPages} />}
+      {withText && getText(page, totalPages)}
       {canNavigate && (
         <nav className="inline-flex shadow-sm">
           <ButtonGroup size={buttonSize} variant={Variant.white}>
             <ButtonGroup.Button disabled={prevDisabled} onClick={goPrevious}>
-              Previous
+              {previousText}
             </ButtonGroup.Button>
 
             {pages.map((element, index) => {
@@ -110,7 +118,7 @@ export function Pagination(props: PaginationProps) {
             })}
 
             <ButtonGroup.Button disabled={nextDisabled} onClick={goNext}>
-              Next
+              {nextText}
             </ButtonGroup.Button>
           </ButtonGroup>
         </nav>
@@ -119,14 +127,14 @@ export function Pagination(props: PaginationProps) {
   );
 }
 
-function Text(props: { page: number; total: number }): JSX.Element {
+function getPaginationText(page: number, total: number): JSX.Element {
   return (
     <div>
       <p className="text-sm text-neutral-700">
         Showing page
-        <span className="font-semibold"> {props.page} </span>
+        <span className="font-semibold"> {page} </span>
         of
-        <span className="font-semibold"> {props.total} </span>
+        <span className="font-semibold"> {total} </span>
         pages.
       </p>
     </div>

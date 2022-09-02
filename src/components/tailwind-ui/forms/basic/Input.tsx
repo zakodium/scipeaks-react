@@ -95,7 +95,7 @@ export const Input = forwardRef(function InputForwardRef(
         <label
           htmlFor={id}
           className={clsx(
-            'border bg-white py-2 px-3 focus-within:ring-1',
+            'border py-2 px-3 focus-within:ring-1',
             'relative flex flex-1 flex-row items-center text-base shadow-sm sm:text-sm',
             {
               [inputColor]: !error,
@@ -105,6 +105,7 @@ export const Input = forwardRef(function InputForwardRef(
               'rounded-l-md': trailingAddon && !leadingAddon,
               'rounded-md': !leadingAddon && !trailingAddon,
               'bg-neutral-50 text-neutral-500': props.disabled,
+              'bg-white': !props.disabled,
             },
           )}
           style={style}

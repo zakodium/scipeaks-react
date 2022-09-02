@@ -1,11 +1,13 @@
-import React, { forwardRef, ReactNode } from 'react';
+import React, { ElementType, ForwardedRef, ReactNode } from 'react';
 
-import { Color, Roundness, Size, Variant } from '../../types';
+import { Color, PropsOf, Roundness, Size, Variant } from '../../types';
+import { forwardRefWithAs } from '../../util';
+import { WithTooltip, WithTooltipProps } from '../popper/WithTooltip';
 
 import { getButtonClassName } from './utils';
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonPropsInternal<T extends ElementType = 'button'>
+  extends WithTooltipProps {
   children: ReactNode;
   type?: 'button' | 'submit';
   color?: Color;
@@ -14,28 +16,44 @@ export interface ButtonProps
   roundness?: Roundness;
   group?: 'left' | 'right' | 'middle';
   noBorder?: boolean;
+  as?: T;
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  function ButtonForwardRef(props, ref) {
-    const {
-      color = Color.primary,
-      size = Size.medium,
-      variant = Variant.primary,
-      group,
-      children,
-      type = 'button',
-      roundness = Roundness.light,
-      className,
-      noBorder = false,
-      ...otherProps
-    } = props;
+export type ButtonProps<T extends ElementType = 'button'> =
+  ButtonPropsInternal<T> & Omit<PropsOf<T>, 'title'>;
 
-    return (
-      <button
-        type={type === 'submit' ? 'submit' : 'button'}
+export const Button = forwardRefWithAs(function ButtonForwardRef<
+  T extends ElementType = 'button',
+>(props: ButtonProps<T>, ref: ForwardedRef<HTMLButtonElement>) {
+  const {
+    color = Color.primary,
+    size = Size.medium,
+    variant = Variant.primary,
+    group,
+    children,
+    roundness = Roundness.light,
+    className,
+    noBorder = false,
+
+    type = 'button',
+    tooltip,
+    tooltipDelay,
+    tooltipPlacement,
+
+    as: Component = 'button',
+
+    ...otherProps
+  } = props;
+
+  return (
+    <WithTooltip
+      tooltip={tooltip}
+      tooltipDelay={tooltipDelay}
+      tooltipPlacement={tooltipPlacement}
+    >
+      <Component
+        type={Component === 'button' ? type : undefined}
         {...otherProps}
-        ref={ref}
         className={getButtonClassName({
           variant,
           roundness,
@@ -46,9 +64,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           disabled: props.disabled,
           className,
         })}
+        ref={ref}
       >
         {children}
-      </button>
-    );
-  },
-);
+      </Component>
+    </WithTooltip>
+  );
+});

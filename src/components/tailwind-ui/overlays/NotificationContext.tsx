@@ -4,7 +4,7 @@ import { Color } from '..';
 import { ActionType } from '../types';
 
 export interface NotificationConfig {
-  title: string;
+  title: ReactNode;
   content?: ReactNode;
   icon?: ReactNode;
   type?: Color;
@@ -16,7 +16,7 @@ export interface ToastNotificationAction {
 }
 
 export interface ToastNotificationConfig {
-  label: string;
+  label: ReactNode;
   action?: ToastNotificationAction;
   group?: string;
 }
