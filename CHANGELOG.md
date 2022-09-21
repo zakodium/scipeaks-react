@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/zakodium/c6h6-react/compare/v1.4.2...v1.4.3) (2022-09-21)
+
+
+### Bug Fixes
+
+* ghs mix between H and P ([#33](https://github.com/zakodium/c6h6-react/issues/33)) ([5187980](https://github.com/zakodium/c6h6-react/commit/518798004f4285fa7afa0c5d6b4122a35e5f1ddb))
+
 ## [1.4.2](https://github.com/zakodium/c6h6-react/compare/v1.4.1...v1.4.2) (2022-08-29)
 
 
