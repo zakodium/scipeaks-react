@@ -9,18 +9,28 @@ import {
   RHFValidationProps,
 } from '../util';
 
-export function DatePickerFieldRHF(
-  props: Omit<DatePickerProps, 'value' | 'onChange'> &
-    FieldProps &
-    RHFValidationProps,
-) {
+export type DatePickerFieldProps<Modifiers extends string = never> = Omit<
+  DatePickerProps<Modifiers>,
+  'onChange' | 'value'
+>;
+
+interface DatePickerFieldRHFProps
+  extends Omit<DatePickerProps, 'value' | 'onChange'>,
+    FieldProps,
+    RHFValidationProps {
+  valueType?: 'string' | 'date';
+}
+
+export function DatePickerFieldRHF(props: DatePickerFieldRHFProps) {
   const {
     name,
     inputProps,
     serializeError = defaultErrorSerializer,
     deps,
+    valueType = 'date',
     ...otherProps
   } = props;
+
   const { setValue, trigger } = useCheckedFormRHFContext();
   const {
     field,
@@ -34,21 +44,31 @@ export function DatePickerFieldRHF(
 
   const setFieldValue = useCallback(
     (value: Date | null) => {
-      setValue(name, value, {
-        shouldTouch: true,
-        shouldValidate: isSubmitted,
-      });
+      if (valueType === 'string' && value !== null) {
+        setValue(name, value.toISOString(), {
+          shouldTouch: true,
+          shouldValidate: isSubmitted,
+        });
+      } else {
+        setValue(name, value, {
+          shouldTouch: true,
+          shouldValidate: isSubmitted,
+        });
+      }
+
       if (deps && isSubmitted) {
         void trigger(deps);
       }
     },
-    [setValue, name, isSubmitted, deps, trigger],
+    [valueType, deps, isSubmitted, setValue, name, trigger],
   );
 
   return (
     <div className="flex">
       <DatePicker
-        value={value}
+        value={
+          valueType === 'string' && value !== null ? new Date(value) : value
+        }
         name={name}
         inputProps={{
           ...inputProps,
@@ -59,9 +79,6 @@ export function DatePickerFieldRHF(
           setFieldValue(date);
         }}
         onBlur={onBlur}
-        // This is required to prevent react-date-picker from overriding
-        // the ref passed to the custom input
-        customInputRef="datePickerRef"
         {...otherProps}
       />
     </div>

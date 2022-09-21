@@ -2,18 +2,40 @@ import { PaperClipIcon } from '@heroicons/react/outline';
 import clsx from 'clsx';
 import React, { ReactNode } from 'react';
 
-export interface DescriptionListProps {
+interface DescriptionListAttribute {
+  title: string;
+  details?: ReactNode;
+}
+
+interface DescriptionListSection {
+  title: string;
+  attributes: DescriptionListAttribute[];
+}
+
+export type DescriptionListProps =
+  | FlatDescriptionListProps
+  | GroupedDescriptionListProps;
+
+export interface FlatDescriptionListProps {
+  type: 'flat';
   title: ReactNode;
   subtitle?: ReactNode;
   stripes?: boolean;
-  attributes: {
-    title: string;
-    details?: ReactNode;
-  }[];
+  attributes: DescriptionListAttribute[];
+}
+
+export interface GroupedDescriptionListProps {
+  type: 'grouped';
+  title: ReactNode;
+  subtitle?: ReactNode;
+  attributes: DescriptionListSection[];
 }
 
 export function DescriptionList(props: DescriptionListProps) {
-  const { title, subtitle, attributes, stripes } = props;
+  const { title, subtitle } = props;
+  let count = 0;
+  const stripes = isGrouped(props) ? false : props.stripes;
+  const list = getList(props);
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-lg">
       <div className="px-4 py-5 sm:px-6">
@@ -24,28 +46,96 @@ export function DescriptionList(props: DescriptionListProps) {
           {subtitle}
         </div>
       </div>
-      <div className="border-t border-neutral-200 px-4 py-5 sm:p-0">
-        <dl className="sm:divide-y sm:divide-neutral-200">
-          {attributes.map((attribute, idx) => (
-            <div
-              key={attribute.title}
-              className={clsx(
-                'py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6',
-                stripes && idx % 2 === 0 ? 'bg-neutral-50' : '',
+
+      {list.map((el) => {
+        return (
+          <div
+            className="border-t border-neutral-200 px-4 py-3 sm:p-0"
+            key={el.title}
+          >
+            <dl className="sm:divide-y sm:divide-neutral-200">
+              {el.title && (
+                <AttributeSection
+                  attribute={el}
+                  dark={stripes ? count++ % 2 === 0 : true}
+                />
               )}
-            >
-              <dt className="text-sm font-semibold text-neutral-500">
-                {attribute.title}
-              </dt>
-              <dd className="mt-1 text-sm text-neutral-900 sm:col-span-2 sm:mt-0">
-                {attribute.details}
-              </dd>
-            </div>
-          ))}
-        </dl>
+              {el.attributes.map((element) => (
+                <Attribute
+                  attribute={element}
+                  key={element.title}
+                  dark={stripes ? count++ % 2 === 0 : false}
+                />
+              ))}
+            </dl>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+interface AttributeProps {
+  attribute: DescriptionListAttribute;
+  dark: boolean;
+}
+
+interface AttributeSectionProps {
+  attribute: DescriptionListSection;
+  dark: boolean;
+}
+
+function AttributeSection(props: AttributeSectionProps) {
+  return (
+    <div
+      className={clsx(
+        'py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-b sm:border-neutral-200 sm:py-3 sm:px-6',
+        props.dark ? 'sm:bg-neutral-50' : 'bg-white',
+      )}
+    >
+      <div className="text-sm font-semibold text-neutral-700">
+        {props.attribute.title}
       </div>
     </div>
   );
+}
+
+function Attribute(props: AttributeProps) {
+  const { attribute, dark } = props;
+  return (
+    <div
+      className={clsx(
+        'py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6',
+        dark ? 'bg-white sm:bg-neutral-50' : '',
+      )}
+    >
+      <dt className="text-sm font-semibold text-neutral-500">
+        {attribute.title}
+      </dt>
+      <dd className="mt-1 text-sm text-neutral-900 sm:col-span-2 sm:mt-0">
+        {attribute.details}
+      </dd>
+    </div>
+  );
+}
+
+function getList(props: DescriptionListProps): DescriptionListSection[] {
+  if (isGrouped(props)) {
+    return props.attributes;
+  } else {
+    return [
+      {
+        title: '',
+        attributes: props.attributes,
+      },
+    ];
+  }
+}
+
+function isGrouped(
+  props: DescriptionListProps,
+): props is GroupedDescriptionListProps {
+  return props.type === 'grouped';
 }
 
 interface Attachment extends React.AnchorHTMLAttributes<HTMLAnchorElement> {

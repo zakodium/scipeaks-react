@@ -3,10 +3,10 @@ import { useController } from 'react-hook-form';
 
 import { useCheckedFormRHFContext } from '../../hooks/useCheckedFormRHF';
 import {
-  MultiSearchSelect,
-  MultiSearchSelectProps,
-  SimpleMultiSearchSelectProps,
-} from '../basic/MultiSearchSelect';
+  CheckboxMultiSearchSelect,
+  CheckboxMultiSearchSelectProps,
+  CheckboxSimpleMultiSearchSelectProps,
+} from '../basic/CheckboxMultiSearchSelect';
 import { SimpleSelectOption } from '../basic/Select';
 import {
   defaultErrorSerializer,
@@ -14,23 +14,23 @@ import {
   RHFValidationProps,
 } from '../util';
 
-export type MultiSearchSelectFieldProps<OptionType> = Omit<
-  MultiSearchSelectProps<OptionType>,
+export type CheckboxMultiSearchSelectFieldProps<OptionType> = Omit<
+  CheckboxMultiSearchSelectProps<OptionType>,
   'selected' | 'onSelect' | 'error' | 'onBlur'
 > &
   FieldProps;
 
-export type SimpleMultiSearchSelectFieldProps<OptionType> = Omit<
-  SimpleMultiSearchSelectProps<OptionType>,
+export type CheckboxSimpleMultiSearchSelectFieldProps<OptionType> = Omit<
+  CheckboxSimpleMultiSearchSelectProps<OptionType>,
   'selected' | 'onSelect' | 'error' | 'onBlur'
 > &
   FieldProps;
 
-export function MultiSearchSelectFieldRHF<OptionType>(
+export function CheckboxMultiSearchSelectFieldRHF<OptionType>(
   props: RHFValidationProps &
     (OptionType extends SimpleSelectOption
-      ? SimpleMultiSearchSelectFieldProps<OptionType>
-      : MultiSearchSelectFieldProps<OptionType>),
+      ? CheckboxSimpleMultiSearchSelectFieldProps<OptionType>
+      : CheckboxMultiSearchSelectFieldProps<OptionType>),
 ): JSX.Element {
   const {
     name,
@@ -63,7 +63,7 @@ export function MultiSearchSelectFieldRHF<OptionType>(
 
   return (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    <MultiSearchSelect<any>
+    <CheckboxMultiSearchSelect<any>
       name={name}
       ref={field.ref}
       onBlur={field.onBlur}

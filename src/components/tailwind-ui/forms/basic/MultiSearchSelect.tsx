@@ -54,6 +54,7 @@ function MultiSearchSelectForwardRef<OptionType>(
     selected,
     getValue = defaultGetValue,
     renderOption = defaultRenderOption,
+    renderSelectedOption,
     closeListOnSelect = false,
     clearSearchOnSelect = true,
     onCreate,
@@ -64,10 +65,7 @@ function MultiSearchSelectForwardRef<OptionType>(
     ...otherProps
   } = props;
 
-  const optionsWithoutSelected = useMemo(() => {
-    const selectedValues = new Set(selected.map(getValue));
-    return options.filter((option) => !selectedValues.has(getValue(option)));
-  }, [options, selected, getValue]);
+  const finalRenderSelectedOption = renderSelectedOption || renderOption;
 
   const nonRemovableValues = useMemo(
     () => selected.filter((value) => !isOptionRemovable(value)),
@@ -77,7 +75,7 @@ function MultiSearchSelectForwardRef<OptionType>(
   const renderedSelected = useMemo(() => {
     return selected.map((option) => {
       const value = getValue(option);
-      const rendered = renderOption(option);
+      const rendered = finalRenderSelectedOption(option);
 
       function handleDismiss(event: MouseEvent) {
         event.preventDefault();
@@ -100,7 +98,7 @@ function MultiSearchSelectForwardRef<OptionType>(
   }, [
     selected,
     getValue,
-    renderOption,
+    finalRenderSelectedOption,
     onSelect,
     getBadgeColor,
     disabled,
@@ -128,9 +126,10 @@ function MultiSearchSelectForwardRef<OptionType>(
   }, [isOptionRemovable, onSelect, selected]);
 
   const internalProps = useSearchSelectInternals({
+    showSelected: false,
     searchValue: props.searchValue,
     onSearchChange,
-    options: optionsWithoutSelected,
+    options,
     onSelect: handleSelect,
     getValue,
     renderOption,
@@ -139,7 +138,10 @@ function MultiSearchSelectForwardRef<OptionType>(
     onCreate,
     canCreate,
     renderCreate,
+    isOptionRemovable,
     onBackspace: handleBackspace,
+    selected,
+    pinSelectedOptions: false,
   });
 
   return (

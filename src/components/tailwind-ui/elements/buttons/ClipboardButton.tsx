@@ -1,24 +1,43 @@
 import { CheckIcon, ClipboardCopyIcon, XIcon } from '@heroicons/react/outline';
-import React, { useEffect, useState } from 'react';
+import clsx from 'clsx';
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 import { Spinner, Variant, Button } from '../..';
+import { WithTooltip, WithTooltipProps } from '../popper/WithTooltip';
 
-interface ClipboardButtonProps {
-  onCopy: () => Promise<string>;
+const clipboardContext = createContext<null | IconState>(null);
+
+interface ClipboardButtonProps extends WithTooltipProps {
+  onCopy: () => Promise<string | ClipboardItem>;
+  children?: ReactNode;
+
+  onError?: (error: Error) => void;
+  onSuccess?: () => void;
+
+  bare?: boolean;
 }
 
-enum IconState {
-  IDLE = 'IDLE',
-  WAITING = 'WAITING',
-  SUCCESS = 'SUCCESS',
-  ERROR = 'ERROR',
-}
+export const IconState = {
+  IDLE: 'IDLE',
+  SPINNER: 'SPINNER',
+  SUCCESS: 'SUCCESS',
+  ERROR: 'ERROR',
+} as const;
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type IconState = typeof IconState[keyof typeof IconState];
 
 function getClipboardIcon(state: IconState) {
   switch (state) {
     case IconState.IDLE:
       return <ClipboardCopyIcon className="h-5 w-5" />;
-    case IconState.WAITING:
+    case IconState.SPINNER:
       return <Spinner className="h-5 w-5" />;
     case IconState.SUCCESS:
       return <CheckIcon className="h-5 w-5 text-success-400" />;
@@ -30,7 +49,17 @@ function getClipboardIcon(state: IconState) {
 }
 
 export function ClipboardButton(props: ClipboardButtonProps) {
-  const [iconState, setIconState] = useState(IconState.IDLE);
+  const {
+    onCopy,
+    children,
+    onSuccess,
+    onError,
+    bare = false,
+    ...tooltipProps
+  } = props;
+
+  const [iconState, setIconState] = useState<IconState>(IconState.IDLE);
+  const isDisabled = iconState === IconState.SPINNER;
 
   useEffect(() => {
     let timeId: NodeJS.Timeout | null = null;
@@ -46,34 +75,73 @@ export function ClipboardButton(props: ClipboardButtonProps) {
         clearTimeout(timeId);
       }
     };
-  }, [iconState]);
+  }, [iconState, isDisabled]);
 
-  function handleClick() {
-    if (iconState !== IconState.IDLE) {
-      return;
-    }
-
-    setIconState(IconState.WAITING);
-
-    props
-      .onCopy()
+  function onClick() {
+    setIconState(IconState.SPINNER);
+    onCopy()
       .then((result) => {
-        return navigator.clipboard.writeText(result).then(() => {
-          setIconState(IconState.SUCCESS);
-        });
+        if (typeof result === 'string') {
+          return navigator.clipboard.writeText(result).then(() => {
+            onSuccess?.();
+            setIconState(IconState.SUCCESS);
+          });
+        } else {
+          return navigator.clipboard.write([result]).then(() => {
+            onSuccess?.();
+            setIconState(IconState.SUCCESS);
+          });
+        }
       })
-      .catch(() => {
+
+      .catch((error: Error) => {
+        onError?.(error);
         setIconState(IconState.ERROR);
       });
   }
 
+  const buttonProps = {
+    disabled: isDisabled,
+    onClick,
+    children: (
+      <>
+        {children === undefined ? (
+          <>{getClipboardIcon(iconState)}</>
+        ) : (
+          <div className="flex flex-row items-center gap-1">{children}</div>
+        )}
+      </>
+    ),
+  };
+
   return (
-    <Button
-      disabled={iconState !== IconState.IDLE}
-      variant={Variant.white}
-      onClick={handleClick}
-    >
-      {getClipboardIcon(iconState)}
-    </Button>
+    <clipboardContext.Provider value={iconState}>
+      <WithTooltip {...tooltipProps}>
+        {!bare ? (
+          <Button {...buttonProps} variant={Variant.white} />
+        ) : (
+          <button
+            type="button"
+            className={clsx({
+              'hover:underline': !isDisabled,
+              'text-neutral-500': isDisabled,
+            })}
+            {...buttonProps}
+          />
+        )}
+      </WithTooltip>
+    </clipboardContext.Provider>
   );
 }
+
+ClipboardButton.Icon = function ClipboardButtonIcon() {
+  const ctx = useContext(clipboardContext);
+
+  if (!ctx) {
+    throw new Error(
+      'ClipboardButton.Icon must have access to the context provided by ClipboardButton',
+    );
+  }
+
+  return <>{getClipboardIcon(ctx)}</>;
+};

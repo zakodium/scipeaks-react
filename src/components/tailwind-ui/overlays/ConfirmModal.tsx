@@ -11,22 +11,22 @@ export type ConfirmModalProps = Omit<
   color?: Color;
   title: ReactNode;
   body?: ReactNode;
-  confirmText: string;
+  confirmText: ReactNode;
   onConfirm?: () => void;
   renderConfirm?: (options: ConfirmModalConfirmOptions) => ReactNode;
-  cancelText?: string;
+  cancelText?: ReactNode;
   onCancel?: () => void;
   renderCancel?: (options: ConfirmModalCancelOptions) => ReactNode;
 };
 
 export interface ConfirmModalConfirmOptions {
-  confirmText: string;
+  confirmText: ReactNode;
   onConfirm?: () => void;
   color: Color;
 }
 
 export interface ConfirmModalCancelOptions {
-  cancelText: string;
+  cancelText: ReactNode;
   onCancel?: () => void;
 }
 

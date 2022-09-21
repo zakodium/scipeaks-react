@@ -19,15 +19,15 @@ export default function Computed(props: { computed: any }) {
 
   return (
     <Table
-      Header={Header}
+      renderHeader={renderHeader}
       data={rows}
-      Tr={Row}
+      renderTr={Row}
       tableClassName="table-fixed w-1/2"
     />
   );
 }
 
-function Header() {
+function renderHeader() {
   return (
     <tr>
       <Th className="w-1/4">Label</Th>
@@ -38,8 +38,7 @@ function Header() {
   );
 }
 
-function Row(props: any) {
-  const row = props.value;
+function Row(row: any) {
   return (
     <tr key={row.key}>
       <CompactTd>{row.label}</CompactTd>

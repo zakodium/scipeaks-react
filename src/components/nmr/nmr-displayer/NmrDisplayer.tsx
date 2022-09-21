@@ -60,14 +60,8 @@ export default function NmrDisplayer() {
       data={{ spectra, molecules }}
       preferences={{
         general: {},
-        panels: {
-          hideSummaryPanel: true,
-          hideMultipleSpectraAnalysisPanel: true,
-        },
-        toolBarButtons: {
-          hideImport: true,
-          hideExportAs: true,
-        },
+        panels: {},
+        toolBarButtons: {},
       }}
     />
   );

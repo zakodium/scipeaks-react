@@ -5,8 +5,9 @@ import {
 } from '@heroicons/react/solid';
 import clsx from 'clsx';
 import React, {
-  ComponentType,
   createContext,
+  Fragment,
+  ReactNode,
   TdHTMLAttributes,
   ThHTMLAttributes,
   useContext,
@@ -16,22 +17,31 @@ import React, {
 import { TableSortDirection, TableSortConfig } from '..';
 import { Pagination, PaginationProps } from '../elements/pagination/Pagination';
 
-export interface TrProps<T> {
-  index: number;
-  value: T;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface TableProps<T = any> {
+export interface TableProps<T> {
   data: Array<T>;
-  Tr: ComponentType<TrProps<T>>;
-  Empty?: ComponentType;
-  Header?: ComponentType;
+  renderTr: (value: T, index: number) => ReactNode;
+  renderEmpty?: () => ReactNode;
+  renderHeader?: () => ReactNode;
   pagination?: PaginationProps;
   itemsPerPage?: number;
   tableStyle?: React.CSSProperties;
   tableClassName?: string;
   sort?: TableSortConfig;
+  getId?: IdGetter<T>;
+}
+
+export interface TablePropsWithIdGetter<T> extends TableProps<T> {
+  getId: IdGetter<T>;
+}
+
+type IdGetter<T> = (value: T) => string | number;
+
+interface DataWithId {
+  id: string | number;
+}
+
+function defaultGetId<T extends DataWithId>(value: T) {
+  return value.id;
 }
 
 interface TableContext {
@@ -42,22 +52,25 @@ const defaultTableContext: TableContext = {};
 
 const tableContext = createContext<TableContext>(defaultTableContext);
 
-export function Table<T extends { id: number | string }>(props: TableProps<T>) {
+export function Table<T>(
+  props: T extends DataWithId ? TableProps<T> : TablePropsWithIdGetter<T>,
+) {
   const {
     data,
-    Tr,
-    Empty,
-    Header,
+    renderTr,
+    renderEmpty,
+    renderHeader,
     pagination,
     tableStyle,
     tableClassName,
     sort,
+    getId = defaultGetId,
   } = props;
 
   const contextValue = useMemo(() => ({ sort }), [sort]);
 
   if (data.length === 0) {
-    return Empty ? <Empty /> : null;
+    return renderEmpty ? <>{renderEmpty()}</> : null;
   }
 
   return (
@@ -72,14 +85,12 @@ export function Table<T extends { id: number | string }>(props: TableProps<T>) {
                 tableClassName,
               )}
             >
-              {Header && (
-                <thead>
-                  <Header />
-                </thead>
-              )}
+              {renderHeader && <thead>{renderHeader()}</thead>}
               <tbody className="divide-y divide-neutral-200 bg-white">
                 {data.map((value, index) => (
-                  <Tr key={value.id} index={index} value={value} />
+                  <Fragment key={getId(value)}>
+                    {renderTr(value, index)}
+                  </Fragment>
                 ))}
               </tbody>
             </table>

@@ -3,15 +3,19 @@ import React, { CSSProperties, MouseEvent, ReactNode } from 'react';
 
 import { Color } from '../../types';
 
-export enum BadgeSize {
-  SMALL = 'small',
-  LARGE = 'large',
-}
+export const BadgeSize = {
+  SMALL: 'small',
+  LARGE: 'large',
+} as const;
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type BadgeSize = typeof BadgeSize[keyof typeof BadgeSize];
 
-export enum BadgeVariant {
-  COLORED_DOT = 'COLORED_DOT',
-  COLORED_BACKGROUND = 'COLORED_BACKGROUND',
-}
+export const BadgeVariant = {
+  COLORED_DOT: 'COLORED_DOT',
+  COLORED_BACKGROUND: 'COLORED_BACKGROUND',
+} as const;
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type BadgeVariant = typeof BadgeVariant[keyof typeof BadgeVariant];
 
 export interface VariantBadgeProps extends BaseBadgeProps {
   variant: BadgeVariant;
@@ -20,7 +24,7 @@ export interface VariantBadgeProps extends BaseBadgeProps {
 }
 
 export interface ColoredBadgeProps extends BaseBadgeProps {
-  variant: BadgeVariant.COLORED_DOT;
+  variant: 'COLORED_DOT';
   customColor: CSSProperties['color'];
   dot?: true;
 }
@@ -34,7 +38,7 @@ export interface BaseBadgeProps {
   style?: CSSProperties;
 }
 
-const colors = {
+const colors: Record<Color, string> = {
   [Color.neutral]: 'bg-neutral-100 text-neutral-800',
   [Color.alternative]: 'bg-alternative-100 text-alternative-800',
   [Color.danger]: 'bg-danger-100 text-danger-800',
@@ -43,7 +47,7 @@ const colors = {
   [Color.warning]: 'bg-warning-100 text-warning-800',
 };
 
-const dotColors = {
+const dotColors: Record<Color, string> = {
   [Color.neutral]: 'text-neutral-400',
   [Color.alternative]: 'text-alternative-400',
   [Color.danger]: 'text-danger-400',
@@ -52,7 +56,7 @@ const dotColors = {
   [Color.warning]: 'text-warning-400',
 };
 
-const removeColors = {
+const removeColors: Record<Color, string> = {
   [Color.neutral]:
     'text-neutral-400 hover:bg-neutral-200 hover:text-neutral-500 focus:bg-neutral-500',
   [Color.alternative]:
@@ -67,7 +71,10 @@ const removeColors = {
     'text-warning-400 hover:bg-warning-200 hover:text-warning-500 focus:bg-warning-500',
 };
 
-const paddings = {
+const paddings: Record<
+  BadgeSize,
+  Record<'basic' | 'rounded' | 'remove', string>
+> = {
   [BadgeSize.SMALL]: {
     basic: 'px-2.5 py-0.5',
     rounded: 'px-2 py-0.5',
@@ -80,7 +87,9 @@ const paddings = {
   },
 };
 
-export function Badge(props: VariantBadgeProps | ColoredBadgeProps) {
+export type BadgeProps = VariantBadgeProps | ColoredBadgeProps;
+
+export function Badge(props: BadgeProps) {
   const {
     size = BadgeSize.SMALL,
     rounded = false,

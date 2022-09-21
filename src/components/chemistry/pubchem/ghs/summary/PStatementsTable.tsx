@@ -1,7 +1,7 @@
 import CompactTd from '@/components/common/CompactTd';
 import { Table, Th } from '@/components/tailwind-ui';
 
-function Header() {
+function renderHeader() {
   return (
     <tr>
       <Th>Code</Th>
@@ -10,8 +10,7 @@ function Header() {
   );
 }
 
-function Row(props: any) {
-  const row = props.value;
+function Row(row: any) {
   return (
     <tr key={row.code}>
       <CompactTd>{row.code}</CompactTd>
@@ -24,6 +23,12 @@ export default function PStatementsTable(props: any) {
   if (!props.pStatements || props.pStatements.length === 0) {
     return <>No precautionary statements found.</>;
   } else {
-    return <Table Header={Header} data={props.pStatements} Tr={Row} />;
+    return (
+      <Table
+        renderHeader={renderHeader}
+        data={props.pStatements}
+        renderTr={Row}
+      />
+    );
   }
 }

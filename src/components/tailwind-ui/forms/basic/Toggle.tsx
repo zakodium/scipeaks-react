@@ -19,10 +19,12 @@ interface TogglePropsWithRef extends ToggleProps {
   inputRef: Ref<HTMLInputElement>;
 }
 
-export enum ToggleSize {
-  Small = 'Small',
-  Large = 'Large',
-}
+export const ToggleSize = {
+  Small: 'Small',
+  Large: 'Large',
+} as const;
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type ToggleSize = typeof ToggleSize[keyof typeof ToggleSize];
 
 function noop() {
   // noop
@@ -57,7 +59,7 @@ function WrapperToggle(props: { children: ReactNode; error?: string }) {
   );
 }
 
-function LargeToggle(props: TogglePropsWithRef): JSX.Element {
+function LargeToggle(props: Omit<TogglePropsWithRef, 'size'>): JSX.Element {
   const { label, activated, onToggle, disabled, name, inputRef, error } = props;
 
   return (
@@ -113,7 +115,7 @@ function LargeToggle(props: TogglePropsWithRef): JSX.Element {
   );
 }
 
-function SmallToggle(props: TogglePropsWithRef) {
+function SmallToggle(props: Omit<TogglePropsWithRef, 'size'>) {
   const { label, activated, onToggle, disabled, name, inputRef, error } = props;
 
   return (

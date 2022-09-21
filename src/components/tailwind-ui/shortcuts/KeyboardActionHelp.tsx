@@ -9,7 +9,7 @@ import {
 } from 'react-kbs';
 
 import { useOnOff } from '../hooks/useOnOff';
-import { TrProps, Table, Td } from '../lists/Table';
+import { Table, Td } from '../lists/Table';
 import { Modal } from '../overlays/Modal';
 import { Color } from '../types';
 import { commandKeyExists } from '../util';
@@ -54,13 +54,13 @@ export function KeyboardActionHelp(props: KeyboardActionHelpProps) {
     >
       <Modal.Header>Keyboard shortcut documentation</Modal.Header>
       <Modal.Body>
-        <Table data={shortcuts} Tr={Tr} />
+        <Table data={shortcuts} renderTr={Tr} />
       </Modal.Body>
     </Modal>
   );
 }
 
-function Tr({ value }: TrProps<KbsShortcut>) {
+function Tr(value: KbsShortcut) {
   return (
     <tr>
       <Td className="flex flex-row gap-1">

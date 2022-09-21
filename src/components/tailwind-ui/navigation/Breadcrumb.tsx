@@ -79,7 +79,7 @@ function BreadcrumbContentWrapper(props: BreadcrumbContentProps) {
 
   return (
     <>
-      {context === false && (
+      {!context && (
         <ChevronRightIcon className="h-5 w-5 shrink-0 text-neutral-400" />
       )}
       {props.children}

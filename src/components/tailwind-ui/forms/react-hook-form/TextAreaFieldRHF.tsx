@@ -2,8 +2,7 @@ import React from 'react';
 import { get } from 'react-hook-form';
 
 import { useCheckedFormRHFContext } from '../../hooks/useCheckedFormRHF';
-import { TextArea } from '../basic/TextArea';
-import { TextAreaFieldProps } from '../formik/TextAreaField';
+import { TextArea, TextAreaProps } from '../basic/TextArea';
 import {
   defaultErrorSerializer,
   FieldProps,
@@ -15,6 +14,8 @@ import {
 
 import { useRHFConfig } from './FormRHF';
 import { InputFieldRHFCustomProps } from './InputFieldRHF';
+
+export type TextAreaFieldProps = TextAreaProps;
 
 export type TextAreaFieldRHFProps = TextAreaFieldProps &
   FieldProps &
@@ -30,9 +31,11 @@ export function TextAreaFieldRHF(
   } = useCheckedFormRHFContext();
   const error = get(errors, props.name);
   const {
-    rhfOptions,
     emptyValue,
+    onChange,
+    onBlur,
     deps,
+    rhfOptions,
     serializeError = defaultErrorSerializer,
     ...otherProps
   } = props;
@@ -41,12 +44,14 @@ export function TextAreaFieldRHF(
   return (
     <TextArea
       {...otherProps}
-      error={serializeError(error)}
       {...register(props.name, {
+        onChange,
+        onBlur,
         setValueAs: getSetValueAs(finalEmptyValue, 'text'),
-        ...rhfOptions,
         deps,
+        ...rhfOptions,
       })}
+      error={serializeError(error)}
     />
   );
 }

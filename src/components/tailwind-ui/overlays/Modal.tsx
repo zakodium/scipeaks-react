@@ -6,15 +6,22 @@ import React, {
   CSSProperties,
   ElementType,
   ReactNode,
+  useCallback,
   useEffect,
+  useImperativeHandle,
   useRef,
+  useState,
 } from 'react';
 import { useKbsDisableGlobal } from 'react-kbs';
 
+import { IconButton } from '../elements/buttons/IconButton';
 import { useLockBodyScroll } from '../hooks/useLockBodyScroll';
 import { Color, PropsOf } from '../types';
 
 import { Portal } from './Portal';
+import { portalContext } from './PortalContext';
+
+const supportsDialog = !!globalThis.HTMLDialogElement;
 
 const bgColors = {
   [Color.primary]: 'bg-primary-100',
@@ -46,15 +53,19 @@ export interface ModalProps<T extends ElementType> {
   wrapperComponent?: T;
   // This prop isn't used anymore but kept for backwards-compatibility in case
   // we re-add the functionality in the future.
+  // eslint-disable-next-line react/no-unused-prop-types
   animated?: boolean;
   fluid?: boolean;
   wrapperProps?: Omit<PropsOf<T>, 'children'>;
   dialogStyle?: CSSProperties;
 }
 
-// @ts-expect-error Chrome isn't in the standard
-const isChrome = typeof window !== 'undefined' && window.chrome;
+const isFirefox =
+  typeof navigator !== 'undefined'
+    ? navigator.userAgent.toLowerCase().includes('firefox')
+    : null;
 
+type MaybeHTMLDialogElement = HTMLDialogElement | null;
 export function Modal<T extends ElementType>(props: ModalProps<T>) {
   const {
     isOpen,
@@ -73,7 +84,18 @@ export function Modal<T extends ElementType>(props: ModalProps<T>) {
 
   useLockBodyScroll(isOpen);
   useKbsDisableGlobal(isOpen);
+
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const [portalDomNode, setPortalDomNode] =
+    useState<MaybeHTMLDialogElement>(null);
+  const dialogCallbackRef = useCallback((node: MaybeHTMLDialogElement) => {
+    setPortalDomNode(node);
+  }, []);
+
+  useImperativeHandle<MaybeHTMLDialogElement, MaybeHTMLDialogElement>(
+    dialogCallbackRef,
+    () => dialogRef.current,
+  );
 
   useEffect(() => {
     function onEsc(event: Event) {
@@ -96,12 +118,12 @@ export function Modal<T extends ElementType>(props: ModalProps<T>) {
   }, []);
 
   useEffect(() => {
-    if (isOpen) {
+    const dialog = dialogRef.current;
+    if (dialog && isOpen) {
       // @ts-ignore
-      dialogRef.current?.showModal();
-    } else if (!isOpen && dialogRef.current?.hasAttribute('open')) {
+      dialog.showModal();
       // @ts-ignore
-      dialogRef.current?.close();
+      return () => dialog.close();
     }
   }, [isOpen]);
 
@@ -122,14 +144,14 @@ export function Modal<T extends ElementType>(props: ModalProps<T>) {
       </div>
       {onRequestClose && hasCloseButton ? (
         <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
-          <button
-            type="button"
+          <IconButton
+            className="rounded-full text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2"
             onClick={onRequestClose}
-            className="rounded-full bg-white text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2"
             aria-label="Close"
-          >
-            <XIcon className="h-6 w-6" />
-          </button>
+            color="none"
+            icon={<XIcon />}
+            size="6"
+          />
         </div>
       ) : null}
     </div>
@@ -154,20 +176,21 @@ export function Modal<T extends ElementType>(props: ModalProps<T>) {
           }
         }}
         ref={dialogRef}
-        style={Object.assign(
-          { maxWidth: fluid ? 'calc(100% - 2rem)' : undefined },
-          dialogStyle,
-          !isChrome
-            ? {
+        style={{
+          maxWidth: fluid ? 'calc(100% - 2rem)' : undefined,
+          ...dialogStyle,
+          ...(supportsDialog
+            ? {}
+            : {
                 top: '50%',
-                // Custom transform is cumulative
-                transform: `translateY(-50%) ${
-                  dialogStyle?.transform ? dialogStyle.transform : ''
-                }`,
+                transform: 'translateY(-50%)',
+              }),
+          ...(isFirefox
+            ? {
                 maxHeight: 'calc((100% - 6px) - 2em)',
               }
-            : {},
-        )}
+            : {}),
+        }}
         className={clsx(
           'fixed flex rounded-lg bg-white text-left align-bottom shadow-xl',
           {
@@ -176,9 +199,11 @@ export function Modal<T extends ElementType>(props: ModalProps<T>) {
           },
         )}
       >
-        <div className="flex flex-1 px-2 pt-5 pb-4 sm:py-6 sm:pl-6 sm:pr-4">
-          {isOpen ? modalContents : null}
-        </div>
+        <portalContext.Provider value={portalDomNode}>
+          <div className="flex flex-1 px-2 pt-5 pb-4 sm:py-6 sm:pl-6 sm:pr-4">
+            {isOpen ? modalContents : null}
+          </div>
+        </portalContext.Provider>
       </dialog>
     </Portal>
   );

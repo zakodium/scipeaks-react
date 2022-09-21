@@ -2,14 +2,15 @@ import React from 'react';
 import { get } from 'react-hook-form';
 
 import { useCheckedFormRHFContext } from '../../hooks/useCheckedFormRHF';
-import { Checkbox } from '../basic/Checkbox';
-import { CheckboxFieldProps } from '../formik/CheckboxField';
+import { Checkbox, CheckboxProps } from '../basic/Checkbox';
 import {
   defaultErrorSerializer,
   FieldProps,
   RHFRegisterProps,
   RHFValidationProps,
 } from '../util';
+
+export type CheckboxFieldProps = CheckboxProps;
 
 export type CheckboxFieldRHFProps = Omit<CheckboxFieldProps, 'checked'> &
   FieldProps &
@@ -26,16 +27,20 @@ export function CheckboxFieldRHF(props: CheckboxFieldRHFProps): JSX.Element {
 
   const {
     serializeError = defaultErrorSerializer,
-    rhfOptions,
+    onChange,
+    onBlur,
     deps,
+    rhfOptions,
     ...otherProps
   } = props;
   return (
     <Checkbox
       {...otherProps}
       {...register(props.name, {
-        ...rhfOptions,
+        onChange,
+        onBlur,
         deps,
+        ...rhfOptions,
       })}
       error={serializeError(error)}
     />
