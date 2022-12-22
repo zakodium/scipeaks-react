@@ -24,11 +24,11 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo "de.cheminfo.org,176.9.80.104 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOKspOAjdYOxwD1RHg1P+BL13qn6h+K3fm6l39xp/WY31baGUFseMci/Ab8pGtCIgQnu3EqDAV/m/+rseVwXqeM=" >> ~/.ssh/known_hosts
+          echo "de2.cheminfo.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJagFXo92FeL12WiCoP9aythZ75qcDrj7sGsy6qHtmCG" >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
           eval $(ssh-agent)
           ssh-add - <<< "${SSH_PRIVATE_KEY}"
           echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
       - name: Send build to lactame
         run: |
-          rsync -v --archive --delete --human-readable -e "ssh -p 17066" out/ react@de.cheminfo.org:~/views/HEAD
+          rsync -v --archive --delete --human-readable -e "ssh -p 17066" out/ react@de2.cheminfo.org:~/views/HEAD
