@@ -24,32 +24,57 @@ export default function NmrDisplayer() {
     return <NoNmr />;
   }
 
-  const spectra = content.spectra.nmr
+  const spectraUrls = content.spectra.nmr
     .filter((value) => Boolean(value.jcamp?.filename))
-    .map((value) => sample.getAttachment(value.jcamp.filename).url)
-    .map((attUrl) => ({
-      display: {
-        name: sampleValue.$id.join(' '),
-      },
-      source: { jcampURL: attUrl },
-    }));
+    .map((value) => sample.getAttachment(value.jcamp.filename).url);
 
-  if (spectra.length === 0) {
+  if (spectraUrls.length === 0) {
     return <NoNmr />;
+  }
+
+  const sourceEntries = [];
+  const spectra = [];
+
+  for (const spectrumUrl of spectraUrls) {
+    const name = sampleValue.$id.join(' ');
+    const urlObj = new URL(spectrumUrl);
+    const baseURL = urlObj.origin;
+    const relativePath = urlObj.href.replace(urlObj.origin, '');
+
+    sourceEntries.push({
+      baseURL,
+      relativePath,
+    });
+    spectra.push({
+      info: { name },
+      sourceSelector: { files: [relativePath] },
+    });
   }
 
   const molecules = [];
   if (content.general) {
+    const moleculeName =
+      // @ts-expect-error Types are missing from react-iframe-bridge
+      content.general.title || content.general.name?.[0]?.value;
     if (content.general.molfile) {
-      molecules.push({ molfile: content.general.molfile });
+      molecules.push({ molfile: content.general.molfile, label: moleculeName });
     } else if (content.general.ocl) {
       const molecule = Molecule.fromIDCode(
         content.general.ocl.value,
         content.general.ocl.coordinates,
       );
-      molecules.push({ molfile: molecule.toMolfileV3() });
+      molecules.push({ molfile: molecule.toMolfileV3(), label: moleculeName });
     }
   }
 
-  return <EnhancedNMRium data={{ spectra, molecules }} />;
+  const state: any = {
+    version: 9,
+    data: {
+      source: { entries: sourceEntries },
+      spectra,
+      molecules,
+    },
+  };
+
+  return <EnhancedNMRium data={state} />;
 }
