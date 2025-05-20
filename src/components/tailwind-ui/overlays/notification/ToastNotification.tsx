@@ -41,9 +41,9 @@ export function ToastNotification(props: ToastNotificationProps) {
         className={clsx(
           'pointer-events-auto flex w-full flex-row items-center bg-neutral-700 p-2 sm:max-w-sm sm:rounded-lg sm:ring-1 sm:ring-black/5',
           // 1.25rem equals to padding of p-5 set on notification center
-          '[--viewport-padding:_1.25rem]',
+          '[--viewport-padding:1.25rem]',
           // Move vertically on swipe
-          'data-[swipe=move]:translate-y-[var(--radix-toast-swipe-move-y)]',
+          'data-[swipe=move]:translate-y-(--radix-toast-swipe-move-y)',
           // Move back to original position on cancel
           'data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out]',
           // Fade out on timeout / close

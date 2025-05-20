@@ -1,11 +1,11 @@
-@tailwind base;
+@import 'tailwindcss';
+@import '@zakodium/tailwind-config';
+@source '../node_modules/react-iframe-bridge/lib';
 
-html,
-body,
-#__next {
-  height: 100%;
+@layer base {
+  html,
+  body,
+  #__next {
+    height: 100%;
+  }
 }
-
-@tailwind components;
-
-@tailwind utilities;

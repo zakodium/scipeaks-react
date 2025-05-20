@@ -58,7 +58,7 @@
     "react-dropzone": "^14.3.8",
     "react-error-boundary": "^6.0.0",
     "react-hook-form": "^7.56.4",
-    "react-iframe-bridge": "^0.9.0",
+    "react-iframe-bridge": "^1.0.0",
     "react-intl": "^7.1.11",
     "react-kbs": "^2.1.1",
     "react-mf": "^3.1.0",
@@ -72,6 +72,7 @@
     "zod": "^3.25.7"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.7",
     "@types/node": "^22.15.19",
     "@types/react": "^18.3.21",
     "@types/react-dom": "^18.3.7",
@@ -80,6 +81,7 @@
     "autoprefixer": "^10.4.21",
     "eslint": "^9.27.0",
     "eslint-config-zakodium": "^15.0.1",
+    "postcss": "^8.5.3",
     "prettier": "^3.5.3",
     "tailwindcss": "^4.1.7",
     "typescript": "^5.8.3"

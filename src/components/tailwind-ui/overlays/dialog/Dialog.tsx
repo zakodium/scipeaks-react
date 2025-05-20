@@ -207,8 +207,8 @@ function DialogRoot<Wrapper extends ElementType = 'div'>(
               onInteractOutside={onInteractOutside}
               className={clsx(
                 'relative bg-white shadow-xl sm:rounded-xl',
-                'max-h-[100vh] min-h-[10ch] lg:max-h-[calc(100vh-4rem)]',
-                'max-w-[100vw] min-w-full sm:min-w-[33%]',
+                'max-h-screen min-h-[10ch] lg:max-h-[calc(100vh-4rem)]',
+                'max-w-screen min-w-full sm:min-w-[33%]',
                 DialogSize[size],
                 'p-4',
                 dialogContentClassName,

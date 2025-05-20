@@ -261,5 +261,5 @@ function ToolbarToggleGroup(props: ToolbarToggleGroupProps) {
 }
 
 function ToolbarSeparator() {
-  return <Toolbar.Separator className="mx-[10px] w-[1px] bg-neutral-300" />;
+  return <Toolbar.Separator className="mx-[10px] w-px bg-neutral-300" />;
 }

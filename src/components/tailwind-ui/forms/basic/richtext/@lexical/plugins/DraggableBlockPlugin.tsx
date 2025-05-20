@@ -19,13 +19,7 @@ import {
   DRAGOVER_COMMAND,
   DROP_COMMAND,
 } from 'lexical';
-import {
-  DragEvent as ReactDragEvent,
-  ReactElement,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { DragEvent as ReactDragEvent, ReactElement, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { isHTMLElement } from '../utils/guard';
@@ -418,7 +412,7 @@ function useDraggableBlockMenu(
       {isEditable && (
         <div
           data-draggable-block="true"
-          className="absolute top-0 left-0 size-4 cursor-grab rounded-sm px-[1px] py-[2px] opacity-30! will-change-transform"
+          className="absolute top-0 left-0 size-4 cursor-grab rounded-sm px-px py-[2px] opacity-30! will-change-transform"
           style={{
             backgroundImage: `url(data:image/svg+xml;utf8,${draggableBlockMenuIcon})`,
           }}

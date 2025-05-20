@@ -82,11 +82,11 @@ export function Notification(props: NotificationProps) {
         className={clsx(
           'pointer-events-auto z-40 flex w-full max-w-sm flex-row items-start overflow-hidden rounded-lg border bg-white p-4 shadow-md',
           // 1.25rem equals to padding of p-5 set on notification center
-          '[--viewport-padding:_1.25rem]',
+          '[--viewport-padding:1.25rem]',
           // Move back to original position on cancel
           'data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out]',
           // Move horizontally on swipe
-          'data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)]',
+          'data-[swipe=move]:translate-x-(--radix-toast-swipe-move-x)',
           // Fade out on timeout / close
           'data-[state=closed]:animate-(--animate-private_notificationHide_200)',
           className,
