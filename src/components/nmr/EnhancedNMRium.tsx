@@ -4,7 +4,7 @@ import React from 'react';
 
 import LoadingFull from '../LoadingFull';
 
-const NMRium = dynamic(() => import('nmrium'), {
+const NMRium = dynamic(() => import('nmrium').then((mod) => mod.NMRium), {
   ssr: false,
   loading: () => <LoadingFull />,
 });

@@ -4,10 +4,10 @@ import { Table, Th } from '@/components/tailwind-ui';
 export default function Computed(props: { computed: any }) {
   const { computed } = props;
 
-  const rows: Array<any> = [];
-  for (let key in computed) {
+  const rows: any[] = [];
+  for (const key in computed) {
     rows.push({
-      key: key,
+      key,
       label: computed[key].label,
       value:
         computed[key].value +

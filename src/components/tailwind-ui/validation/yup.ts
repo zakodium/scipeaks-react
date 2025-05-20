@@ -1,33 +1,42 @@
-import { object, date, string, number } from 'yup';
-import type { ObjectShape } from 'yup/lib/object';
+import type { ObjectShape } from 'yup';
+import { addMethod, date, number, object, string } from 'yup';
 
-const requiredMessage = 'This field is required.';
+import { requiredFieldMessage, requiredNumberFieldMessage } from './messages';
+
+addMethod(object, 'notEmpty', function notEmpty(message: string) {
+  // eslint-disable-next-line no-invalid-this
+  return this.test('notEmpty', message, function test(value) {
+    return value && Object.keys(value).length > 0;
+  });
+});
 
 export function requiredString(message?: string) {
   return string()
-    .required(message || requiredMessage)
-    .nullable();
+    .typeError(message || requiredFieldMessage)
+    .required(message || requiredFieldMessage);
 }
 
 export function requiredNumber(message?: string) {
   return number()
-    .required(message || requiredMessage)
-    .nullable();
+    .typeError(message || requiredNumberFieldMessage)
+    .required(message || requiredNumberFieldMessage);
 }
 
 export function requiredObject<T extends ObjectShape>(
   spec?: T,
   message?: string,
 ) {
-  return object(spec)
-    .required(message || requiredMessage)
-    .nullable();
+  return (
+    object(spec)
+      .required(message || requiredFieldMessage)
+      // Objects in yup default to an empty object
+      // We don't change the default value as this would change the schema's type
+      .notEmpty(message || requiredFieldMessage)
+  );
 }
 
 export function requiredDate(message?: string) {
-  return date()
-    .required(message || requiredMessage)
-    .nullable();
+  return date().required(message || requiredFieldMessage);
 }
 
 export function optionalString() {
@@ -39,7 +48,7 @@ export function optionalNumber() {
 }
 
 export function optionalObject<T extends ObjectShape>(spec: T) {
-  return object(spec).nullable();
+  return object(spec).nullable().optional().default(undefined);
 }
 
 export function optionalDate() {

@@ -1,8 +1,9 @@
-import { useCallback, useState } from 'react';
-import { Accept, DropzoneProps } from 'react-dropzone';
+import { useCallback, useRef, useState } from 'react';
+import type { Accept, DropzoneProps } from 'react-dropzone';
+import type { FieldError, ControllerRenderProps } from 'react-hook-form';
 import { useController, useWatch } from 'react-hook-form';
 
-import { RHFValidationProps } from '..';
+import type { DropzoneListProps, RHFValidationProps } from '..';
 
 import { useCheckedFormRHFContext } from './useCheckedFormRHF';
 
@@ -10,27 +11,45 @@ export interface DropzoneHookOptions
   extends Omit<DropzoneProps, 'onDrop' | 'accept'> {
   replace?: boolean;
   accept?: Accept | string[] | string;
+  showPreview?: boolean;
 }
 
+export interface UseDropzoneFieldRHFReturn {
+  field: ControllerRenderProps;
+  error: FieldError | undefined;
+  removeFile: DropzoneListProps['onRemove'];
+  clearFiles: () => void;
+  dropzoneProps: Omit<DropzoneProps, 'accept'>;
+  dropzoneListProps: DropzoneListProps;
+}
+
+export type UseDropzoneFieldRHFOptions = DropzoneHookOptions &
+  RHFValidationProps & {
+    onChange?: (files: File[]) => void;
+  };
+
+const emptyFiles: File[] = [];
+
 export function useDropzoneFieldRHF(
-  dropzoneOptions: DropzoneHookOptions & RHFValidationProps,
+  dropzoneOptions: UseDropzoneFieldRHFOptions,
   name: string,
-) {
-  const { replace, deps, ...dropzoneProps } = dropzoneOptions;
-  const { setValue, trigger } = useCheckedFormRHFContext();
+): UseDropzoneFieldRHFReturn {
+  const { replace, deps, showPreview, onChange, ...dropzoneProps } =
+    dropzoneOptions;
+  const { trigger } = useCheckedFormRHFContext();
   const {
     field,
     fieldState: { error },
     formState: { isSubmitted },
   } = useController({ name });
-  const files: File[] = useWatch({ name });
+  const files: File[] = useWatch({ name }) ?? emptyFiles;
+
+  const onChangeRef = useRef(onChange);
+
   const onDrop = useCallback(
     (newFiles: File[]) => {
       if (replace) {
-        setValue(name, newFiles, {
-          shouldTouch: true,
-          shouldValidate: isSubmitted,
-        });
+        field.onChange(newFiles);
       } else {
         const doesNotAlreadyExist = (newFile: File) => {
           return (
@@ -38,44 +57,32 @@ export function useDropzoneFieldRHF(
             0
           );
         };
-        setValue(name, files.concat(newFiles.filter(doesNotAlreadyExist)), {
-          shouldTouch: true,
-          shouldValidate: isSubmitted,
-        });
+        field.onChange(files.concat(newFiles.filter(doesNotAlreadyExist)));
       }
       if (deps && isSubmitted) {
         void trigger(deps);
       }
+      onChangeRef.current?.(newFiles);
     },
-    [files, setValue, name, replace, isSubmitted, trigger, deps],
+    [field, files, replace, isSubmitted, trigger, deps],
   );
 
   const removeFile = useCallback(
     (fileToRemove: File) => {
-      setValue(
-        name,
-        files.filter((file) => file.name !== fileToRemove.name),
-        {
-          shouldTouch: true,
-          shouldValidate: isSubmitted,
-        },
-      );
+      field.onChange(files.filter((file) => file.name !== fileToRemove.name));
       if (deps && isSubmitted) {
         void trigger(deps);
       }
     },
-    [setValue, files, name, isSubmitted, deps, trigger],
+    [field, files, isSubmitted, deps, trigger],
   );
 
   const clearFiles = useCallback(() => {
-    setValue(name, [], {
-      shouldTouch: true,
-      shouldValidate: isSubmitted,
-    });
+    field.onChange([]);
     if (deps && isSubmitted) {
       void trigger(deps);
     }
-  }, [name, setValue, isSubmitted, trigger, deps]);
+  }, [field, isSubmitted, trigger, deps]);
 
   return {
     removeFile,
@@ -88,15 +95,24 @@ export function useDropzoneFieldRHF(
     dropzoneListProps: {
       files,
       onRemove: removeFile,
+      showPreview,
     },
     field,
     error,
   };
 }
 
-export function useDropzone(options: DropzoneHookOptions) {
-  const { replace, ...dropzoneProps } = options;
-  const [files, setFiles] = useState<File[]>([]);
+interface UseDropzoneReturn {
+  files: File[];
+  removeFile: DropzoneListProps['onRemove'];
+  clearFiles: () => void;
+  dropzoneProps: Omit<DropzoneProps, 'accept'>;
+  dropzoneListProps: DropzoneListProps & { files: File[] };
+}
+
+export function useDropzone(options: DropzoneHookOptions): UseDropzoneReturn {
+  const { replace, showPreview, ...dropzoneProps } = options;
+  const [files, setFiles] = useState<File[]>(emptyFiles);
 
   const onDrop = (newFiles: File[]) => {
     if (replace) {
@@ -127,6 +143,7 @@ export function useDropzone(options: DropzoneHookOptions) {
     dropzoneListProps: {
       files,
       onRemove: removeFile,
+      showPreview,
     },
     files,
     removeFile,

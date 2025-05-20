@@ -28,7 +28,12 @@ export default function PStatementsTable(props: any) {
         renderHeader={renderHeader}
         data={props.pStatements}
         renderTr={Row}
+        getId={getRowId}
       />
     );
   }
+}
+
+function getRowId(row: any) {
+  return row.code;
 }

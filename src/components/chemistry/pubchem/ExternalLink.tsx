@@ -1,4 +1,4 @@
-import { ExternalLinkIcon } from '@heroicons/react/outline';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 
 interface ExternalLinkProps {
   text?: string;
@@ -15,7 +15,7 @@ export default function ExternalLink(props: ExternalLinkProps) {
         rel="noreferrer"
         target="_blank"
       >
-        <ExternalLinkIcon className="inline h-4 w-4" />
+        <ArrowTopRightOnSquareIcon className="inline h-4 w-4" />
       </a>
     </>
   );

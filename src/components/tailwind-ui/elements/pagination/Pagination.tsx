@@ -1,10 +1,15 @@
 import clsx from 'clsx';
-import React, { ReactNode, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import { useMemo } from 'react';
 
-import { Size, Variant } from '../../types';
-import { ButtonGroup } from '../buttons/ButtonGroup';
+import { TranslationsText } from '../../internationalization/TranslationsText';
+import type { Size } from '../../types';
+import {
+  ButtonGroup,
+  ButtonGroupButton,
+} from '../buttons/button_group/ButtonGroup';
 
-import { paginate, ELLIPSIS } from './paginate';
+import { ELLIPSIS, paginate } from './paginate';
 
 export type PaginationPosition = 'center' | 'start' | 'end';
 
@@ -20,9 +25,14 @@ export interface PaginationProps {
   className?: string;
   buttonSize?: Size;
 
-  previousText?: string;
-  nextText?: string;
-  getText?: (actual: number, total: number) => ReactNode;
+  /**
+   * @deprecated Prefer use ``TranslationsProvider``
+   */
+  renderText?: (
+    currentPage: number,
+    totalPages: number,
+    totalCount: number,
+  ) => ReactNode;
 }
 
 export function Pagination(props: PaginationProps) {
@@ -35,22 +45,19 @@ export function Pagination(props: PaginationProps) {
     boundaryPagesPerSide = 1,
     withText = false,
     position = 'center',
-    buttonSize = Size.medium,
+    buttonSize = 'medium',
     className,
-
-    previousText = 'Previous',
-    nextText = 'Next',
-    getText = getPaginationText,
+    renderText,
   } = props;
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const { goPrevious, goNext, pages, goTo, canNavigate } = useMemo(() => {
     const goPrevious = () => onPageChange(page - 1, page);
     const goNext = () => onPageChange(page + 1, page);
-    const goTo = (num: number) => onPageChange(num, page);
+    const goTo = (num: number) => onPageChange(num - 1, page);
 
     const { pages, canNavigate } = paginate(
-      page,
+      page + 1,
       totalPages,
       centerPagesPerSide,
       boundaryPagesPerSide,
@@ -71,12 +78,14 @@ export function Pagination(props: PaginationProps) {
     boundaryPagesPerSide,
   ]);
 
-  const prevDisabled = page === 1;
-  const nextDisabled = page === totalPages;
+  const prevDisabled = page === 0;
+  const nextDisabled = page + 1 === totalPages;
 
   if (!canNavigate && !withText) {
     return null;
   }
+
+  const displayNavigationButtons = pages.length > 1;
 
   return (
     <div
@@ -91,21 +100,42 @@ export function Pagination(props: PaginationProps) {
         className,
       )}
     >
-      {withText && getText(page, totalPages)}
-      {canNavigate && (
-        <nav className="inline-flex shadow-sm">
-          <ButtonGroup size={buttonSize} variant={Variant.white}>
-            <ButtonGroup.Button disabled={prevDisabled} onClick={goPrevious}>
-              {previousText}
-            </ButtonGroup.Button>
+      {withText && (
+        <span className="text-sm text-neutral-700">
+          {renderText ? (
+            renderText(page + 1, totalPages, totalCount)
+          ) : (
+            <TranslationsText
+              textKey="pagination.text"
+              values={{
+                actualPage: page + 1,
+                totalPages,
+                totalCount,
+                SemiBold: (chunk) => {
+                  return <span className="font-semibold">{chunk}</span>;
+                },
+              }}
+            />
+          )}
+        </span>
+      )}
+      {canNavigate && displayNavigationButtons && (
+        <nav className="inline-flex shadow-xs">
+          <ButtonGroup size={buttonSize} variant="white">
+            <ButtonGroupButton disabled={prevDisabled} onClick={goPrevious}>
+              <TranslationsText textKey="pagination.previous" />
+            </ButtonGroupButton>
 
             {pages.map((element, index) => {
+              const isCurrentElement = element === page + 1;
               return (
-                <ButtonGroup.Button
-                  noBorder
-                  className="border border-neutral-300"
-                  style={{ minWidth: '3rem' }}
-                  variant={element === page ? Variant.secondary : Variant.white}
+                <ButtonGroupButton
+                  // Exceptionally, we want the border to be neutral even when the button variant is secondary
+                  className={clsx(
+                    'min-w-12',
+                    isCurrentElement && 'ring-neutral-300!',
+                  )}
+                  variant={isCurrentElement ? 'secondary' : 'white'}
                   key={element === ELLIPSIS ? `${ELLIPSIS}${index}` : element}
                   disabled={element === ELLIPSIS}
                   onClick={
@@ -113,30 +143,16 @@ export function Pagination(props: PaginationProps) {
                   }
                 >
                   {element}
-                </ButtonGroup.Button>
+                </ButtonGroupButton>
               );
             })}
 
-            <ButtonGroup.Button disabled={nextDisabled} onClick={goNext}>
-              {nextText}
-            </ButtonGroup.Button>
+            <ButtonGroupButton disabled={nextDisabled} onClick={goNext}>
+              <TranslationsText textKey="pagination.next" />
+            </ButtonGroupButton>
           </ButtonGroup>
         </nav>
       )}
-    </div>
-  );
-}
-
-function getPaginationText(page: number, total: number): JSX.Element {
-  return (
-    <div>
-      <p className="text-sm text-neutral-700">
-        Showing page
-        <span className="font-semibold"> {page} </span>
-        of
-        <span className="font-semibold"> {total} </span>
-        pages.
-      </p>
     </div>
   );
 }

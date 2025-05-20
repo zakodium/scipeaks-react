@@ -33,8 +33,13 @@ export default function PictogramsTable(props: any) {
       <Table
         renderHeader={renderHeader}
         data={props.pictograms}
+        getId={getRowId}
         renderTr={Row}
       />
     );
   }
+}
+
+function getRowId(row: any) {
+  return row.code;
 }

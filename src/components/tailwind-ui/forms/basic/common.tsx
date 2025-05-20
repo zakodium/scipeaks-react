@@ -1,38 +1,54 @@
-import { CheckIcon, ExclamationCircleIcon } from '@heroicons/react/solid';
+import { CheckIcon, ExclamationCircleIcon } from '@heroicons/react/20/solid';
 import clsx from 'clsx';
-import React, { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
+import { forwardRef } from 'react';
 
-export const labelColor = 'text-neutral-700';
-export const labelDisabledColor = 'text-neutral-500';
-export const inputColor =
-  'placeholder-neutral-400 focus-within:ring-primary-500 focus-within:border-primary-500 border-neutral-300 disabled:bg-neutral-50 disabled:text-neutral-500';
-export const inputError =
-  'border-danger-300 text-danger-900 placeholder-danger-300 focus-within:border-danger-500 focus-within:ring-danger-500';
-export const inputValid =
-  'border-success-400 text-success-900 placeholder-success-600 focus-within:border-success-600 focus-within:ring-success-600';
+import { labelColor, labelDisabledColor } from './utils.common';
+
 export interface LabelProps {
   id?: string;
-  text: string;
+  labelId?: string;
+  text: ReactNode;
   hidden?: boolean;
   required?: boolean;
   disabled?: boolean;
+  // used to focus non-labealable items (like, contentEditable div)
+  onClick?: () => void;
+  className?: string;
 }
 
-export function Label(props: LabelProps) {
+export const Label = forwardRef(function LabelForwardRef(
+  props: LabelProps,
+  ref: Ref<HTMLLabelElement>,
+) {
+  const {
+    labelId,
+    id,
+    className,
+    text,
+    disabled,
+    hidden,
+    required,
+    ...otherProps
+  } = props;
   return (
     <label
-      htmlFor={props.id}
+      ref={ref}
+      id={labelId}
+      htmlFor={id}
       className={clsx(
         'block text-sm font-semibold',
-        props.disabled ? labelDisabledColor : labelColor,
-        props.hidden && 'sr-only',
+        disabled ? labelDisabledColor : labelColor,
+        hidden && 'sr-only',
+        className,
       )}
+      {...otherProps}
     >
-      {props.text}
-      {props.required && <span className="text-warning-600"> *</span>}
+      {text}
+      {required && <span className="text-warning-600"> *</span>}
     </label>
   );
-}
+});
 
 const helpColorMap = {
   error: 'text-danger-600',
@@ -40,29 +56,36 @@ const helpColorMap = {
   help: 'text-neutral-500',
 };
 
-export function Help(props: {
-  error?: string;
+interface HelpProps {
+  error?: boolean | string;
   valid?: string | boolean;
   help?: string;
   noMargin?: boolean;
-}) {
-  const { error, valid, help, noMargin } = props;
+  className?: string;
+}
+
+export type HelpPublicProps = Pick<HelpProps, 'error' | 'valid' | 'help'>;
+
+export function Help(props: HelpProps) {
+  const { error, valid, help, noMargin, className } = props;
   if (!error && !(typeof valid === 'string') && !help) {
     return null;
   }
 
-  let toDisplay = error
-    ? ({ type: 'error', value: error } as const)
-    : typeof valid === 'string'
-    ? ({ type: 'valid', value: valid } as const)
-    : ({ type: 'help', value: help } as const);
+  const toDisplay =
+    typeof error === 'string'
+      ? ({ type: 'error', value: error } as const)
+      : typeof valid === 'string'
+        ? ({ type: 'valid', value: valid } as const)
+        : ({ type: 'help', value: help } as const);
 
   return (
     <p
       className={clsx(
-        'whitespace-pre-line text-sm',
+        'text-sm whitespace-pre-line',
         helpColorMap[toDisplay.type],
         !noMargin && 'mt-2',
+        className,
       )}
     >
       {toDisplay.value}
@@ -75,9 +98,9 @@ export function InputCorner(props: { children: ReactNode }) {
 }
 
 export function InputErrorIcon() {
-  return <ExclamationCircleIcon className="ml-2 h-5 w-5 text-danger-500" />;
+  return <ExclamationCircleIcon className="ml-2 size-5 text-danger-500" />;
 }
 
 export function InputValidIcon() {
-  return <CheckIcon className="ml-2 h-5 w-5 text-success-600" />;
+  return <CheckIcon className="ml-2 size-5 text-success-600" />;
 }

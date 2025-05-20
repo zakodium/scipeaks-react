@@ -1,5 +1,6 @@
+import type { FieldValues } from 'react-hook-form';
 // eslint-disable-next-line no-restricted-imports
-import { FieldValues, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 export function useCheckedFormRHFContext<TFieldValues extends FieldValues>() {
   const context = useFormContext<TFieldValues>();

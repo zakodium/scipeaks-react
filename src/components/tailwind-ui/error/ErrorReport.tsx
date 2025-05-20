@@ -1,10 +1,11 @@
-import { CheckIcon } from '@heroicons/react/outline';
-import React, { useContext } from 'react';
+import { CheckIcon } from '@heroicons/react/24/outline';
+import { useContext } from 'react';
 
-import { Button } from '../elements/buttons/Button';
-import { Alert, AlertType } from '../feedback/Alert';
-import { notificationContext } from '../overlays/NotificationContext';
-import { Color } from '../types';
+import { Button } from '../elements/buttons/button/Button';
+import { Alert } from '../feedback/Alert';
+import { TranslationsText } from '../internationalization/TranslationsText';
+import { useTranslation } from '../internationalization/useTranslation';
+import { notificationContext } from '../overlays/notification/NotificationContext';
 
 export function ErrorReport({
   error,
@@ -13,18 +14,25 @@ export function ErrorReport({
   error: Error;
   componentStack?: string | null;
 }) {
+  const clipboard = useTranslation('error_report.clipboard');
+  const notificationTitle = useTranslation('error_report.notification');
+
   componentStack = componentStack?.replace(/^\s+/, '');
+
   const details = `${
-    componentStack ? `<br>Error details:\n\n${componentStack}\n\n\n` : ''
+    componentStack ? `<br>${clipboard}: \n\n${componentStack}\n\n\n` : ''
   }${error.stack || ''}`;
+
   const context = useContext(notificationContext);
 
   return (
     <div className="text-justify">
-      <Alert title="What should I do?" type={AlertType.WARNING}>
+      <Alert
+        title={<TranslationsText textKey="error_report.alert.title" />}
+        type="warning"
+      >
         <div>
-          Please use the following button to copy the error report and send it
-          to support with a description of your actions preceding the bug.
+          <TranslationsText textKey="error_report.alert.content" />
         </div>
         <Button
           className="mt-3"
@@ -33,9 +41,9 @@ export function ErrorReport({
               if (context) {
                 context.addNotification(
                   {
-                    title: 'Successfully copied error report',
+                    title: notificationTitle,
                     content: '',
-                    type: Color.success,
+                    type: 'success',
                     icon: <CheckIcon className="text-success-600" />,
                   },
                   3000,
@@ -43,17 +51,13 @@ export function ErrorReport({
               }
             });
           }}
-          color={Color.warning}
+          color="warning"
         >
-          Copy report
+          <TranslationsText textKey="error_report.button" />
         </Button>
       </Alert>
       {process.env.NODE_ENV === 'development' && (
-        <Alert
-          type={AlertType.ERROR}
-          title="Debug stack trace"
-          className="mt-2"
-        >
+        <Alert type="error" title="Debug stack trace" className="mt-2">
           <code className="block whitespace-pre">{details}</code>
         </Alert>
       )}

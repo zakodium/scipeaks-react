@@ -28,7 +28,12 @@ export default function HStatementsTable(props: any) {
         renderHeader={renderHeader}
         data={props.hStatements}
         renderTr={Row}
+        getId={getRowId}
       />
     );
   }
+}
+
+function getRowId(row: any) {
+  return row.code;
 }

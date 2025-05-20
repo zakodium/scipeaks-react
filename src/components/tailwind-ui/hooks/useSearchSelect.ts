@@ -1,19 +1,18 @@
 import { useMemo, useState } from 'react';
 
-import { SimpleSelectOption } from '../forms/basic/Select';
-import {
-  OptionsFilter,
-  defaultOptionsFilter,
-} from '../utils/search-select-utils';
+import type { SimpleSelectOption } from '../forms/basic/select/Select';
+import { defaultOptionsFilter } from '../utils/defaultSearchSelectUtils';
+import type { OptionsFilter } from '../utils/search_select_utils';
 
-export type { OptionsFilter };
+export type { OptionsFilter } from '../utils/search_select_utils';
 
 export interface SearchSelectHookResult<OptionType> {
   searchValue: string;
   onSearchChange: (newValue: string) => void;
   options: OptionType[];
   selected: OptionType | undefined;
-  onSelect: (option: OptionType | undefined) => void;
+  onChange: (option: OptionType | undefined) => void;
+  optionsCount: number;
 }
 
 export interface SearchSelectFieldHookResult<OptionType>
@@ -42,12 +41,15 @@ export function useSearchSelect<OptionType>(
     filterOptions = defaultOptionsFilter,
     initialSelected,
   } = config;
+
   const [searchValue, setSearchValue] = useState('');
+
   const newOptions = useMemo(
     () => filterOptions(searchValue, options),
     [options, filterOptions, searchValue],
   );
-  const [selected, onSelect] = useState<OptionType | undefined>(
+
+  const [selected, onChange] = useState<OptionType | undefined>(
     initialSelected,
   );
 
@@ -56,6 +58,7 @@ export function useSearchSelect<OptionType>(
     onSearchChange: setSearchValue,
     options: newOptions,
     selected,
-    onSelect,
+    onChange,
+    optionsCount: options.length,
   };
 }

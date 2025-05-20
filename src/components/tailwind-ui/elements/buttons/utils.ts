@@ -1,137 +1,121 @@
 import clsx from 'clsx';
+import { match } from 'ts-pattern';
 
-import { Roundness } from '../..';
-import { Size, Color, Variant } from '../../types';
+import type { Roundness } from '../..';
+import type { Color, Size, Variant } from '../../types';
+
+const bordersPrimary: Record<Color, string> = {
+  primary:
+    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600',
+  neutral:
+    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-600',
+  success:
+    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success-600',
+  warning:
+    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warning-600',
+  danger:
+    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger-600',
+  alternative:
+    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-alternative-600',
+};
+
+const bordersSecondary: Record<Color, string> = {
+  primary:
+    'ring-1 ring-inset ring-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600',
+  neutral:
+    'ring-1 ring-inset ring-neutral-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-600',
+  success:
+    'ring-1 ring-inset ring-success-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success-600',
+  warning:
+    'ring-1 ring-inset ring-warning-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warning-600',
+  danger:
+    'ring-1 ring-inset ring-danger-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger-600',
+  alternative:
+    'ring-1 ring-inset ring-alternative-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-alternative-600',
+};
+
+const borderWhite =
+  'ring-1 ring-inset ring-neutral-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500';
+
+function getVariantBorder(variant: Variant, color: Color): string {
+  return match(variant)
+    .with('primary', () => bordersPrimary[color])
+    .with('secondary', () => bordersSecondary[color])
+    .with('white', () => borderWhite)
+    .exhaustive();
+}
 
 const baseSizes: Record<Size, string> = {
-  [Size.xSmall]: 'px-2.5 py-1.5 text-xs',
-  [Size.small]: 'px-3 py-2 text-sm',
-  [Size.medium]: 'px-4 py-2 text-sm',
-  [Size.large]: 'px-4 py-2 text-base',
-  [Size.xLarge]: 'px-6 py-3 text-base',
+  xSmall: 'px-2 py-1 text-xs',
+  small: 'px-2 py-1 text-sm',
+  medium: 'px-2.5 py-2 text-sm',
+  large: 'px-3 py-2 text-sm',
+  xLarge: 'px-3.5 py-2.5 text-sm',
 };
 
 const circularSizes: Record<Size, string> = {
-  [Size.xSmall]: 'p-1 text-xl',
-  [Size.small]: 'p-1.5 text-xl',
-  [Size.medium]: 'p-2 text-xl',
-  [Size.large]: 'p-2 text-2xl',
-  [Size.xLarge]: 'p-3 text-2xl',
+  xSmall: 'p-1 text-xl',
+  small: 'p-1.5 text-xl',
+  medium: 'p-2 text-xl',
+  large: 'p-2 text-2xl',
+  xLarge: 'p-3 text-2xl',
 };
 
 const colorsPrimary: Record<Color, string> = {
-  [Color.primary]:
-    'bg-primary-600 disabled:bg-primary-400 hover:bg-primary-700 focus:ring-primary-500 active:bg-primary-800 text-white',
-  [Color.neutral]:
-    'bg-neutral-600 disabled:bg-neutral-400 hover:bg-neutral-700 focus:ring-neutral-500 active:bg-neutral-800 text-white',
-  [Color.success]:
-    'bg-success-600 disabled:bg-success-400 hover:bg-success-700 focus:ring-success-500 active:bg-success-800 text-white',
-  [Color.warning]:
-    'bg-warning-600 disabled:bg-warning-400 hover:bg-warning-700 focus:ring-warning-500 active:bg-warning-800 text-white',
-  [Color.danger]:
-    'bg-danger-600 disabled:bg-danger-400 hover:bg-danger-700 focus:ring-danger-500 active:bg-danger-800 text-white',
-  [Color.alternative]:
-    'bg-alternative-600 disabled:bg-alternative-400 hover:bg-alternative-700 focus:ring-alternative-500 active:bg-alternative-800 text-white',
+  primary:
+    'bg-primary-600 disabled:bg-primary-400 hover:bg-primary-700 active:bg-primary-800 text-white',
+  neutral:
+    'bg-neutral-600 disabled:bg-neutral-400 hover:bg-neutral-700 active:bg-neutral-800 text-white',
+  success:
+    'bg-success-600 disabled:bg-success-400 hover:bg-success-700 active:bg-success-800 text-white',
+  warning:
+    'bg-warning-600 disabled:bg-warning-400 hover:bg-warning-700 active:bg-warning-800 text-white',
+  danger:
+    'bg-danger-600 disabled:bg-danger-400 hover:bg-danger-700 active:bg-danger-800 text-white',
+  alternative:
+    'bg-alternative-600 disabled:bg-alternative-400 hover:bg-alternative-700 active:bg-alternative-800 text-white',
 };
 
 const colorsSecondary: Record<Color, string> = {
-  [Color.primary]:
-    'text-primary-700 disabled:text-primary-400 bg-primary-100 disabled:bg-primary-50 hover:bg-primary-200 focus:ring-primary-500 active:bg-primary-300',
-  [Color.neutral]:
-    'text-neutral-700 disabled:text-neutral-400 bg-neutral-100 disabled:bg-neutral-50 hover:bg-neutral-200 focus:ring-neutral-500 active:bg-neutral-300',
-  [Color.success]:
-    'text-success-700 disabled:text-success-400 bg-success-100 disabled:bg-success-50 hover:bg-success-200 focus:ring-success-500 active:bg-success-300',
-  [Color.warning]:
-    'text-warning-700 disabled:text-warning-400 bg-warning-100 disabled:bg-warning-50 hover:bg-warning-200 focus:ring-warning-500 active:bg-warning-300',
-  [Color.danger]:
-    'text-danger-700 disabled:text-danger-400 bg-danger-100 disabled:bg-danger-50 hover:bg-danger-200 focus:ring-danger-500 active:bg-danger-300',
-  [Color.alternative]:
-    'text-alternative-700 disabled:text-alternative-400 bg-alternative-100 disabled:bg-alternative-50 hover:bg-alternative-200 focus:ring-alternative-500 active:bg-alternative-300',
+  primary:
+    'bg-primary-100 disabled:bg-primary-50 hover:bg-primary-200 text-primary-700 disabled:text-primary-400 active:bg-primary-300',
+  neutral:
+    'bg-neutral-100 disabled:bg-neutral-50 hover:bg-neutral-200 text-neutral-700 disabled:text-neutral-400 active:bg-neutral-300',
+  success:
+    'bg-success-100 disabled:bg-success-50 hover:bg-success-200 text-success-700 disabled:text-success-400 active:bg-success-300',
+  warning:
+    'bg-warning-100 disabled:bg-warning-50 hover:bg-warning-200 text-warning-700 disabled:text-warning-400 active:bg-warning-300',
+  danger:
+    'bg-danger-100 disabled:bg-danger-50 hover:bg-danger-200 text-danger-700 disabled:text-danger-400 active:bg-danger-300',
+  alternative:
+    'bg-alternative-100 disabled:bg-alternative-50 hover:bg-alternative-200 text-alternative-700 disabled:text-alternative-400 active:bg-alternative-300',
 };
 
-const colorsWhite: Record<Color, string> = {
-  [Color.primary]:
-    'text-neutral-700 disabled:text-neutral-400 bg-white disabled:bg-white hover:bg-neutral-50 focus:ring-primary-500 active:bg-neutral-100',
-  [Color.neutral]:
-    'text-neutral-700 disabled:text-neutral-400 bg-white disabled:bg-white hover:bg-neutral-50 focus:ring-primary-500 active:bg-neutral-100',
-  [Color.success]:
-    'text-neutral-700 disabled:text-neutral-400 bg-white disabled:bg-white hover:bg-neutral-50 focus:ring-primary-500 active:bg-neutral-100',
-  [Color.warning]:
-    'text-neutral-700 disabled:text-neutral-400 bg-white disabled:bg-white hover:bg-neutral-50 focus:ring-primary-500 active:bg-neutral-100',
-  [Color.danger]:
-    'text-neutral-700 disabled:text-neutral-400 bg-white disabled:bg-white hover:bg-neutral-50 focus:ring-primary-500 active:bg-neutral-100',
-  [Color.alternative]:
-    'text-neutral-700 disabled:text-neutral-400 bg-white disabled:bg-white hover:bg-neutral-50 focus:ring-primary-500 active:bg-neutral-100',
-};
+const colorWhite =
+  'text-neutral-700 disabled:text-neutral-400 bg-white disabled:bg-white hover:bg-neutral-50 active:bg-neutral-100';
 
 function getVariantColor(variant: Variant, color: Color): string {
-  switch (variant) {
-    case Variant.primary:
-      return colorsPrimary[color];
-    case Variant.secondary:
-      return colorsSecondary[color];
-    case Variant.white:
-      return colorsWhite[color];
-    default:
-      throw new Error('Variant cannot be null');
-  }
+  return match(variant)
+    .with('primary', () => colorsPrimary[color])
+    .with('secondary', () => colorsSecondary[color])
+    .with('white', () => colorWhite)
+    .exhaustive();
 }
 
-function getButtonClassName(options: {
+export function getButtonClassName(options: {
   variant: Variant;
   color: Color;
   roundness: Roundness;
   size: Size;
-  noBorder: boolean;
-  group?: 'left' | 'right' | 'middle';
   className?: string;
-  disabled?: boolean;
 }) {
-  const {
-    variant,
-    color,
-    roundness,
-    size,
-    group,
-    className,
-    disabled,
-    noBorder,
-  } = options;
+  const { variant, color, roundness, size, className } = options;
+
   return clsx(
-    'font-semibold focus:outline-none',
+    'font-semibold',
+    getVariantBorder(variant, color),
     getVariantColor(variant, color),
-    roundness === Roundness.circular ? circularSizes[size] : baseSizes[size],
+    roundness === 'circular' ? circularSizes[size] : baseSizes[size],
     className,
-    roundness === Roundness.full || roundness === Roundness.circular
-      ? {
-          'rounded-l-full rounded-r-none': group === 'left',
-          'rounded-none': group === 'middle',
-          'rounded-r-full rounded-l-none': group === 'right',
-          'rounded-full': !group,
-        }
-      : {
-          'rounded-l-md rounded-r-none': group === 'left',
-          'rounded-none': group === 'middle',
-          'rounded-r-md rounded-l-none': group === 'right',
-          'rounded-md': !group,
-        },
-    {
-      'cursor-default': disabled,
-      '-ml-px': group && group !== 'left',
-      'shadow-sm focus:ring-2 focus:ring-offset-2': !group,
-      'focus:ring-1 focus:z-10': group,
-      'border border-transparent': !noBorder && variant !== Variant.white,
-      'border border-neutral-300': !noBorder && variant === Variant.white,
-    },
   );
 }
-
-export {
-  baseSizes,
-  circularSizes,
-  getVariantColor,
-  colorsPrimary,
-  colorsSecondary,
-  colorsWhite,
-  getButtonClassName,
-};

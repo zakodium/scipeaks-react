@@ -1,15 +1,19 @@
 import clsx from 'clsx';
-import React, { Children, forwardRef, Ref } from 'react';
+import type { InputHTMLAttributes, ReactElement, Ref } from 'react';
+import { Children, cloneElement, forwardRef } from 'react';
 
-import type { GroupOptionProps } from '../GroupOption';
+import { useInputId } from '../../../hooks/useInputId';
 import { Label } from '../common';
+import type { GroupOptionProps } from '../group_option/GroupOption';
+import { Radio } from '../radio/Radio';
 
 export interface OptionProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'value'> {
   name: string;
   label: string;
-  id: string;
+  id?: string;
   description?: string;
+  value: string;
 }
 
 export const Option = forwardRef(function OptionForwardRef(
@@ -17,52 +21,43 @@ export const Option = forwardRef(function OptionForwardRef(
   ref: Ref<HTMLInputElement>,
 ) {
   const { name, label, id, description, value, checked, ...otherProps } = props;
+
+  const finalId = useInputId(id, `${name}_${value}`);
+
   return (
-    <label htmlFor={id}>
+    <label htmlFor={finalId}>
       <div
-        className={clsx('flex p-4', {
-          'z-10 border-primary-200 bg-primary-50': checked,
-        })}
+        className={clsx(
+          'group flex p-4 has-[div>input:checked]:z-10 has-[div>input:checked]:border-primary-200 has-[div>input:checked]:bg-primary-50',
+          otherProps.disabled ? 'cursor-default' : 'cursor-pointer',
+        )}
       >
-        <div className="flex h-5 items-center">
-          <input
-            type="radio"
-            ref={ref}
-            name={name}
-            value={value}
-            id={id}
-            className="h-4 w-4 cursor-pointer border-neutral-300 text-primary-600 focus:ring-primary-500"
-            checked={checked}
-            {...otherProps}
-          />
-        </div>
-        <label htmlFor={id} className="ml-3 flex cursor-pointer flex-col">
-          <span
-            className={clsx('block text-sm font-semibold', {
-              'text-neutral-900': !checked && !props.disabled,
-              'text-primary-900': checked,
-              'text-neutral-500': props.disabled,
-            })}
-          >
-            {label}
-          </span>
-          {description && (
-            <span
-              className={clsx('block text-sm', {
-                'text-neutral-500': !checked,
-                'text-primary-700': checked,
-              })}
-            >
-              {description}
-            </span>
-          )}
-        </label>
+        <Radio
+          name={name}
+          ref={ref}
+          id={finalId}
+          checked={checked}
+          {...otherProps}
+          value={value}
+          label={
+            <>
+              <span className="block text-sm font-semibold text-neutral-900 group-has-[div>input:checked]:text-primary-900 group-has-[div>input:disabled]:text-neutral-500">
+                {label}
+              </span>
+              {description && (
+                <span className="block text-sm text-neutral-500 group-has-[div>input:checked]:text-primary-700">
+                  {description}
+                </span>
+              )}
+            </>
+          }
+        />
       </div>
     </label>
   );
 });
 
-export function GroupOptionInternal(props: GroupOptionProps): JSX.Element {
+export function GroupOptionInternal(props: GroupOptionProps): ReactElement {
   const lastChildIndex = Children.count(props.children) - 1;
 
   return (
@@ -75,7 +70,14 @@ export function GroupOptionInternal(props: GroupOptionProps): JSX.Element {
           hidden={props.hiddenLabel}
         />
       )}
-      <div className={clsx({ 'mt-1': !props.hiddenLabel })}>
+      <div
+        className={clsx(
+          'has-focus-visible:rounded-md has-focus-visible:ring-2 has-focus-visible:ring-primary-600 has-focus-visible:ring-offset-2',
+          {
+            'mt-1': !props.hiddenLabel,
+          },
+        )}
+      >
         {Children.map(props.children, (child, index) => {
           return (
             <div
@@ -83,12 +85,13 @@ export function GroupOptionInternal(props: GroupOptionProps): JSX.Element {
               className={clsx('border border-neutral-200', {
                 'rounded-tl-md rounded-tr-md': index === 0,
                 'border-b-0': index !== lastChildIndex,
-                'rounded-bl-md rounded-br border-b': index === lastChildIndex,
+                'rounded-br rounded-bl-md border-b': index === lastChildIndex,
               })}
             >
               {props.disabled === true
-                ? React.cloneElement(child, {
+                ? cloneElement(child, {
                     disabled: props.disabled,
+                    name: props.name,
                   })
                 : child}
             </div>

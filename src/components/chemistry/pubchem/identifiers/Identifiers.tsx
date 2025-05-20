@@ -8,18 +8,18 @@ import ExternalLink from '../ExternalLink';
 
 export default function Identifiers(props: { identifiers: any; cid: any }) {
   const { identifiers, cid } = props;
-  const rows: Array<any> = [];
-  for (let key in identifiers) {
+  const rows: any[] = [];
+  for (const key in identifiers) {
     if (key === 'formula') {
       rows.push({
-        key: key,
+        key,
         label: identifiers[key].label,
         value: <MF mf={identifiers[key].value} />,
         description: identifiers[key].description,
       });
     } else if (key === 'smiles') {
       rows.push({
-        key: key,
+        key,
         label: identifiers[key].label,
         value: identifiers[key].value,
         description: identifiers[key].description,
@@ -32,7 +32,7 @@ export default function Identifiers(props: { identifiers: any; cid: any }) {
       });
     } else {
       rows.push({
-        key: key,
+        key,
         label: identifiers[key].label,
         value: identifiers[key].value,
         description: identifiers[key].description,

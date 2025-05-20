@@ -11,7 +11,7 @@ import GHS9 from './GHS9';
 const GHS = [GHS1, GHS2, GHS3, GHS4, GHS5, GHS6, GHS7, GHS8, GHS9];
 
 export default function Pictogram(props: { code: string }) {
-  let code = props.code.replace(/[^1-9]/g, '');
+  const code = props.code.replace(/[^1-9]/g, '');
 
   const Component = GHS[Number(code) - 1];
 

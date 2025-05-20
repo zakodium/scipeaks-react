@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { InputProps } from '../forms/basic/Input';
+import type { InputProps } from '../forms/basic/input/Input';
 
 import { useDebounce } from './useDebounce';
 
@@ -59,10 +59,10 @@ export function useInputAsyncValidation(
           });
         }
       })
-      .catch((e) => {
+      .catch((error: unknown) => {
         if (shouldComplete) {
           // eslint-disable-next-line no-console
-          console.error(e);
+          console.error(error);
           setLoading(false);
           setResult({
             error: undefined,

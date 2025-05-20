@@ -1,9 +1,8 @@
-import { ReactElement, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 
-import {
-  HorizontalNavigation,
-  HorizontalNavigationOption,
-} from '@/components/tailwind-ui';
+import type { HorizontalNavigationOption } from '@/components/tailwind-ui';
+import { HorizontalNavigation } from '@/components/tailwind-ui';
 
 import Computed from './computed/Computed';
 import Experimental from './experimental/Experimental';
@@ -11,7 +10,7 @@ import GHSFull from './ghs/full/GHSFull';
 import GHS from './ghs/summary/GHS';
 import Identifiers from './identifiers/Identifiers';
 
-const tabs: HorizontalNavigationOption<string>[] = [
+const tabs: Array<HorizontalNavigationOption<string>> = [
   { value: 'ghs', label: 'GHS' },
   { value: 'ghsFull', label: 'GHS Detailed' },
   { value: 'computed', label: 'Computed' },

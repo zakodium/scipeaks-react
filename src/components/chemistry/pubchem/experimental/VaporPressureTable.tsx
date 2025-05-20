@@ -6,7 +6,7 @@ import Vp from '../Vp';
 
 export default function VaporPressureTable(props: { data: any }) {
   const { data } = props;
-  if (!data) return <></>;
+  if (!data) return null;
   return (
     <div>
       <div className="pt-5 text-xl">Vapor pressure</div>

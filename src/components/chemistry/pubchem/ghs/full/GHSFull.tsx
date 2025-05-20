@@ -4,9 +4,9 @@ import PictogramsTableFull from './PictogramsTableFull';
 
 export default function GHSFull(props: {
   ghsFull: {
-    pStatements: Array<any>;
-    hStatements: Array<any>;
-    pictograms: Array<any>;
+    pStatements: any[];
+    hStatements: any[];
+    pictograms: any[];
   };
 }) {
   const ghsFull = props.ghsFull;

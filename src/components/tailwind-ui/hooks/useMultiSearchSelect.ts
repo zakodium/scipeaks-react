@@ -1,19 +1,19 @@
 import { useMemo, useState } from 'react';
 
-import { SimpleSelectOption } from '../forms/basic/Select';
-import { defaultOptionsFilter } from '../utils/search-select-utils';
+import type { SimpleSelectOption } from '../forms/basic/select/Select';
+import { defaultOptionsFilter } from '../utils/defaultSearchSelectUtils';
 
-import {
+import type {
   SearchSelectHookConfig,
   SearchSelectHookResult,
   SimpleSearchSelectHookConfig,
 } from './useSearchSelect';
 
 export interface MultiSearchSelectHookResult<OptionType>
-  extends Omit<SearchSelectHookResult<OptionType>, 'selected' | 'onSelect'> {
+  extends Omit<SearchSelectHookResult<OptionType>, 'selected' | 'onChange'> {
   selected: OptionType[];
   selectedFiltered: OptionType[];
-  onSelect: (newOptions: OptionType[]) => void;
+  onChange: (newOptions: OptionType[]) => void;
 }
 
 export interface SimpleMultiSearchSelectHookConfig<OptionType>
@@ -36,10 +36,12 @@ export function useMultiSearchSelect<OptionType>(
     initialSelected = [],
   } = config;
   const [searchValue, setSearchValue] = useState('');
+
   const filteredOptions = useMemo(
     () => filterOptions(searchValue, options),
     [options, filterOptions, searchValue],
   );
+
   const [selected, setSelected] = useState<OptionType[]>(initialSelected);
   const selectedFiltered = useMemo(() => {
     return filterOptions(searchValue, selected);
@@ -51,6 +53,7 @@ export function useMultiSearchSelect<OptionType>(
     options: filteredOptions,
     selected,
     selectedFiltered,
-    onSelect: setSelected,
+    onChange: setSelected,
+    optionsCount: options.length,
   };
 }

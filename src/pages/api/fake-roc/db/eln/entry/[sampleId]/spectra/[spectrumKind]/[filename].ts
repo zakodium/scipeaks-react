@@ -19,7 +19,7 @@ export default async function handler(
         filename as string,
       ),
     );
-    return res.status(200).end(attachment);
+    res.status(200).end(attachment);
   } catch (e) {
     if (e.code === 'ENOENT') {
       res.status(404).json({

@@ -1,5 +1,7 @@
-import React, { createContext, ReactNode, useContext } from 'react';
-import { RocDocument } from 'rest-on-couch-client';
+/* eslint-disable react-refresh/only-export-components */
+import type { ReactNode } from 'react';
+import React, { createContext, useContext } from 'react';
+import type { RocDocument } from 'rest-on-couch-client';
 
 import { ErrorPage } from '@/components/tailwind-ui';
 import { ErrorReport } from '@/components/tailwind-ui/error/ErrorReport';

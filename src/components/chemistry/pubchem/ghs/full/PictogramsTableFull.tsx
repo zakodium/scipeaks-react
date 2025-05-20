@@ -1,7 +1,7 @@
 import Reference from '../../Reference';
 import PictogramsTable from '../summary/PictogramsTable';
 
-export default function PictogramsTableFull(props: { pictograms: Array<any> }) {
+export default function PictogramsTableFull(props: { pictograms: any[] }) {
   const { pictograms } = props;
   if (!pictograms || pictograms.length === 0) {
     return <>No GHS pictograms found.</>;

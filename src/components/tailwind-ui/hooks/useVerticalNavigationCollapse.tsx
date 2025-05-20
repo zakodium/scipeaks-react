@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import {
+import type {
   VerticalNavigationGroupOption,
   VerticalNavigationOption,
   VerticalNavigationOptions,
-} from '../navigation/VerticalNavigation';
+} from '../navigation/vertical_navigation/VerticalNavigation';
 
 interface StateElement<T> {
   element: VerticalNavigationGroupOption<T>;
@@ -12,7 +12,7 @@ interface StateElement<T> {
 }
 
 function createState<T>(
-  elements: VerticalNavigationOptions<T>[],
+  elements: Array<VerticalNavigationOptions<T>>,
   startUncollapsed: boolean,
   selected?: VerticalNavigationOption<T>,
 ) {

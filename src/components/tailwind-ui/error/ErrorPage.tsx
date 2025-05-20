@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 export interface ErrorPageProps {
   title: string;
@@ -30,7 +30,9 @@ export function ErrorPage(props: ErrorPageProps) {
                 {title}
               </h1>
               {subtitle && (
-                <p className="mt-1 text-base text-neutral-500">{subtitle}</p>
+                <div className="mt-1 text-base text-neutral-500">
+                  {subtitle}
+                </div>
               )}
             </div>
             <div className="mt-10 flex space-x-3 sm:border-l sm:border-transparent sm:pl-6">

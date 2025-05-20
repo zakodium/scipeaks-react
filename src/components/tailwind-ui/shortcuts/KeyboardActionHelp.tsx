@@ -1,17 +1,10 @@
-import { InformationCircleIcon } from '@heroicons/react/outline';
-import React, { useMemo } from 'react';
-import {
-  KbsDefinition,
-  KbsKeyDefinition,
-  KbsShortcut,
-  useKbsGlobal,
-  useKbsGlobalList,
-} from 'react-kbs';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import { Fragment, useMemo, useState } from 'react';
+import type { KbsDefinition, KbsKeyDefinition, KbsShortcut } from 'react-kbs';
+import { useKbsGlobal, useKbsGlobalList } from 'react-kbs';
 
-import { useOnOff } from '../hooks/useOnOff';
-import { Table, Td } from '../lists/Table';
-import { Modal } from '../overlays/Modal';
-import { Color } from '../types';
+import { Table, Td } from '../lists/table/Table';
+import { DialogBody, DialogRoot, DialogTitle } from '../overlays/dialog/Dialog';
 import { commandKeyExists } from '../util';
 
 export interface KeyboardActionHelpProps {
@@ -22,19 +15,19 @@ const defaultShortcut = { key: '?' };
 
 export function KeyboardActionHelp(props: KeyboardActionHelpProps) {
   const { shortcut = defaultShortcut } = props;
-  const [showHelp, helpOn, helpOff] = useOnOff();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const helpActions = useMemo<Array<KbsDefinition>>(() => {
+  const helpActions = useMemo<KbsDefinition[]>(() => {
     return [
       {
         shortcut,
         meta: {
           description: 'Show this documentation',
         },
-        handler: () => helpOn(),
+        handler: () => setIsOpen(true),
       },
     ];
-  }, [helpOn, shortcut]);
+  }, [setIsOpen, shortcut]);
 
   useKbsGlobal(helpActions);
 
@@ -45,18 +38,18 @@ export function KeyboardActionHelp(props: KeyboardActionHelpProps) {
   }));
 
   return (
-    <Modal
-      isOpen={showHelp}
-      onRequestClose={helpOff}
+    <DialogRoot
+      open={isOpen}
+      onOpenChange={setIsOpen}
       icon={<InformationCircleIcon />}
-      iconColor={Color.primary}
-      fluid
+      iconColor="primary"
+      noDescription
     >
-      <Modal.Header>Keyboard shortcut documentation</Modal.Header>
-      <Modal.Body>
+      <DialogTitle>Keyboard shortcut documentation</DialogTitle>
+      <DialogBody>
         <Table data={shortcuts} renderTr={Tr} />
-      </Modal.Body>
-    </Modal>
+      </DialogBody>
+    </DialogRoot>
   );
 }
 
@@ -68,10 +61,10 @@ function Tr(value: KbsShortcut) {
         {value.aliases.length > 0 ? ',' : ''}
 
         {value.aliases.map((alias, index) => (
-          <>
-            <KbdLine key={alias.key} kbs={alias} />
+          <Fragment key={'key' in alias ? alias.key : alias.code}>
+            <KbdLine kbs={alias} />
             {index < value.aliases.length - 1 ? ',' : ''}
-          </>
+          </Fragment>
         ))}
       </Td>
       <Td align="right">{value.meta?.description}</Td>
@@ -84,13 +77,13 @@ interface KbdLineProps {
 }
 
 function KbdLine(props: KbdLineProps) {
-  const { key, alt, ctrl, shift } = props.kbs;
+  const { kbs } = props;
   return (
-    <kbd className="text-sm font-light leading-3 text-neutral-700">
-      {ctrl && renderModifierKey('ctrl')}
-      {alt && renderModifierKey('alt')}
-      {shift && renderModifierKey('shift')}
-      {keyToLabel(key)}
+    <kbd className="text-sm leading-3 font-light text-neutral-700">
+      {kbs.ctrl && renderModifierKey('ctrl')}
+      {kbs.alt && renderModifierKey('alt')}
+      {kbs.shift && renderModifierKey('shift')}
+      {keyToLabel('key' in kbs ? kbs.key : kbs.code)}
     </kbd>
   );
 }

@@ -1,6 +1,6 @@
-import { RegisterOptions } from 'react-hook-form';
+import type { RegisterOptions } from 'react-hook-form';
 
-import type { InputProps } from '..';
+import type { InputProps } from './basic/input/Input';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ErrorSerializer = (error: any) => string | undefined;
@@ -36,12 +36,12 @@ export interface RHFRegisterProps {
 export type EmptyValue = string | number | null | undefined;
 
 export function getEmptyValueProp(
-  ...args: {
+  ...args: Array<{
     emptyValue?: EmptyValue;
-  }[]
+  }>
 ) {
-  for (let arg of args) {
-    if (Object.prototype.hasOwnProperty.call(arg, 'emptyValue')) {
+  for (const arg of args) {
+    if (Object.hasOwn(arg, 'emptyValue')) {
       // return early, first one wins
       return arg.emptyValue;
     }

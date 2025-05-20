@@ -1,9 +1,7 @@
 import Reference from '../../Reference';
 import PStatementsTable from '../summary/HStatementsTable';
 
-export default function PStatementsTableFull(props: {
-  pStatements: Array<any>;
-}) {
+export default function PStatementsTableFull(props: { pStatements: any[] }) {
   const { pStatements } = props;
   if (!pStatements || pStatements.length === 0) {
     return <>No precautionary statements found.</>;

@@ -1,224 +1,241 @@
-import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/solid';
-import { Placement } from '@popperjs/core';
+import * as RadixDropdown from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
-import React, { ReactNode, useState } from 'react';
-import { usePopper } from 'react-popper';
+import type { ComponentType, ReactNode } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 
 import { Portal } from '../../overlays/Portal';
-import { Size } from '../../types';
+import type { Size } from '../../types';
 
-export interface DropdownOption<T> {
-  type: 'option';
-  icon?: ReactNode;
+import { DropdownTriggerAsChild } from './DropdownTriggerAsChild';
+import { DropdownTriggerButton } from './DropdownTriggerButton';
+
+export interface DropdownActionOption<T> {
+  type: 'action';
   label: ReactNode;
+  icon?: ReactNode;
   disabled?: boolean;
   data?: T;
 }
-
-export type DropdownElement<T> = DropdownOption<T> | DropdownStaticOption;
 
 export interface DropdownStaticOption {
   type: 'static';
   content: ReactNode;
 }
 
-export interface DropdownProps<T> {
+export type DropdownOption<T> = DropdownActionOption<T> | DropdownStaticOption;
+export type DropdownOptions<T> = Array<Array<DropdownOption<T>>>;
+
+interface RenderOptionItemProps {
   children?: ReactNode;
-  buttonClassName?: string;
+}
+
+export interface DropdownBaseProps<T> {
   disabled?: boolean;
+  className?: string;
+  options: DropdownOptions<T>;
+  onSelect: (selected: DropdownActionOption<T>) => void;
+
+  side?: RadixDropdown.DropdownMenuContentProps['side'];
+  align?: RadixDropdown.DropdownMenuContentProps['align'];
+
+  renderAction?: (
+    Component: ComponentType<RenderOptionItemProps>,
+    option: DropdownActionOption<T>,
+  ) => ReactNode;
+
+  /**
+   * @deprecated Only used internally by `zakodium/components`. Please do not use this prop on your own.
+   */
+  pointerDownForAction?: boolean;
+}
+
+export interface DropdownAsChildProps<T> extends DropdownBaseProps<T> {
+  asChild: true;
+  children: ReactNode;
+}
+
+export interface DropdownAsButtonProps<T> extends DropdownBaseProps<T> {
+  asChild?: false;
+  children?: ReactNode;
+
+  title?: ReactNode;
   size?: Size;
+  buttonTabIndex?: number;
+  buttonClassName?: string;
   /**
    * If set to true only the custom style passed in buttonClassName will be used to
    * style the dropdown button
    */
   noDefaultButtonStyle?: boolean;
-  className?: string;
-  title?: string;
-  options: DropdownElement<T>[][];
-  onSelect: (selected: DropdownOption<T>) => void;
-  placement?: Placement;
 }
 
-const titleClassName =
-  'inline-flex justify-center w-full rounded-md border border-neutral-300 shadow-sm px-4 py-2 bg-white text-sm font-semibold text-neutral-700 hover:enabled:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neutral-100 focus:ring-primary-500';
-const iconClassName =
-  'rounded-full flex items-center text-neutral-400 hover:enabled:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neutral-100 focus:ring-primary-500';
+export type DropdownProps<T> =
+  | DropdownAsChildProps<T>
+  | DropdownAsButtonProps<T>;
 
-export function Dropdown<T>(props: DropdownProps<T>): React.ReactElement {
+interface DropdownActionContextType {
+  option: DropdownActionOption<unknown>;
+  onSelect: (selected: DropdownActionOption<unknown>) => void;
+  pointerDownForAction?: boolean;
+}
+
+const dropdownActionContext = createContext<DropdownActionContextType | null>(
+  null,
+);
+
+export function Dropdown<T>(props: DropdownProps<T>) {
   const {
-    className,
-    title,
-    options,
-    onSelect,
-    noDefaultButtonStyle,
+    asChild,
     children,
-    buttonClassName,
-    disabled,
-    size = Size.medium,
-    placement = 'bottom-end',
+    className,
+    options,
+    // Will be automatically overridden to prevent collisions with viewport boundaries.
+    side = 'bottom',
+    align = 'end',
+    onSelect,
+    renderAction,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    pointerDownForAction,
   } = props;
-  const [contentRef, setContentRef] = useState<HTMLDivElement | null>(null);
-  const [targetRef, setTargetRef] = useState<HTMLButtonElement | null>(null);
 
-  const { styles, state } = usePopper(targetRef, contentRef, {
-    placement,
-  });
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const nonEmptyGroups = options.filter((option) => option.length > 0);
 
   return (
-    <Menu>
-      {(menu) => (
-        <div
-          className={clsx(
-            'text-left',
-            { relative: menu.open },
-            className || 'inline-block',
-          )}
-        >
-          <Menu.Button
-            ref={setTargetRef}
-            disabled={disabled}
-            className={
-              noDefaultButtonStyle
-                ? buttonClassName
-                : clsx(
-                    children ? iconClassName : titleClassName,
-                    buttonClassName,
-                  )
-            }
-          >
-            {children ? (
-              children
-            ) : (
-              <div className="flex items-center">
-                {title ? (
-                  title
-                ) : (
-                  // element with a line height but no width
-                  <span className="w-0 whitespace-pre-wrap"> </span>
-                )}
-                <ChevronDownIcon
-                  className={clsx(
-                    {
-                      'h-4 w-4': size === Size.xSmall,
-                      'h-5 w-5': size === Size.small || size === Size.medium,
-                      'h-6 w-6': size === Size.large || size === Size.xLarge,
-                    },
-                    title ? 'ml-2 -mr-1' : '-mx-2',
-                  )}
-                />
-              </div>
-            )}
-          </Menu.Button>
+    <RadixDropdown.Root
+      modal={false}
+      open={isDropdownOpen}
+      onOpenChange={setIsDropdownOpen}
+    >
+      <div className={clsx('text-left', className || 'inline-block')}>
+        {asChild ? (
+          <DropdownTriggerAsChild {...props}>{children}</DropdownTriggerAsChild>
+        ) : (
+          <DropdownTriggerButton {...props} />
+        )}
+      </div>
 
-          <Portal>
-            <div ref={setContentRef} style={styles.popper}>
-              <Transition
-                show={menu.open}
-                enter="transition ease-out duration-100"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="transition ease-in duration-75"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Menu.Items
-                  static
-                  className={clsx(
-                    'w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none',
-                    getMargin(state?.placement || placement),
-                  )}
-                >
-                  <div className="divide-y divide-neutral-100 py-1" role="menu">
-                    {options.map((options, index1) => (
-                      // eslint-disable-next-line react/no-array-index-key
-                      <div className="py-1" key={index1}>
-                        {options.map((option, index2) => {
-                          if (option.type === 'option') {
-                            return (
-                              <Menu.Item
-                                disabled={option.disabled}
-                                // eslint-disable-next-line react/no-array-index-key
-                                key={`${index1}-${index2}`}
-                              >
-                                {({ active }) => (
-                                  <div
-                                    onClick={() => onSelect(option)}
-                                    className={clsx(
-                                      'focus:outline-none',
-                                      option.disabled
-                                        ? 'text-neutral-400'
-                                        : 'text-neutral-700',
-                                      {
-                                        'bg-neutral-100 text-neutral-900':
-                                          active,
-                                      },
-                                    )}
-                                  >
-                                    <span
-                                      className={clsx(
-                                        'block w-full px-4 py-2 text-left text-sm focus:outline-none',
-                                        option.disabled
-                                          ? 'cursor-default'
-                                          : 'cursor-pointer',
-                                        {
-                                          'group flex items-center':
-                                            option.icon,
-                                          'block justify-between ':
-                                            !option.icon,
-                                        },
-                                      )}
-                                    >
-                                      {option.icon !== undefined && (
-                                        <span
-                                          className={clsx(
-                                            'mr-3 h-5 w-5',
-                                            active
-                                              ? 'text-neutral-500'
-                                              : ' text-neutral-400',
-                                          )}
-                                        >
-                                          {option.icon}
-                                        </span>
-                                      )}
-                                      {option.label}
-                                    </span>
-                                  </div>
-                                )}
-                              </Menu.Item>
-                            );
-                          } else {
-                            return (
-                              <div
-                                className="px-4 py-2 text-sm"
-                                // eslint-disable-next-line react/no-array-index-key
-                                key={`${index1}-${index2}`}
-                              >
-                                {option.content}
-                              </div>
-                            );
-                          }
-                        })}
-                      </div>
-                    ))}
-                  </div>
-                </Menu.Items>
-              </Transition>
-            </div>
-          </Portal>
-        </div>
-      )}
-    </Menu>
+      <Portal>
+        <RadixDropdown.Content
+          side={side}
+          avoidCollisions
+          align={align}
+          className="rounded-md bg-white shadow-lg ring-1 ring-black/5 will-change-[opacity,transform] focus:outline-hidden data-side:animate-(--animate-private_dropdownShowFromButton_100) data-[side=bottom]:mt-2 data-[side=left]:mr-2 data-[side=right]:ml-2 data-[side=top]:mb-2"
+        >
+          <div className="divide-y divide-neutral-100 py-1">
+            {nonEmptyGroups.map((options, index1) => {
+              return (
+                // eslint-disable-next-line react/no-array-index-key
+                <div className="py-1" key={index1}>
+                  {options.map((option, index2) => {
+                    if (option.type === 'static') {
+                      return (
+                        <div
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={`${index1}-${index2}`}
+                          className="px-4 py-2 text-sm outline-hidden"
+                        >
+                          {option.content}
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <ActionOption
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={`${index1}-${index2}`}
+                        onSelect={onSelect}
+                        option={option}
+                        renderAction={renderAction}
+                        // eslint-disable-next-line @typescript-eslint/no-deprecated
+                        pointerDownForAction={pointerDownForAction}
+                      />
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        </RadixDropdown.Content>
+      </Portal>
+    </RadixDropdown.Root>
   );
 }
 
-const margins: Record<string, string> = {
-  top: 'mb-2',
-  bottom: 'mt-2',
-  left: 'mr-2',
-  right: 'ml-2',
-};
+interface ActionOptionProps<T>
+  extends Pick<
+    DropdownProps<T>,
+    'renderAction' | 'onSelect' | 'pointerDownForAction'
+  > {
+  option: DropdownActionOption<T>;
+}
 
-function getMargin(placement: Placement) {
-  return margins[placement.split('-')[0]];
+function ActionOption<T>(props: ActionOptionProps<T>) {
+  const {
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    pointerDownForAction,
+    option,
+    onSelect,
+    renderAction,
+  } = props;
+
+  const context = useMemo(() => {
+    return {
+      option,
+      onSelect,
+      pointerDownForAction,
+    } as DropdownActionContextType;
+  }, [option, onSelect, pointerDownForAction]);
+
+  return (
+    <dropdownActionContext.Provider value={context}>
+      {renderAction ? renderAction(Option, option) : <Option />}
+    </dropdownActionContext.Provider>
+  );
+}
+
+function Option(props: RenderOptionItemProps): ReactNode | null {
+  const { children } = props;
+  const context = useContext(dropdownActionContext);
+  if (context === null) return null;
+
+  const { onSelect, option, pointerDownForAction = false } = context;
+
+  if (option.type !== 'action') return null;
+
+  // onPointerDown is used in RichText context (onClick & onSelect are never called)
+  const handleSelectFunction = {
+    [pointerDownForAction ? 'onPointerDown' : 'onSelect']: (event: Event) => {
+      event.stopPropagation();
+      if (option.disabled) return;
+      onSelect(option);
+    },
+  };
+
+  return (
+    <RadixDropdown.Item
+      {...handleSelectFunction}
+      disabled={option.disabled}
+      className="group text-neutral-700 focus:outline-hidden data-disabled:text-neutral-400 data-highlighted:bg-neutral-100 data-highlighted:text-neutral-900"
+    >
+      <span
+        className={clsx(
+          'block w-full px-4 py-2 text-left text-sm focus:outline-hidden',
+          option.disabled ? 'cursor-default' : 'cursor-pointer',
+          {
+            'group flex items-center': option.icon,
+            'block justify-between': !option.icon,
+          },
+        )}
+      >
+        {option.icon !== undefined && (
+          <span className="mr-3 size-5 text-neutral-400 group-data-highlighted:text-neutral-500">
+            {option.icon}
+          </span>
+        )}
+        {children || option.label}
+      </span>
+    </RadixDropdown.Item>
+  );
 }
