@@ -9,7 +9,7 @@
     "dev": "next dev",
     "eslint": "eslint . --cache",
     "eslint-fix": "npm run eslint -- --fix",
-    "export": "next build && next export",
+    "export": "NEXT_EXPORT=true next build",
     "prettier": "prettier --check .",
     "prettier-write": "prettier --write .",
     "start": "next start",
