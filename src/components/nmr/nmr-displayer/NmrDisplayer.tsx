@@ -1,4 +1,4 @@
-import { Molecule } from 'openchemlib/full';
+import { Molecule } from 'openchemlib';
 import React from 'react';
 import { useIframeBridgeSample } from 'react-iframe-bridge';
 
@@ -20,11 +20,7 @@ export default function NmrDisplayer() {
   const sampleValue = sample.getValue();
   const content = sampleValue.$content;
 
-  if (
-    !content.spectra ||
-    !content.spectra.nmr ||
-    content.spectra.nmr.length === 0
-  ) {
+  if (!content.spectra?.nmr || content.spectra.nmr.length === 0) {
     return <NoNmr />;
   }
 
@@ -55,14 +51,5 @@ export default function NmrDisplayer() {
     }
   }
 
-  return (
-    <EnhancedNMRium
-      data={{ spectra, molecules }}
-      preferences={{
-        general: {},
-        panels: {},
-        toolBarButtons: {},
-      }}
-    />
-  );
+  return <EnhancedNMRium data={{ spectra, molecules }} />;
 }
