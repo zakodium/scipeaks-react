@@ -1,43 +1,33 @@
-import CompactTd from '@/components/common/CompactTd';
-import { Table, Th } from '@/components/tailwind-ui';
+import { createTableColumnHelper, Table } from 'react-science/ui';
 
 import ExternalLink from '../ExternalLink';
 import LowHighUnits from '../LowHighUnits';
 
+const columnHelper = createTableColumnHelper<any>();
+const columns = [
+  columnHelper.accessor('data.original', {
+    header: 'Original value',
+  }),
+  columnHelper.accessor('data.parsed', {
+    header: 'Parsed',
+    cell: (row) => <LowHighUnits data={row.getValue()} />,
+  }),
+  columnHelper.accessor('reference', {
+    header: 'Reference',
+    cell: (row) => {
+      const value = row.getValue();
+      return <ExternalLink text={value.sourceName} url={value.url} />;
+    },
+  }),
+];
+
 export default function MpTable(props: { data: any }) {
   const { data } = props;
-  if (!data) return <>No melting point data found</>;
+  if (!data) return 'No melting point data found.';
   return (
     <div>
       <div className="pt-5 text-xl">Melting point</div>
-      <Table renderHeader={renderHeader} data={data} renderTr={Row} />
+      <Table compact data={data} columns={columns} />
     </div>
-  );
-}
-
-function renderHeader() {
-  return (
-    <tr>
-      <Th>Original value</Th>
-      <Th>Parsed</Th>
-      <Th>Reference</Th>
-    </tr>
-  );
-}
-
-function Row(value: any) {
-  return (
-    <tr key={value.label}>
-      <CompactTd>{value.data.original}</CompactTd>
-      <CompactTd>
-        <LowHighUnits data={value?.data?.parsed} />
-      </CompactTd>
-      <CompactTd>
-        <ExternalLink
-          text={value.reference.sourceName}
-          url={value.reference.url}
-        />
-      </CompactTd>
-    </tr>
   );
 }

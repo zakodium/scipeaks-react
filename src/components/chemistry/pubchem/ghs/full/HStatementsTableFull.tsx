@@ -4,7 +4,7 @@ import HStatementsTable from '../summary/HStatementsTable';
 export default function HStatementsTableFull(props: { hStatements: any[] }) {
   const { hStatements } = props;
   if (!hStatements || hStatements.length === 0) {
-    return <>No hazard statements found.</>;
+    return 'No hazard statements found.';
   } else {
     return (
       <div>

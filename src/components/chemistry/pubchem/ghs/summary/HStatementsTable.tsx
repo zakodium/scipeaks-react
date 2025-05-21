@@ -1,39 +1,19 @@
-import CompactTd from '@/components/common/CompactTd';
-import { Table, Th } from '@/components/tailwind-ui';
+import { createTableColumnHelper, Table } from 'react-science/ui';
 
-function renderHeader() {
-  return (
-    <tr>
-      <Th>Code</Th>
-      <Th>Description</Th>
-    </tr>
-  );
-}
-
-function Row(value: any) {
-  return (
-    <tr key={value.code}>
-      <CompactTd>{value.code}</CompactTd>
-      <CompactTd>{value.description}</CompactTd>
-    </tr>
-  );
-}
+const columnHelper = createTableColumnHelper<any>();
+const columns = [
+  columnHelper.accessor('code', {
+    header: 'Code',
+  }),
+  columnHelper.accessor('description', {
+    header: 'Description',
+  }),
+];
 
 export default function HStatementsTable(props: any) {
   if (!props.hStatements || props.hStatements.length === 0) {
-    return <>No hazard statements found.</>;
+    return 'No hazard statements found.';
   } else {
-    return (
-      <Table
-        renderHeader={renderHeader}
-        data={props.hStatements}
-        renderTr={Row}
-        getId={getRowId}
-      />
-    );
+    return <Table compact data={props.hStatements} columns={columns} />;
   }
-}
-
-function getRowId(row: any) {
-  return row.code;
 }

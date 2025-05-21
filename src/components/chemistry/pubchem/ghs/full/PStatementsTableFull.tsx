@@ -1,10 +1,10 @@
 import Reference from '../../Reference';
-import PStatementsTable from '../summary/HStatementsTable';
+import PStatementsTable from '../summary/PStatementsTable';
 
 export default function PStatementsTableFull(props: { pStatements: any[] }) {
   const { pStatements } = props;
   if (!pStatements || pStatements.length === 0) {
-    return <>No precautionary statements found.</>;
+    return 'No precautionary statements found.';
   } else {
     return (
       <div>
@@ -14,7 +14,7 @@ export default function PStatementsTableFull(props: { pStatements: any[] }) {
             key={pStatements.reference.sourceName + pStatements.reference.name}
           >
             <Reference reference={pStatements.reference} />
-            <PStatementsTable hStatements={pStatements.data} />
+            <PStatementsTable pStatements={pStatements.data} />
           </div>
         ))}
       </div>

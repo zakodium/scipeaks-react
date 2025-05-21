@@ -1,9 +1,9 @@
-import { Spinner } from './tailwind-ui';
+import { Spinner } from '@blueprintjs/core';
 
 export default function LoadingFull() {
   return (
     <div className="flex h-full w-full items-center justify-center">
-      <Spinner className="h-10 w-10 text-neutral-600" />
+      <Spinner size={40} />
     </div>
   );
 }

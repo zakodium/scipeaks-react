@@ -3,8 +3,7 @@ import type { ReactNode } from 'react';
 import React, { createContext, useContext } from 'react';
 import type { RocDocument } from 'rest-on-couch-client';
 
-import { ErrorPage } from '@/components/tailwind-ui';
-import { ErrorReport } from '@/components/tailwind-ui/error/ErrorReport';
+import ErrorPage from '@/components/error_page';
 import { useRocDocument } from '@/hooks/useRocDocument';
 
 const mainSampleContext = createContext<RocDocument | null>(null);
@@ -24,13 +23,12 @@ export function MainSampleProvider(props: {
   const sample = useRocDocument(props.uuid);
 
   if (sample.error) {
+    reportError(sample.error);
     return (
       <ErrorPage
         title="Error loading the main sample"
         subtitle={sample.error.message}
-      >
-        <ErrorReport error={sample.error} />
-      </ErrorPage>
+      />
     );
   }
 

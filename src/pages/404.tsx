@@ -1,9 +1,5 @@
-import { PageNotFoundErrorPage } from '@/components/tailwind-ui';
+import { NonIdealState } from '@blueprintjs/core';
 
 export default function Page404() {
-  return (
-    <PageNotFoundErrorPage
-      url={typeof window !== 'undefined' ? window.location.href : 'unknown'}
-    />
-  );
+  return <NonIdealState icon="zoom-out" title="Page not found" />;
 }

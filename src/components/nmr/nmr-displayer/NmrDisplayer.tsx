@@ -2,7 +2,7 @@ import { Molecule } from 'openchemlib';
 import React from 'react';
 import { useIframeBridgeSample } from 'react-iframe-bridge';
 
-import { ErrorPage } from '@/components/tailwind-ui';
+import ErrorPage from '@/components/error_page';
 
 import EnhancedNMRium from '../EnhancedNMRium';
 

@@ -1,8 +1,25 @@
-import CompactTd from '@/components/common/CompactTd';
-import { Table, Th } from '@/components/tailwind-ui';
+import { createTableColumnHelper, Table } from 'react-science/ui';
 
 import ExternalLink from '../ExternalLink';
 import Vp from '../Vp';
+
+const columnHelper = createTableColumnHelper<any>();
+const columns = [
+  columnHelper.accessor('data.original', {
+    header: 'Original value',
+  }),
+  columnHelper.accessor('data.parsed', {
+    header: 'Parsed',
+    cell: (row) => <Vp data={row.getValue()} />,
+  }),
+  columnHelper.accessor('reference', {
+    header: 'Reference',
+    cell: (row) => {
+      const value = row.getValue();
+      return <ExternalLink text={value.sourceName} url={value.url} />;
+    },
+  }),
+];
 
 export default function VaporPressureTable(props: { data: any }) {
   const { data } = props;
@@ -10,34 +27,7 @@ export default function VaporPressureTable(props: { data: any }) {
   return (
     <div>
       <div className="pt-5 text-xl">Vapor pressure</div>
-      <Table renderHeader={renderHeader} data={data} renderTr={Row} />
+      <Table compact data={data} columns={columns} />
     </div>
-  );
-}
-
-function renderHeader() {
-  return (
-    <tr>
-      <Th>Original value</Th>
-      <Th>Parsed</Th>
-      <Th>Reference</Th>
-    </tr>
-  );
-}
-
-function Row(value: any) {
-  return (
-    <tr key={value.label}>
-      <CompactTd>{value.data.original}</CompactTd>
-      <CompactTd>
-        <Vp data={value?.data?.parsed} />
-      </CompactTd>
-      <CompactTd>
-        <ExternalLink
-          text={value.reference.sourceName}
-          url={value.reference.url}
-        />
-      </CompactTd>
-    </tr>
   );
 }

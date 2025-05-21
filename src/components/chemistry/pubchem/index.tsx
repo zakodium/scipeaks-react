@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { Compound } from 'pubchem';
 
-import LoadingFull from '@/components/LoadingFull';
-import { ErrorPage } from '@/components/tailwind-ui';
+import ErrorPage from '@/components/error_page';
+import LoadingFull from '@/components/loading_full';
 
 import Panels from './Panels';
 
@@ -19,7 +19,7 @@ function PubchemChemError(props: { smiles: string }) {
 export default function Pubchem(props: { smiles: string }) {
   const { smiles } = props;
   const { isLoading, error, data } = useQuery({
-    queryKey: ['pubchemSmilesLookup'],
+    queryKey: ['chemistry/pubchem', 'pubchemSmilesLookup'],
     queryFn: async () => {
       const compound = await Compound.fromSmiles(smiles);
       const data = await compound.getData();
