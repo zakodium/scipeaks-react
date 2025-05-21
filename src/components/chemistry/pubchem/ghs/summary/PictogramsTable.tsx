@@ -8,6 +8,7 @@ const columns = [
     header: 'Code',
   }),
   columnHelper.accessor('code', {
+    id: 'pictogram',
     header: 'Pictogram',
     cell: (cell) => <Pictogram code={cell.getValue()} />,
   }),
@@ -20,6 +21,13 @@ export default function PictogramsTable(props: any) {
   if (!props.pictograms || props.pictograms.length < 1) {
     return 'No pictograms found.';
   } else {
-    return <Table compact data={props.pictograms} columns={columns} />;
+    return (
+      <Table
+        compact
+        tdStyle={{ verticalAlign: 'middle' }}
+        data={props.pictograms}
+        columns={columns}
+      />
+    );
   }
 }

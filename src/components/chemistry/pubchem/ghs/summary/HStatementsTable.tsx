@@ -14,6 +14,6 @@ export default function HStatementsTable(props: any) {
   if (!props.hStatements || props.hStatements.length === 0) {
     return 'No hazard statements found.';
   } else {
-    return <Table compact data={props.hStatements} columns={columns} />;
+    return <Table striped data={props.hStatements} columns={columns} />;
   }
 }

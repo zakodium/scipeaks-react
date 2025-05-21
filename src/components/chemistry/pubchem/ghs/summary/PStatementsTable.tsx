@@ -14,6 +14,6 @@ export default function PStatementsTable(props: any) {
   if (!props.pStatements || props.pStatements.length === 0) {
     return 'No precautionary statements found.';
   } else {
-    return <Table compact data={props.pStatements} columns={columns} />;
+    return <Table striped data={props.pStatements} columns={columns} />;
   }
 }

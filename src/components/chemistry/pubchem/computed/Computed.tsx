@@ -3,15 +3,19 @@ import { createTableColumnHelper, Table } from 'react-science/ui';
 const columnHelper = createTableColumnHelper<any>();
 const columns = [
   columnHelper.accessor('label', {
-    // TODO(table): was "w-1/4" before
     header: 'Label',
+    meta: {
+      thStyle: { width: '25%' },
+    },
   }),
   columnHelper.accessor('value', {
     header: 'Value',
   }),
   columnHelper.accessor('description', {
-    // TODO(table): was "w-1/2" before
     header: 'Description',
+    meta: {
+      thStyle: { width: '50%' },
+    },
   }),
   columnHelper.accessor('reference', {
     header: 'Reference',
@@ -34,6 +38,12 @@ export default function Computed(props: { computed: any }) {
     });
   }
 
-  // TODO(table): was "table-fixed w-1/2" before
-  return <Table compact data={rows} columns={columns} />;
+  return (
+    <Table
+      compact
+      className="w-1/2 table-fixed"
+      data={rows}
+      columns={columns}
+    />
+  );
 }

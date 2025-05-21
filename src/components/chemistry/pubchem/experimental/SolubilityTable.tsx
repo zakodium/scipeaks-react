@@ -5,7 +5,9 @@ import ExternalLink from '../ExternalLink';
 const columnHelper = createTableColumnHelper<any>();
 const columns = [
   columnHelper.accessor('data.original', {
-    // TODO(table): was "w-3/4" before
+    meta: {
+      thStyle: { width: '75%' },
+    },
     header: 'Original value',
   }),
   columnHelper.accessor('reference', {

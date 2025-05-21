@@ -7,7 +7,9 @@ import ExternalLink from '../ExternalLink';
 const columnHelper = createTableColumnHelper<any>();
 const columns = [
   columnHelper.accessor('label', {
-    // TODO(table): was "w-1/4" before
+    meta: {
+      thStyle: { width: '25%' },
+    },
     header: 'Label',
   }),
   columnHelper.accessor('value', {
@@ -67,6 +69,12 @@ export default function Identifiers(props: { identifiers: any; cid: any }) {
     });
   }
 
-  // TODO(table): was "table-fixed w-1/2" before
-  return <Table compact data={rows} columns={columns} />;
+  return (
+    <Table
+      compact
+      className="w-1/2 table-fixed"
+      data={rows}
+      columns={columns}
+    />
+  );
 }
