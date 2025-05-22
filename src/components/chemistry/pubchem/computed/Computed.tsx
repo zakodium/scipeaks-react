@@ -1,13 +1,34 @@
-import CompactTd from '@/components/common/CompactTd';
-import { Table, Th } from '@/components/tailwind-ui';
+import { createTableColumnHelper, Table } from 'react-science/ui';
+
+const columnHelper = createTableColumnHelper<any>();
+const columns = [
+  columnHelper.accessor('label', {
+    header: 'Label',
+    meta: {
+      thStyle: { width: '25%' },
+    },
+  }),
+  columnHelper.accessor('value', {
+    header: 'Value',
+  }),
+  columnHelper.accessor('description', {
+    header: 'Description',
+    meta: {
+      thStyle: { width: '50%' },
+    },
+  }),
+  columnHelper.accessor('reference', {
+    header: 'Reference',
+  }),
+];
 
 export default function Computed(props: { computed: any }) {
   const { computed } = props;
 
-  const rows: Array<any> = [];
-  for (let key in computed) {
+  const rows: any[] = [];
+  for (const key in computed) {
     rows.push({
-      key: key,
+      key,
       label: computed[key].label,
       value:
         computed[key].value +
@@ -19,32 +40,10 @@ export default function Computed(props: { computed: any }) {
 
   return (
     <Table
-      renderHeader={renderHeader}
+      compact
+      className="w-1/2 table-fixed"
       data={rows}
-      renderTr={Row}
-      tableClassName="table-fixed w-1/2"
+      columns={columns}
     />
-  );
-}
-
-function renderHeader() {
-  return (
-    <tr>
-      <Th className="w-1/4">Label</Th>
-      <Th>Value</Th>
-      <Th className="w-1/2">Description</Th>
-      <Th>Reference</Th>
-    </tr>
-  );
-}
-
-function Row(row: any) {
-  return (
-    <tr key={row.key}>
-      <CompactTd>{row.label}</CompactTd>
-      <CompactTd>{row.value}</CompactTd>
-      <CompactTd>{row.description}</CompactTd>
-      <CompactTd>{row.reference}</CompactTd>
-    </tr>
   );
 }

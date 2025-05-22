@@ -38,10 +38,6 @@ view. Then edit it:
 - Open the dev home page, select the new view in the top-right box and select a
   demo sample to load the view with it.
 
-## Documentation for the components in `tailwind-ui`
-
-https://zakodium.github.io/components/
-
 ### Deploy HEAD to test with "on-tabs"
 
 Go to [the GitHub actions page](https://github.com/zakodium/c6h6-react/actions?query=workflow%3A%22Publish+HEAD%22)

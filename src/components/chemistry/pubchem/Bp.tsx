@@ -12,7 +12,7 @@ export default function Bp(props: {
     };
   };
 }) {
-  if (!props.data?.temperature?.low) return <></>;
+  if (!props.data?.temperature?.low) return null;
   const { temperature, pressure } = props.data;
 
   return (

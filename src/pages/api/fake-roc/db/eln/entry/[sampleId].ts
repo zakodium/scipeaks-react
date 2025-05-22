@@ -17,7 +17,7 @@ export default async function handler(
         'sample.json',
       ),
     );
-    return res.status(200).end(sampleData);
+    res.status(200).end(sampleData);
   } catch (e) {
     if (e.code === 'ENOENT') {
       return notFound(res);

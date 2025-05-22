@@ -5,7 +5,7 @@ export default function LowHighUnits(props: {
     units: string;
   };
 }) {
-  if (!props.data?.low) return <></>;
+  if (!props.data?.low) return null;
 
   const { low, high, units } = props.data;
 

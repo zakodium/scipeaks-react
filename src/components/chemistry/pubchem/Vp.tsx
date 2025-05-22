@@ -12,15 +12,15 @@ export default function Vp(props: {
     };
   };
 }) {
-  if (!props.data?.pressure?.low) return <></>;
+  if (!props.data?.pressure?.low) return null;
   const { temperature, pressure } = props.data;
 
-  let pressureLow =
+  const pressureLow =
     String(pressure.low).length > 10
       ? pressure.low.toPrecision(4)
       : pressure.low;
 
-  let pressureHigh =
+  const pressureHigh =
     String(pressure.high).length > 10
       ? pressure.high.toPrecision(4)
       : pressure.high;

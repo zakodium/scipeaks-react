@@ -1,8 +1,7 @@
 import Head from 'next/head';
-import React from 'react';
 
 import Pubchem from '@/components/chemistry/pubchem';
-import { ErrorPage } from '@/components/tailwind-ui';
+import ErrorPage from '@/components/error_page';
 import { useSearchParam } from '@/hooks/searchParam';
 
 export default function PubchemPage() {

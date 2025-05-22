@@ -1,12 +1,8 @@
-import React, {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import type { ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useRoc } from 'react-iframe-bridge';
-import { ICouchUser } from 'rest-on-couch-client';
+import type { ICouchUser } from 'rest-on-couch-client';
 
 interface RocUserState {
   auth: ICouchUser;
@@ -43,6 +39,7 @@ export function RocUserProvider(props: { children: ReactNode }) {
   }
 
   return (
+    // eslint-disable-next-line react/jsx-no-constructed-context-values
     <rocUserContext.Provider value={{ auth }}>
       {props.children}
     </rocUserContext.Provider>

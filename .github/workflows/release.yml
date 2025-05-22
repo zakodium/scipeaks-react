@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  NODE_VERSION: 16.x
+  NODE_VERSION: 22.x
 
 jobs:
   release-please:
@@ -28,8 +28,8 @@ jobs:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Install dependencies

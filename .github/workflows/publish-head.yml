@@ -4,15 +4,15 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: 16.x
+  NODE_VERSION: 22.x
   NEXT_BASE_PATH: /react/views/HEAD
 
 jobs:
   publish-head:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Install dependencies

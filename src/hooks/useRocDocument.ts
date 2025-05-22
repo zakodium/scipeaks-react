@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from 'react';
 import { useRoc } from 'react-iframe-bridge';
-import { RocDocument } from 'rest-on-couch-client';
+import type { RocDocument } from 'rest-on-couch-client';
 
 interface RocDocumentState {
   loading: boolean;

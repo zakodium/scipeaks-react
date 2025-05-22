@@ -1,16 +1,16 @@
 import Head from 'next/head';
 import { IframeBridgeProvider } from 'react-iframe-bridge';
 
-import MyNewPage from '@/components/dev/MyNewPage';
+import NMRium from '@/components/nmr/nmrium';
 
-export default function BasePage() {
+export default function NMRiumPage() {
   return (
     <>
       <Head>
-        <title>My new page</title>
+        <title>NMRium</title>
       </Head>
-      <IframeBridgeProvider>
-        <MyNewPage />
+      <IframeBridgeProvider requireSample>
+        <NMRium />
       </IframeBridgeProvider>
     </>
   );

@@ -1,25 +1,40 @@
 import { MF } from 'react-mf';
 import { SmilesSvgRenderer } from 'react-ocl';
-
-import CompactTd from '@/components/common/CompactTd';
-import { Table, Th } from '@/components/tailwind-ui';
+import { createTableColumnHelper, Table } from 'react-science/ui';
 
 import ExternalLink from '../ExternalLink';
 
+const columnHelper = createTableColumnHelper<any>();
+const columns = [
+  columnHelper.accessor('label', {
+    meta: {
+      thStyle: { width: '25%' },
+    },
+    header: 'Label',
+  }),
+  columnHelper.accessor('value', {
+    header: 'value',
+    cell: (row) => row.getValue(),
+  }),
+  columnHelper.accessor('description', {
+    header: 'Description',
+  }),
+];
+
 export default function Identifiers(props: { identifiers: any; cid: any }) {
   const { identifiers, cid } = props;
-  const rows: Array<any> = [];
-  for (let key in identifiers) {
+  const rows: any[] = [];
+  for (const key in identifiers) {
     if (key === 'formula') {
       rows.push({
-        key: key,
+        key,
         label: identifiers[key].label,
         value: <MF mf={identifiers[key].value} />,
         description: identifiers[key].description,
       });
     } else if (key === 'smiles') {
       rows.push({
-        key: key,
+        key,
         label: identifiers[key].label,
         value: identifiers[key].value,
         description: identifiers[key].description,
@@ -32,7 +47,7 @@ export default function Identifiers(props: { identifiers: any; cid: any }) {
       });
     } else {
       rows.push({
-        key: key,
+        key,
         label: identifiers[key].label,
         value: identifiers[key].value,
         description: identifiers[key].description,
@@ -50,35 +65,16 @@ export default function Identifiers(props: { identifiers: any; cid: any }) {
           url={`https://pubchem.ncbi.nlm.nih.gov/compound/${cid}`}
         />
       ),
-      description: 'Unique identifer of a compound in the PubChem database.',
+      description: 'Unique identifier of a compound in the PubChem database.',
     });
   }
+
   return (
     <Table
-      renderHeader={renderHeader}
+      compact
+      className="w-1/2 table-fixed"
       data={rows}
-      renderTr={Row}
-      tableClassName="table-fixed w-1/2"
+      columns={columns}
     />
-  );
-}
-
-function renderHeader() {
-  return (
-    <tr>
-      <Th className="w-1/4">Label</Th>
-      <Th>Value</Th>
-      <Th>Description</Th>
-    </tr>
-  );
-}
-
-function Row(row: any) {
-  return (
-    <tr key={row.key}>
-      <CompactTd>{row.label}</CompactTd>
-      <CompactTd>{row.value}</CompactTd>
-      <CompactTd>{row.description}</CompactTd>
-    </tr>
   );
 }
