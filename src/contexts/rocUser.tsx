@@ -1,9 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import type { ReactNode } from 'react';
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useRoc } from 'react-iframe-bridge';
 import type { ICouchUser } from 'rest-on-couch-client';
-
-import { useRoc } from '@/react-iframe-bridge';
 
 interface RocUserState {
   auth: ICouchUser;

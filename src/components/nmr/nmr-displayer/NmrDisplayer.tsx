@@ -1,8 +1,8 @@
 import { Molecule } from 'openchemlib';
 import React from 'react';
+import { useIframeBridgeSample } from 'react-iframe-bridge';
 
 import ErrorPage from '@/components/error_page';
-import { useIframeBridgeSample } from '@/react-iframe-bridge/index';
 
 import EnhancedNMRium from '../EnhancedNMRium';
 
@@ -54,7 +54,6 @@ export default function NmrDisplayer() {
   const molecules = [];
   if (content.general) {
     const moleculeName =
-      // @ts-expect-error Types are missing from react-iframe-bridge
       content.general.title || content.general.name?.[0]?.value;
     if (content.general.molfile) {
       molecules.push({ molfile: content.general.molfile, label: moleculeName });
