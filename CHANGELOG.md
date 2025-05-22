@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.0](https://github.com/zakodium/c6h6-react/compare/v1.4.3...v2.0.0) (2025-05-22)
+
+
+### Bug Fixes
+
+* improve pubchem table layouts ([de356b8](https://github.com/zakodium/c6h6-react/commit/de356b84438d4064f983bcc03792a119ced02036))
+
 ## [1.4.3](https://github.com/zakodium/c6h6-react/compare/v1.4.2...v1.4.3) (2022-09-21)
 
 
