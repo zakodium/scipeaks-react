@@ -1,8 +1,7 @@
 import dynamic from 'next/dynamic';
 import type { NMRiumProps } from 'nmrium';
-import React from 'react';
 
-import LoadingFull from '../../loading_full';
+import LoadingFull from '@/components/loading_full';
 
 const NMRium = dynamic(() => import('nmrium').then((mod) => mod.NMRium), {
   ssr: false,

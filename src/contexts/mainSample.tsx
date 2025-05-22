@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import type { ReactNode } from 'react';
-import React, { createContext, useContext } from 'react';
+import { createContext, useContext } from 'react';
 import type { RocDocument } from 'rest-on-couch-client';
 
 import ErrorPage from '@/components/error_page';
