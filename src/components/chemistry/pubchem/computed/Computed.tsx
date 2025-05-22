@@ -40,8 +40,8 @@ export default function Computed(props: { computed: any }) {
 
   return (
     <Table
-      compact
-      className="w-1/2 table-fixed"
+      striped
+      tableProps={{ style: { tableLayout: 'fixed' } }}
       data={rows}
       columns={columns}
     />

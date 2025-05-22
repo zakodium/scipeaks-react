@@ -71,8 +71,9 @@ export default function Identifiers(props: { identifiers: any; cid: any }) {
 
   return (
     <Table
-      compact
-      className="w-1/2 table-fixed"
+      striped
+      tableProps={{ style: { tableLayout: 'fixed' } }}
+      tdStyle={{ verticalAlign: 'middle' }}
       data={rows}
       columns={columns}
     />
