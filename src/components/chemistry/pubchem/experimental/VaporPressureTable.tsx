@@ -27,7 +27,7 @@ export default function VaporPressureTable(props: { data: any }) {
   return (
     <div>
       <div className="pt-5 text-xl">Vapor pressure</div>
-      <Table compact data={data} columns={columns} />
+      <Table striped compact data={data} columns={columns} />
     </div>
   );
 }

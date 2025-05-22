@@ -27,7 +27,7 @@ export default function BpTable(props: { data: any }) {
   return (
     <div>
       <div className="pt-5 text-xl">Boiling point</div>
-      <Table compact data={data} columns={columns} />
+      <Table striped compact data={data} columns={columns} />
     </div>
   );
 }

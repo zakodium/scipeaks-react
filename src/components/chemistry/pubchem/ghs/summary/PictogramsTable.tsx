@@ -24,6 +24,7 @@ export default function PictogramsTable(props: any) {
     return (
       <Table
         compact
+        tableProps={{ style: { minWidth: '100%' } }}
         tdStyle={{ verticalAlign: 'middle' }}
         data={props.pictograms}
         columns={columns}

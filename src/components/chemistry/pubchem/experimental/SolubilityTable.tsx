@@ -25,7 +25,7 @@ export default function SolubilityTable(props: { data: any }) {
   return (
     <div>
       <div className="pt-5 text-xl">Solubility</div>
-      <Table compact data={data} columns={columns} />
+      <Table striped compact data={data} columns={columns} />
     </div>
   );
 }
