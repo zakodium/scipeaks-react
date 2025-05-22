@@ -2,16 +2,16 @@ import Head from 'next/head';
 import React from 'react';
 import { IframeBridgeProvider } from 'react-iframe-bridge';
 
-import NmrDisplayer from '@/components/nmr/nmr-displayer/NmrDisplayer';
+import NMRium from '../../components/nmr/nmrium';
 
-export default function NmrDisplayerPage() {
+export default function NMRiumPage() {
   return (
     <>
       <Head>
-        <title>NMR Displayer</title>
+        <title>NMRium</title>
       </Head>
       <IframeBridgeProvider requireSample>
-        <NmrDisplayer />
+        <NMRium />
       </IframeBridgeProvider>
     </>
   );

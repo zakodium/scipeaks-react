@@ -4,7 +4,7 @@ import { useIframeBridgeSample } from 'react-iframe-bridge';
 
 import ErrorPage from '@/components/error_page';
 
-import EnhancedNMRium from '../EnhancedNMRium';
+import EnhancedNMRium from './enhanced_nmrium';
 
 function NoNmr() {
   return (
@@ -15,7 +15,7 @@ function NoNmr() {
   );
 }
 
-export default function NmrDisplayer() {
+export default function NMRium() {
   const sample = useIframeBridgeSample();
   const sampleValue = sample.getValue();
   const content = sampleValue.$content;
