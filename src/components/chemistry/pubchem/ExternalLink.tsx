@@ -1,4 +1,4 @@
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
+import { Share } from '@blueprintjs/icons';
 
 interface ExternalLinkProps {
   text?: string;
@@ -15,7 +15,7 @@ export default function ExternalLink(props: ExternalLinkProps) {
         rel="noreferrer"
         target="_blank"
       >
-        <ArrowTopRightOnSquareIcon className="inline h-4 w-4" />
+        <Share />
       </a>
     </>
   );
