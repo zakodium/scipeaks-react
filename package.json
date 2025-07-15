@@ -27,11 +27,11 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-error-boundary": "^6.0.0",
-    "react-iframe-bridge": "^2.0.0",
+    "react-iframe-bridge": "^2.0.2",
     "react-mf": "^3.1.0",
     "react-ocl": "^8.0.0",
     "react-science": "^19.0.0",
-    "rest-on-couch-client": "^5.3.1"
+    "rest-on-couch-client": "^6.0.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.11",
