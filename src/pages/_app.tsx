@@ -17,7 +17,7 @@ const queryClient = new QueryClient({
   },
 });
 
-function C6H6App({ Component, pageProps }: AppProps) {
+function SciPeaksApp({ Component, pageProps }: AppProps) {
   return (
     <PageErrorBoundary>
       <QueryClientProvider client={queryClient}>
@@ -27,4 +27,4 @@ function C6H6App({ Component, pageProps }: AppProps) {
   );
 }
 
-export default C6H6App;
+export default SciPeaksApp;
