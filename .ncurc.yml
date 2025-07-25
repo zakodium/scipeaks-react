@@ -1,0 +1,6 @@
+reject:
+  # React 19
+  - react
+  - react-dom
+  - '@types/react'
+  - '@types/react-dom'
