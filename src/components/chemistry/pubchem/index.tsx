@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { Compound } from 'pubchem';
 
-import ErrorPage from '@/components/error_page';
-import LoadingFull from '@/components/loading_full';
+import ErrorPage from '@/components/error_page.js';
+import LoadingFull from '@/components/loading_full.js';
 
-import Panels from './Panels';
+import Panels from './Panels.js';
 
 function PubchemChemError(props: { smiles: string }) {
   const { smiles } = props;

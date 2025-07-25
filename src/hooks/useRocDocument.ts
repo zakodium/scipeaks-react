@@ -53,8 +53,8 @@ export function useRocDocument(uuid: string): RocDocumentHookResult {
     doc
       .fetch()
       .then(() => dispatch({ type: 'SET_DOCUMENT', value: doc }))
-      .catch((err) => {
-        dispatch({ type: 'ERROR', value: err });
+      .catch((error) => {
+        dispatch({ type: 'ERROR', value: error });
       });
   }, [roc, uuid]);
 

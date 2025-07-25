@@ -1,5 +1,5 @@
-import Reference from '../../Reference';
-import PictogramsTable from '../summary/PictogramsTable';
+import Reference from '../../Reference.js';
+import PictogramsTable from '../summary/PictogramsTable.js';
 
 export default function PictogramsTableFull(props: { pictograms: any[] }) {
   const { pictograms } = props;

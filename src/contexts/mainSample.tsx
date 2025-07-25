@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import { createContext, useContext } from 'react';
 import type { RocDocument } from 'rest-on-couch-client';
 
-import ErrorPage from '@/components/error_page';
-import { useRocDocument } from '@/hooks/useRocDocument';
+import ErrorPage from '@/components/error_page.js';
+import { useRocDocument } from '@/hooks/useRocDocument.js';
 
 const mainSampleContext = createContext<RocDocument | null>(null);
 

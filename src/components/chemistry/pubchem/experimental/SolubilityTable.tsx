@@ -1,6 +1,6 @@
 import { createTableColumnHelper, Table } from 'react-science/ui';
 
-import ExternalLink from '../ExternalLink';
+import ExternalLink from '../ExternalLink.js';
 
 const columnHelper = createTableColumnHelper<any>();
 const columns = [

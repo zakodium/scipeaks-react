@@ -1,6 +1,6 @@
 import { createTableColumnHelper, Table } from 'react-science/ui';
 
-import Pictogram from '../pictograms/Pictogram';
+import Pictogram from '../pictograms/Pictogram.js';
 
 const columnHelper = createTableColumnHelper<any>();
 const columns = [
@@ -18,7 +18,7 @@ const columns = [
 ];
 
 export default function PictogramsTable(props: any) {
-  if (!props.pictograms || props.pictograms.length < 1) {
+  if (!props.pictograms || props.pictograms.length === 0) {
     return 'No pictograms found.';
   } else {
     return (

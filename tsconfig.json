@@ -1,25 +1,14 @@
 {
+  "extends": "@zakodium/tsconfig/jsx",
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "useUnknownInCatchVariables": false,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "allowJs": true,
     "baseUrl": "./src",
     "paths": {
       "@/*": ["*"]
     },
     "incremental": true
   },
-  "include": ["next-env.d.ts", "src"],
+  "include": ["fake-api", "src", "vite*.ts"],
   "exclude": []
 }

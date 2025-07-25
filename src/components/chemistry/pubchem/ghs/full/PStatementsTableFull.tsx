@@ -1,5 +1,5 @@
-import Reference from '../../Reference';
-import PStatementsTable from '../summary/PStatementsTable';
+import Reference from '../../Reference.js';
+import PStatementsTable from '../summary/PStatementsTable.js';
 
 export default function PStatementsTableFull(props: { pStatements: any[] }) {
   const { pStatements } = props;

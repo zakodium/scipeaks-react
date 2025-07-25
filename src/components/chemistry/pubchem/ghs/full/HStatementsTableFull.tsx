@@ -1,5 +1,5 @@
-import Reference from '../../Reference';
-import HStatementsTable from '../summary/HStatementsTable';
+import Reference from '../../Reference.js';
+import HStatementsTable from '../summary/HStatementsTable.js';
 
 export default function HStatementsTableFull(props: { hStatements: any[] }) {
   const { hStatements } = props;

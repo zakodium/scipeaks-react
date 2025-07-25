@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  NODE_VERSION: 22.x
+  NODE_VERSION: 24.x
 
 jobs:
   release-please:
@@ -33,7 +33,7 @@ jobs:
         run: npm ci
       - name: Build release
         env:
-          NEXT_BASE_PATH: /react/views/${{ needs.release-please.outputs.tag_name }}
+          VITE_BASE_PATH: /react/views/${{ needs.release-please.outputs.tag_name }}
         run: npm run export
       - name: Setup SSH
         env:

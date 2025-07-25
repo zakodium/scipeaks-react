@@ -1,6 +1,6 @@
-import HStatementsTableFull from './HStatementsTableFull';
-import PStatementsTableFull from './PStatementsTableFull';
-import PictogramsTableFull from './PictogramsTableFull';
+import HStatementsTableFull from './HStatementsTableFull.js';
+import PStatementsTableFull from './PStatementsTableFull.js';
+import PictogramsTableFull from './PictogramsTableFull.js';
 
 export default function GHSFull(props: {
   ghsFull: {
