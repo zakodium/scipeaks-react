@@ -1,4 +1,4 @@
-# C6H6 React views
+# SciPeaks React views
 
 ## Getting Started
 
@@ -40,7 +40,7 @@ view. Then edit it:
 
 ### Deploy HEAD to test with "on-tabs"
 
-Go to [the GitHub actions page](https://github.com/zakodium/c6h6-react/actions?query=workflow%3A%22Publish+HEAD%22)
+Go to [the GitHub actions page](https://github.com/zakodium/scipeaks-react/actions?query=workflow%3A%22Publish+HEAD%22)
 and select "Run workflow" to make a HEAD test build.
 
 The build is published to https://www.lactame.com/react/views/HEAD/
