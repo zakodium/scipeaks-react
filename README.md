@@ -34,8 +34,9 @@ view. Then edit it:
   - If the view can work standalone outside of `on-tabs`, add `allowStandalone`.
 - Create a new component to design the page in `components/your/page/index.tsx`,
   and render it as a child of `IframeBridgeProvider`.
-- Open the dev home page, select the new view in the top-right box and select a
-  demo sample to load the view with it.
+- Open the dev home page, select the new view in the top-right box (if you delete
+  the path, you can use keyboard arrows to select it from all available pages)
+  and select a demo sample to load the view with it.
 
 ### Deploy HEAD to test with "on-tabs"
 

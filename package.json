@@ -29,7 +29,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-error-boundary": "^6.0.0",
-    "react-iframe-bridge": "^2.0.2",
+    "react-iframe-bridge": "^2.1.0",
     "react-mf": "^3.1.0",
     "react-ocl": "^8.0.0",
     "react-science": "^19.1.0",
