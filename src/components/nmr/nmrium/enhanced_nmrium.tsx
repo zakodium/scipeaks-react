@@ -1,3 +1,4 @@
+import { init } from '@zakodium/nmrium-core-plugins';
 import dynamic from 'next/dynamic';
 import type { NMRiumProps } from 'nmrium';
 
@@ -348,11 +349,14 @@ const customWorkspaces = {
   },
 } satisfies NMRiumProps['customWorkspaces'];
 
+const core = init();
+
 export default function EnhancedNMRium(
   props: Omit<NMRiumProps, 'getSpinner' | 'customWorkspaces'>,
 ) {
   return (
     <NMRium
+      core={core}
       getSpinner={() => <LoadingFull />}
       customWorkspaces={customWorkspaces}
       workspace="scipeaks"
