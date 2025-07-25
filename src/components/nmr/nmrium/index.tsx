@@ -1,9 +1,9 @@
 import { Molecule } from 'openchemlib';
 import { useIframeBridgeSample } from 'react-iframe-bridge';
 
-import ErrorPage from '@/components/error_page';
+import ErrorPage from '@/components/error_page.js';
 
-import EnhancedNMRium from './enhanced_nmrium';
+import EnhancedNMRium from './enhanced_nmrium.js';
 
 function NoNmr() {
   return (

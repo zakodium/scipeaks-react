@@ -1,13 +1,10 @@
 import { init } from '@zakodium/nmrium-core-plugins';
-import dynamic from 'next/dynamic';
 import type { NMRiumProps } from 'nmrium';
+import { clientOnly } from 'vike-react/clientOnly';
 
-import LoadingFull from '@/components/loading_full';
+import LoadingFull from '@/components/loading_full.js';
 
-const NMRium = dynamic(() => import('nmrium').then((mod) => mod.NMRium), {
-  ssr: false,
-  loading: () => <LoadingFull />,
-});
+const NMRium = clientOnly(() => import('nmrium').then((mod) => mod.NMRium));
 
 const customWorkspaces = {
   scipeaks: {
@@ -356,6 +353,7 @@ export default function EnhancedNMRium(
 ) {
   return (
     <NMRium
+      fallback={<LoadingFull />}
       core={core}
       getSpinner={() => <LoadingFull />}
       customWorkspaces={customWorkspaces}

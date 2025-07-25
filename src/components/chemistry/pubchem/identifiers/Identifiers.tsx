@@ -2,7 +2,7 @@ import { MF } from 'react-mf';
 import { SmilesSvgRenderer } from 'react-ocl';
 import { createTableColumnHelper, Table } from 'react-science/ui';
 
-import ExternalLink from '../ExternalLink';
+import ExternalLink from '../ExternalLink.js';
 
 const columnHelper = createTableColumnHelper<any>();
 const columns = [
@@ -33,18 +33,20 @@ export default function Identifiers(props: { identifiers: any; cid: any }) {
         description: identifiers[key].description,
       });
     } else if (key === 'smiles') {
-      rows.push({
-        key,
-        label: identifiers[key].label,
-        value: identifiers[key].value,
-        description: identifiers[key].description,
-      });
-      rows.push({
-        key: 'structure',
-        label: 'Structure',
-        value: <SmilesSvgRenderer smiles={identifiers[key].value} />,
-        description: '2D chemical structure derived from the SMILES.',
-      });
+      rows.push(
+        {
+          key,
+          label: identifiers[key].label,
+          value: identifiers[key].value,
+          description: identifiers[key].description,
+        },
+        {
+          key: 'structure',
+          label: 'Structure',
+          value: <SmilesSvgRenderer smiles={identifiers[key].value} />,
+          description: '2D chemical structure derived from the SMILES.',
+        },
+      );
     } else {
       rows.push({
         key,

@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import type { AppProps } from 'next/app';
+import type { ReactNode } from 'react';
 
-import PageErrorBoundary from '@/components/page_error_boundary';
+import PageErrorBoundary from '@/components/page_error_boundary.js';
 
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/select/lib/css/blueprint-select.css';
@@ -17,14 +17,12 @@ const queryClient = new QueryClient({
   },
 });
 
-function SciPeaksApp({ Component, pageProps }: AppProps) {
+function SciPeaksAppWrapper({ children }: { children: ReactNode }) {
   return (
     <PageErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <Component {...pageProps} />
-      </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </PageErrorBoundary>
   );
 }
 
-export default SciPeaksApp;
+export default SciPeaksAppWrapper;

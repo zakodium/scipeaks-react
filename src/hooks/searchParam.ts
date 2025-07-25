@@ -1,9 +1,9 @@
-import { useRouter } from 'next/router';
+import { usePageContext } from 'vike-react/usePageContext';
 
 export function useSearchParam(name: string): string | null {
-  const { query } = useRouter();
+  const { urlParsed } = usePageContext();
+  const query = urlParsed.search;
   const value = query[name];
-  if (typeof value === 'undefined') return null;
-  if (typeof value === 'string') return value;
-  return value[0];
+  if (value === undefined) return null;
+  return value;
 }

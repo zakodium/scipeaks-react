@@ -1,6 +1,6 @@
-import HStatementsTable from './HStatementsTable';
-import PStatementsTable from './PStatementsTable';
-import PictogramsTable from './PictogramsTable';
+import HStatementsTable from './HStatementsTable.js';
+import PStatementsTable from './PStatementsTable.js';
+import PictogramsTable from './PictogramsTable.js';
 
 export default function GHS(props: any) {
   const ghs = props.ghs;

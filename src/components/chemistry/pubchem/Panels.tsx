@@ -1,10 +1,10 @@
 import { Tab, Tabs } from '@blueprintjs/core';
 
-import Computed from './computed/Computed';
-import Experimental from './experimental/Experimental';
-import GHSFull from './ghs/full/GHSFull';
-import GHS from './ghs/summary/GHS';
-import Identifiers from './identifiers/Identifiers';
+import Computed from './computed/Computed.js';
+import Experimental from './experimental/Experimental.js';
+import GHSFull from './ghs/full/GHSFull.js';
+import GHS from './ghs/summary/GHS.js';
+import Identifiers from './identifiers/Identifiers.js';
 
 export default function Panels(props: any) {
   return (

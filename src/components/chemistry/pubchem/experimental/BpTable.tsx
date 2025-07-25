@@ -1,7 +1,7 @@
 import { createTableColumnHelper, Table } from 'react-science/ui';
 
-import Bp from '../Bp';
-import ExternalLink from '../ExternalLink';
+import Bp from '../Bp.js';
+import ExternalLink from '../ExternalLink.js';
 
 const columnHelper = createTableColumnHelper<any>();
 const columns = [

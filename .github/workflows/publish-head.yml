@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: 22.x
-  NEXT_BASE_PATH: /react/views/HEAD
+  NODE_VERSION: 24.x
+  VITE_BASE_PATH: /react/views/HEAD
 
 jobs:
   publish-head:

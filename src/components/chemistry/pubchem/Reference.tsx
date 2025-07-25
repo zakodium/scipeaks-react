@@ -1,4 +1,4 @@
-import ExternalLink from './ExternalLink';
+import ExternalLink from './ExternalLink.js';
 
 export default function Reference(props: {
   reference: {

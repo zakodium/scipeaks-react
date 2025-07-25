@@ -1,8 +1,8 @@
-import BpTable from './BpTable';
-import FlashPointTable from './FlashPointTable';
-import MpTable from './MpTable';
-import SolubilityTable from './SolubilityTable';
-import VaporPressureTable from './VaporPressureTable';
+import BpTable from './BpTable.js';
+import FlashPointTable from './FlashPointTable.js';
+import MpTable from './MpTable.js';
+import SolubilityTable from './SolubilityTable.js';
+import VaporPressureTable from './VaporPressureTable.js';
 
 export default function Experimental(props: { experimental: any }) {
   const { experimental } = props;
