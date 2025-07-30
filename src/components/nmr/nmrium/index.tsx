@@ -122,6 +122,7 @@ function migrateScipeaksRanges(nmr, mfInfo) {
       to: range.to,
       originalTo: range.to,
       label: range.label,
+      diaIDs: range._highlight || [],
       // we skip integration, it should be recalculated
       signals: [],
     };
@@ -144,6 +145,6 @@ function migrateScipeaksRanges(nmr, mfInfo) {
       }
     }
   }
-
+  console.log(newRanges);
   return newRanges;
 }
