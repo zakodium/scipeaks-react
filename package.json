@@ -10,7 +10,6 @@
     "dev-api": "node fake-api/server.ts",
     "eslint": "eslint . --cache",
     "eslint-fix": "npm run eslint -- --fix",
-    "export": "vike build",
     "prettier": "prettier --check .",
     "prettier-write": "prettier --write .",
     "start": "vike preview",
