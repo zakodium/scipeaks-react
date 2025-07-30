@@ -4,8 +4,8 @@ import type {
   Spectrum2D,
   StateMolecule,
 } from '@zakodium/nmrium-core';
-import { produce } from 'immer';
 import type { WritableDraft } from 'immer';
+import { produce } from 'immer';
 import { Molecule } from 'openchemlib';
 import type { SampleEntryContent } from 'react-iframe-bridge';
 
@@ -56,12 +56,11 @@ function updateMolecule(
 }
 
 function serialize1DSpectrum(spectrum: Spectrum1D) {
-  const { id, customInfo, display, filters, integrals, peaks, ranges } =
-    spectrum;
-  return { id, customInfo, display, filters, integrals, peaks, ranges };
+  const { customInfo, display, filters, integrals, peaks, ranges } = spectrum;
+  return { customInfo, display, filters, integrals, peaks, ranges };
 }
 
 function serialize2DSpectrum(spectrum: Spectrum2D) {
-  const { id, customInfo, display, filters, zones } = spectrum;
-  return { id, customInfo, display, filters, zones };
+  const { customInfo, display, filters, zones } = spectrum;
+  return { customInfo, display, filters, zones };
 }
