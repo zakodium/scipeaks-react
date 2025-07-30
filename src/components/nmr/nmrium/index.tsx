@@ -86,11 +86,11 @@ function getMoleculeAndMFInfo(content) {
       content.general.ocl.coordinates,
     );
     molecule = {
-      molfile: molecule.toMolfileV3(),
+      molfile: oclMolecule.toMolfileV3(),
       label: moleculeName,
     };
   }
-  if (!molecule) {
+  if (!molecule || !oclMolecule) {
     const mf = general?.mf;
     return { molecule: null, mfInfo: mf ? new MF(mf).getInfo() : null };
   }
