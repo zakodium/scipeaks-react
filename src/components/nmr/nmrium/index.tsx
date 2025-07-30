@@ -1,9 +1,16 @@
-import { Molecule } from 'openchemlib';
+import type { NmriumState } from '@zakodium/nmrium-core';
+import * as IframeBridge from 'iframe-bridge/iframe';
+import type { NMRiumProps } from 'nmrium';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useIframeBridgeSample } from 'react-iframe-bridge';
 
 import ErrorPage from '@/components/error_page.js';
 
 import EnhancedNMRium from './enhanced_nmrium.js';
+import type { ScipeaksPluginContextValue } from './scipeaks_plugin/scipeaks_plugin_context.js';
+import { ScipeaksPluginContext } from './scipeaks_plugin/scipeaks_plugin_context.js';
+import { nmriumToScipeaks } from './state/nmrium_to_scipeaks.js';
+import { scipeaksToNMRium } from './state/scipeaks_to_nmrium.js';
 
 function NoNmr() {
   return (
@@ -16,63 +23,60 @@ function NoNmr() {
 
 export default function NMRium() {
   const sample = useIframeBridgeSample();
-  const sampleValue = sample.getValue();
-  const content = sampleValue.$content;
 
-  if (!content.spectra?.nmr || content.spectra.nmr.length === 0) {
-    return <NoNmr />;
-  }
+  const initialState: any = useMemo(() => {
+    const nmriumData = scipeaksToNMRium(sample);
+    return {
+      version: 9,
+      data: nmriumData,
+    };
+  }, [sample]);
 
-  const spectraUrls = content.spectra.nmr
-    .filter((value) => Boolean(value.jcamp?.filename))
-    .map((value) => sample.getAttachment(value.jcamp.filename).url);
+  const [isDirty, setDirty] = useState(false);
 
-  if (spectraUrls.length === 0) {
-    return <NoNmr />;
-  }
-
-  const sourceEntries = [];
-  const spectra = [];
-
-  for (const spectrumUrl of spectraUrls) {
-    const name = sampleValue.$id.join(' ');
-    const urlObj = new URL(spectrumUrl);
-    const baseURL = urlObj.origin;
-    const relativePath = urlObj.href.replace(urlObj.origin, '');
-
-    sourceEntries.push({
-      baseURL,
-      relativePath,
-    });
-    spectra.push({
-      info: { name },
-      sourceSelector: { files: [relativePath] },
-    });
-  }
-
-  const molecules = [];
-  if (content.general) {
-    const moleculeName =
-      content.general.title || content.general.name?.[0]?.value;
-    if (content.general.molfile) {
-      molecules.push({ molfile: content.general.molfile, label: moleculeName });
-    } else if (content.general.ocl) {
-      const molecule = Molecule.fromIDCode(
-        content.general.ocl.value,
-        content.general.ocl.coordinates,
-      );
-      molecules.push({ molfile: molecule.toMolfileV3(), label: moleculeName });
-    }
-  }
-
-  const state: any = {
-    version: 9,
-    data: {
-      source: { entries: sourceEntries },
-      spectra,
-      molecules,
+  const nmriumState = useRef<NmriumState | null>(null);
+  const setSaved = useCallback(
+    (isSaved: boolean) => {
+      IframeBridge.postMessage('tab.status', {
+        saved: isSaved,
+      });
+      setDirty(!isSaved);
     },
+    [setDirty],
+  );
+
+  const saveChanges = useCallback(() => {
+    if (!nmriumState.current) return;
+    const newContent = nmriumToScipeaks(
+      sample.getValue().$content,
+      nmriumState.current,
+    );
+    sample.update(newContent).catch((error) => {
+      // TODO: handle error.
+      // Could use a notification, and suggest to reload the sample if error is due to a conflict.
+      reportError(error);
+    });
+    setSaved(true);
+  }, [sample, setSaved]);
+
+  const scipeaksContext: ScipeaksPluginContextValue = useMemo(() => {
+    return { isDirty, saveChanges };
+  }, [isDirty, saveChanges]);
+
+  if (initialState.data.spectra.length === 0) {
+    return <NoNmr />;
+  }
+
+  const handleChange: NMRiumProps['onChange'] = (state, source) => {
+    if (source === 'data' && state.data.actionType !== 'INITIATE') {
+      nmriumState.current = state;
+      setSaved(false);
+    }
   };
 
-  return <EnhancedNMRium data={state} />;
+  return (
+    <ScipeaksPluginContext.Provider value={scipeaksContext}>
+      <EnhancedNMRium data={initialState.data} onChange={handleChange} />
+    </ScipeaksPluginContext.Provider>
+  );
 }
