@@ -24,9 +24,14 @@ export default function NMRium() {
     return <NoNmr />;
   }
 
+  const molecules = [];
+  const { molecule, mfInfo } = getMoleculeAndMFInfo(content);
+  if (molecule) {
+    molecules.push(molecule);
+  }
+
   const sourceEntries = [];
   const spectra = [];
-
   for (const nmr of content.spectra.nmr) {
     if (!nmr.jcamp?.filename) continue;
     const url = sample.getAttachment(nmr.jcamp.filename).url;
@@ -43,17 +48,12 @@ export default function NMRium() {
     spectra.push({
       info: { name },
       sourceSelector: { files: [relativePath] },
+      ranges: migrateScipeaksRanges(nmr, mfInfo),
     });
   }
 
   if (spectra.length === 0) {
     return <NoNmr />;
-  }
-
-  const molecules = [];
-  const { molecule, mfInfo } = getMoleculeAndMFInfo(content);
-  if (molecule) {
-    molecules.push(molecule);
   }
 
   const state: any = {
@@ -64,8 +64,6 @@ export default function NMRium() {
       molecules,
     },
   };
-
-  console.log(mfInfo);
 
   return <EnhancedNMRium data={state} />;
 }
@@ -93,7 +91,7 @@ function getMoleculeAndMFInfo(content) {
     };
   }
   if (!molecule) {
-    const mf = general.mf;
+    const mf = general?.mf;
     return { molecule: null, mfInfo: mf ? new MF(mf).getInfo() : null };
   }
 
@@ -102,4 +100,50 @@ function getMoleculeAndMFInfo(content) {
     molecule,
     mfInfo: new MF(mf).getInfo(),
   };
+}
+
+function migrateScipeaksRanges(nmr, mfInfo) {
+  if (nmr.dimension !== 1 || nmr.nucleus[0] !== '1H') return {};
+  const newRanges = {
+    values: [],
+    options: {
+      sum: mfInfo?.atoms?.H || 100,
+      isSumConstant: true,
+      sumAuto: true,
+      mf: mfInfo?.mf,
+      //     moleculeId,
+    },
+  };
+  for (const range of nmr.range || []) {
+    const nmriumRange = {
+      id: crypto.randomUUID(),
+      from: range.from,
+      originalFrom: range.from,
+      to: range.to,
+      originalTo: range.to,
+      label: range.label,
+      // we skip integration, it should be recalculated
+      signals: [],
+    };
+    newRanges.values.push(nmriumRange);
+    for (const signal of range.signal) {
+      const nmriumSignal = {
+        id: crypto.randomUUID(),
+        kind: 'signal',
+        multiplicity: signal.multiplicity,
+        js: [],
+        delta: signal.delta,
+        originalDelta: signal.delta,
+      };
+      nmriumRange.signals.push(nmriumSignal);
+      for (const j of signal.j || []) {
+        nmriumSignal.js.push({
+          coupling: j.coupling,
+          multiplicity: j.multiplicity,
+        });
+      }
+    }
+  }
+
+  return newRanges;
 }
