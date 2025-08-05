@@ -6,7 +6,9 @@ import type {
 } from '@zakodium/nmrium-core';
 import type { WritableDraft } from 'immer';
 import { produce } from 'immer';
+import { MF } from 'mf-parser';
 import { Molecule } from 'openchemlib';
+import * as OCLUtils from 'openchemlib-utils';
 import type { SampleEntryContent } from 'react-iframe-bridge';
 
 export function nmriumToScipeaks(
@@ -49,10 +51,12 @@ function updateMolecule(
     coordinates: idCode.coordinates,
     index: Array.from(oclMolecule.getIndex()),
   };
-  const mf = oclMolecule.getMolecularFormula();
-  draft.general.mf = mf.formula;
-  draft.general.em = mf.absoluteWeight;
-  draft.general.mw = mf.relativeWeight;
+  // @ts-expect-error OCL utils is not in TS
+  const mf = OCLUtils.getMF(oclMolecule).parts.join(' . ');
+  const mfInfo = new MF(mf).getInfo();
+  draft.general.mf = mf;
+  draft.general.em = mfInfo.monoisotopicMass;
+  draft.general.mw = mfInfo.mass;
 }
 
 function serialize1DSpectrum(spectrum: Spectrum1D) {
