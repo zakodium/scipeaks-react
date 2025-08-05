@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.1.0](https://github.com/zakodium/scipeaks-react/compare/v2.0.0...v2.1.0) (2025-08-05)
+
+
+### Features
+
+* **nmrium:** allow to read and save NMR data back to SciPeaks database ([eb78475](https://github.com/zakodium/scipeaks-react/commit/eb7847573a1c3c2b5093f8d11ee3325d3dc66711))
+* **nmrium:** allow to read and save NMR data back to SciPeaks database ([#47](https://github.com/zakodium/scipeaks-react/issues/47)) ([eb78475](https://github.com/zakodium/scipeaks-react/commit/eb7847573a1c3c2b5093f8d11ee3325d3dc66711))
+* update NMRium and other deps ([072598a](https://github.com/zakodium/scipeaks-react/commit/072598a75d2452636ff601df7885c62866c16214))
+
+
+### Bug Fixes
+
+* update roc client ([9f271a7](https://github.com/zakodium/scipeaks-react/commit/9f271a7caf1e9033864f229feb1db0561bf78858))
+
 ## [2.0.0](https://github.com/zakodium/c6h6-react/compare/v1.4.3...v2.0.0) (2025-05-22)
 
 
