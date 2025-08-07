@@ -63,7 +63,7 @@ export function scipeaksToNMRium(
 }
 
 function getMoleculeAndMFInfo(content: SampleEntryContent) {
-  const general = content.general;
+  const general = content.general || {};
   const moleculeName = general.title || general.name?.[0]?.value;
 
   let molecule: { molfile: string; label: string | undefined } | undefined;
@@ -86,7 +86,7 @@ function getMoleculeAndMFInfo(content: SampleEntryContent) {
     };
   }
   if (!molecule || !oclMolecule) {
-    const mf = general?.mf;
+    const mf = general.mf;
     return { molecule: null, mfInfo: mf ? new MF(mf).getInfo() : null };
   }
 
