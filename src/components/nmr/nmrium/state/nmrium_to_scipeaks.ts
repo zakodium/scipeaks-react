@@ -43,6 +43,7 @@ function updateMolecule(
   draft: WritableDraft<SampleEntryContent>,
   molecule: StateMolecule,
 ) {
+  draft.general = draft.general || {};
   draft.general.molfile = molecule.molfile;
   const oclMolecule = Molecule.fromMolfile(molecule.molfile);
   const idCode = oclMolecule.getIDCodeAndCoordinates();
