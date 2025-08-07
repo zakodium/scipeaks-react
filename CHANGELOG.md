@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/zakodium/scipeaks-react/compare/v2.1.0...v2.1.1) (2025-08-07)
+
+
+### Bug Fixes
+
+* deal with missing general property in sample ([#51](https://github.com/zakodium/scipeaks-react/issues/51)) ([cadfd6b](https://github.com/zakodium/scipeaks-react/commit/cadfd6b279017e978492c74c7129efc67fe84c1b))
+
 ## [2.1.0](https://github.com/zakodium/scipeaks-react/compare/v2.0.0...v2.1.0) (2025-08-05)
 
 
